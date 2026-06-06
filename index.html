@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="PlateWise AR — A Mobile WebAR Application for Food Waste Awareness under SDG 12" />
+  <meta name="theme-color" content="#2e7d32" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <title>PlateWise AR</title>
+  <link rel="stylesheet" href="./src/styles.css" />
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="site-nav" aria-label="Main navigation">
+    <a href="index.html">Home</a>
+    <a href="ar.html">AR Experience</a>
+    <a href="demo.html">Demo</a>
+    <a href="marker.html">Marker</a>
+    <a href="quiz.html">Quiz</a>
+    <a href="about.html">About</a>
+  </nav>
+
+  <!-- HTTPS warning (hidden by default, shown via JS) -->
+  <div id="https-warning" class="https-warning" role="alert">
+    ⚠ AR camera features require HTTPS or localhost. Some features may not work on plain HTTP.
+  </div>
+
+  <!-- Main content -->
+  <main class="page">
+    <header style="text-align:center; margin-bottom:1.5rem;">
+      <h1>🍽️ PlateWise AR</h1>
+      <p class="subtitle">A Mobile WebAR Application for Food Waste Awareness under SDG&nbsp;12</p>
+    </header>
+
+    <div class="card">
+      <p>
+        <strong>PlateWise AR</strong> is an educational prototype that uses Augmented Reality to
+        help you explore how everyday food-waste decisions connect to environmental impact,
+        household responsibility, and sustainable behaviour.
+      </p>
+      <p>
+        Point your phone camera at a printed marker to see an interactive AR scene — then
+        choose what to do with leftover food and learn how your choices relate to
+        <strong>SDG&nbsp;12: Responsible Consumption and Production</strong>.
+      </p>
+    </div>
+
+    <!-- Primary actions -->
+    <div class="btn-group">
+      <a href="ar.html" class="btn" aria-label="Start Augmented Reality experience">
+        📷 Start AR Experience
+      </a>
+      <a href="marker.html" class="btn btn--secondary" aria-label="View or print the AR marker">
+        🖨️ Print / View Marker
+      </a>
+      <a href="demo.html" class="btn btn--secondary" aria-label="Try the demo without camera">
+        🖥️ Try Non-AR Demo Mode
+      </a>
+      <a href="about.html" class="btn btn--secondary" aria-label="About this project">
+        ℹ️ About the Project
+      </a>
+    </div>
+
+    <!-- Quick instructions -->
+    <div class="card">
+      <h2>How It Works</h2>
+      <ol style="padding-left:1.25rem;">
+        <li>Print or display the <a href="marker.html">PlateWise marker</a>.</li>
+        <li>Tap <strong>Start AR Experience</strong> and allow camera access.</li>
+        <li>Point your camera at the marker — an AR scene will appear.</li>
+        <li>Navigate food-waste facts and choose an action.</li>
+        <li>Complete the <a href="quiz.html">quiz &amp; reflection</a>.</li>
+      </ol>
+    </div>
+
+    <div class="card" style="background:#e8f5e9;">
+      <h3>SDG 12 — Responsible Consumption and Production</h3>
+      <p style="margin-bottom:0;">
+        This prototype is aligned with United Nations Sustainable Development Goal&nbsp;12 and
+        its target&nbsp;12.3, which aims to halve per-capita global food waste at retail and
+        consumer levels by&nbsp;2030.
+      </p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    PlateWise AR &mdash; Educational Prototype &mdash; SDG&nbsp;12
+  </footer>
+
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>

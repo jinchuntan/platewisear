@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <rect width="192" height="192" rx="24" fill="#2e7d32"/>
+  <circle cx="96" cy="100" r="50" fill="#f5f5f5" stroke="#bdbdbd" stroke-width="3"/>
+  <circle cx="96" cy="100" r="38" fill="none" stroke="#e0e0e0" stroke-width="1.5"/>
+  <text x="96" y="60" text-anchor="middle" font-family="sans-serif" font-size="22" font-weight="bold" fill="#fff">PlateWise</text>
+  <text x="96" y="170" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#c8e6c9">SDG 12</text>
+</svg>

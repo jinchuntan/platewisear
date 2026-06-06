@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="PlateWise AR — Non-AR Demo Mode" />
+  <meta name="theme-color" content="#2e7d32" />
+  <title>PlateWise AR — Demo Mode</title>
+  <link rel="stylesheet" href="./src/styles.css" />
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="site-nav" aria-label="Main navigation">
+    <a href="index.html">Home</a>
+    <a href="ar.html">AR Experience</a>
+    <a href="demo.html">Demo</a>
+    <a href="marker.html">Marker</a>
+    <a href="quiz.html">Quiz</a>
+    <a href="about.html">About</a>
+  </nav>
+
+  <div id="https-warning" class="https-warning" role="alert">
+    ⚠ AR camera features require HTTPS or localhost. Some features may not work on plain HTTP.
+  </div>
+
+  <main class="page">
+    <h1>Demo Mode</h1>
+    <p class="subtitle">Demo Mode — No Camera</p>
+    <p>
+      This page simulates the same educational experience as the AR page, without requiring
+      a camera or marker. Useful for debugging, report screenshots, and presentation backup.
+    </p>
+
+    <!-- Simulated plate scene -->
+    <div class="demo-scene" id="demo-scene">
+      <div class="demo-label">SDG 12 · PlateWise AR</div>
+      <div class="demo-plate" id="demo-plate">
+        <span id="demo-food-icon">🍝</span>
+      </div>
+      <div id="demo-visual-label" class="demo-label">Leftover food on the plate</div>
+    </div>
+
+    <!-- Fact display -->
+    <div class="fact-display" id="fact-display">Loading facts…</div>
+
+    <!-- Fact navigation -->
+    <div style="display:flex; gap:0.5rem; margin-bottom:0.75rem;">
+      <button class="btn btn--small btn--secondary" id="btn-prev-fact" aria-label="Previous fact" style="flex:1;">← Previous</button>
+      <button class="btn btn--small btn--secondary" id="btn-next-fact" aria-label="Next fact" style="flex:1;">Next →</button>
+    </div>
+
+    <!-- Action buttons -->
+    <h2>Choose an Action</h2>
+    <div class="action-grid">
+      <button class="btn btn--danger btn--small" id="btn-throw" aria-label="Throw food away">🗑️ Throw Away</button>
+      <button class="btn btn--small" id="btn-save" aria-label="Save leftovers" style="background:#1565c0;">📦 Save</button>
+      <button class="btn btn--small" id="btn-share" aria-label="Share surplus food" style="background:#7b1fa2;">🤝 Share</button>
+      <button class="btn btn--small btn--accent" id="btn-compost" aria-label="Compost scraps">🌱 Compost</button>
+    </div>
+
+    <!-- Feedback -->
+    <div class="feedback-panel" id="feedback-panel">
+      Choose an action above to see its environmental impact.
+    </div>
+
+    <!-- Link to quiz -->
+    <a href="quiz.html" class="btn btn--secondary" style="margin-top:1rem;">📝 Go to Quiz / Reflection</a>
+  </main>
+
+  <footer class="site-footer">
+    PlateWise AR &mdash; Educational Prototype &mdash; SDG&nbsp;12
+  </footer>
+
+  <script type="module" src="./src/app.js"></script>
+  <script type="module" src="./src/demo-controller.js"></script>
+</body>
+</html>

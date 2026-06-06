@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="PlateWise AR — About the Project" />
+  <meta name="theme-color" content="#2e7d32" />
+  <title>PlateWise AR — About</title>
+  <link rel="stylesheet" href="./src/styles.css" />
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="site-nav" aria-label="Main navigation">
+    <a href="index.html">Home</a>
+    <a href="ar.html">AR Experience</a>
+    <a href="demo.html">Demo</a>
+    <a href="marker.html">Marker</a>
+    <a href="quiz.html">Quiz</a>
+    <a href="about.html">About</a>
+  </nav>
+
+  <div id="https-warning" class="https-warning" role="alert">
+    ⚠ AR camera features require HTTPS or localhost. Some features may not work on plain HTTP.
+  </div>
+
+  <main class="page">
+    <h1>About PlateWise AR</h1>
+    <p class="subtitle">Project overview, SDG 12 alignment, and sources</p>
+
+    <!-- Purpose -->
+    <div class="card">
+      <h2>Purpose</h2>
+      <p>
+        <strong>PlateWise AR</strong> is an educational prototype that uses browser-based
+        Augmented Reality to help users explore how everyday food-waste decisions connect
+        to environmental impact, household responsibility, and sustainable behaviour.
+      </p>
+      <p>
+        The application is designed as a short academic AR project. It does not claim to
+        have already changed real user behaviour — instead it is intended to support
+        <strong>awareness, reflection, and behavioural intention</strong> around food waste
+        and SDG&nbsp;12.
+      </p>
+    </div>
+
+    <!-- SDG 12 -->
+    <div class="card" style="background:#e8f5e9;">
+      <h2>SDG 12 Alignment</h2>
+      <p>
+        <strong>Sustainable Development Goal 12: Responsible Consumption and Production</strong>
+        calls for sustainable consumption and production patterns. Target&nbsp;12.3 specifically
+        aims to halve per-capita global food waste at retail and consumer levels by&nbsp;2030.
+      </p>
+      <p>
+        PlateWise AR supports SDG&nbsp;12 by presenting food-waste statistics, visualising the
+        consequences of disposal decisions, and encouraging users to reflect on actions such as
+        saving leftovers, sharing surplus, and composting unavoidable scraps.
+      </p>
+    </div>
+
+    <!-- Three assignment components -->
+    <h2>Assignment Components</h2>
+
+    <div class="component-card">
+      <h3>1. AR Visualization Layer</h3>
+      <p>
+        The app overlays digital assets onto the physical environment using marker-based AR.
+        Content includes a 3D plate, food pile, action visuals (bin, container, compost, share),
+        spatial text with food-waste statistics, and an SDG&nbsp;12 label — all built from
+        simple A-Frame primitives.
+      </p>
+    </div>
+
+    <div class="component-card">
+      <h3>2. User Interaction Schema</h3>
+      <p>
+        Interactive UI elements allow users to navigate educational content and simulate
+        decision-making. Users browse facts with Previous/Next buttons and choose one of four
+        food-waste actions (Throw Away, Save Leftovers, Share, Compost). Each action updates
+        the AR scene and provides written feedback explaining its environmental implications.
+      </p>
+    </div>
+
+    <div class="component-card">
+      <h3>3. Educational and Empirical Content Integration</h3>
+      <p>
+        The app integrates meaningful data, statistical insights, and actionable information to
+        improve understanding of SDG&nbsp;12 and encourage responsible food-waste behaviour.
+        Facts and statistics are drawn from official sources and presented in a concise,
+        user-friendly format. A quiz and reflection section reinforces learning.
+      </p>
+    </div>
+
+    <!-- Empirical facts used -->
+    <h2>Empirical Facts Used in the App</h2>
+    <div class="card">
+      <ul style="padding-left:1.25rem;">
+        <li>1.05 billion tonnes of food were wasted globally in 2022.</li>
+        <li>Households accounted for about 60% of global food waste.</li>
+        <li>About 19% of food available to consumers was wasted across retail, food service, and households.</li>
+        <li>SDG 12.3 aims to halve per-capita global food waste at retail and consumer levels by 2030.</li>
+        <li>Food waste represents embedded resources: land, water, labour, transport, energy, and packaging.</li>
+        <li>Composting is useful for unavoidable scraps, but edible food should be eaten, saved, or shared first.</li>
+        <li>Household decisions matter because many food-waste actions happen after food reaches the consumer.</li>
+      </ul>
+    </div>
+
+    <!-- References -->
+    <h2>References</h2>
+    <div class="card">
+      <ul class="source-list" id="source-list">
+        <li>
+          <strong>UNEP Food Waste Index Report 2024</strong><br>
+          United Nations Environment Programme (2024). <em>Food Waste Index Report 2024</em>. Nairobi: UNEP.<br>
+          <a href="https://www.unep.org/resources/publication/food-waste-index-report-2024" target="_blank" rel="noopener">
+            https://www.unep.org/resources/publication/food-waste-index-report-2024
+          </a>
+        </li>
+        <li>
+          <strong>United Nations SDG 12</strong><br>
+          United Nations (n.d.). <em>Sustainable Development Goal 12: Ensure sustainable consumption and production patterns</em>.<br>
+          <a href="https://sdgs.un.org/goals/goal12" target="_blank" rel="noopener">
+            https://sdgs.un.org/goals/goal12
+          </a>
+        </li>
+        <li>
+          <strong>FAO — Food Loss and Food Waste</strong><br>
+          Food and Agriculture Organization of the United Nations (n.d.). <em>Food Loss and Food Waste</em>.<br>
+          <a href="https://www.fao.org/food-loss-and-food-waste/en/" target="_blank" rel="noopener">
+            https://www.fao.org/food-loss-and-food-waste/en/
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Limitations -->
+    <h2>Limitations</h2>
+    <div class="card">
+      <ul style="padding-left:1.25rem;">
+        <li>The app uses marker-based AR, not real food recognition.</li>
+        <li>
+          This prototype is educational and does not measure actual household food-waste
+          reduction unless user evaluation is later conducted.
+        </li>
+        <li>Statistics are simplified for learning and should be cited properly in the report.</li>
+        <li>Camera-based AR requires HTTPS or localhost.</li>
+      </ul>
+    </div>
+
+    <a href="index.html" class="btn btn--secondary" style="margin-top:1rem;">← Back to Home</a>
+  </main>
+
+  <footer class="site-footer">
+    PlateWise AR &mdash; Educational Prototype &mdash; SDG&nbsp;12
+  </footer>
+
+  <script type="module" src="./src/app.js"></script>
+</body>
+</html>

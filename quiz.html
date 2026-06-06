@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="PlateWise AR — Quiz and Reflection" />
+  <meta name="theme-color" content="#2e7d32" />
+  <title>PlateWise AR — Quiz / Reflection</title>
+  <link rel="stylesheet" href="./src/styles.css" />
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="site-nav" aria-label="Main navigation">
+    <a href="index.html">Home</a>
+    <a href="ar.html">AR Experience</a>
+    <a href="demo.html">Demo</a>
+    <a href="marker.html">Marker</a>
+    <a href="quiz.html">Quiz</a>
+    <a href="about.html">About</a>
+  </nav>
+
+  <div id="https-warning" class="https-warning" role="alert">
+    ⚠ AR camera features require HTTPS or localhost. Some features may not work on plain HTTP.
+  </div>
+
+  <main class="page">
+    <h1>Quiz &amp; Reflection</h1>
+    <p class="subtitle">Test your understanding of food waste and SDG 12</p>
+
+    <!-- Quiz section — questions are injected by quiz.js -->
+    <section id="quiz-section" aria-label="Quiz questions">
+      <div id="quiz-container"></div>
+
+      <!-- Score (shown after all questions are answered) -->
+      <div id="quiz-result" class="card" style="display:none;">
+        <div class="score-display" id="score-display"></div>
+        <p id="score-message" style="text-align:center;"></p>
+        <button class="btn btn--secondary btn--small" id="btn-retry" style="margin-top:0.5rem;">
+          🔄 Retry Quiz
+        </button>
+      </div>
+    </section>
+
+    <!-- Pledge section -->
+    <section id="pledge-section" class="card" style="margin-top:1.5rem;" aria-label="Action pledge">
+      <h2>My Action Pledge</h2>
+      <p>Choose one action you intend to take after using PlateWise AR:</p>
+
+      <div id="pledge-options"></div>
+
+      <button class="btn btn--small" id="btn-save-pledge" style="margin-top:0.75rem;" aria-label="Save pledge">
+        ✅ Save My Pledge
+      </button>
+
+      <p id="pledge-confirmation" style="display:none; margin-top:0.5rem; color:var(--clr-primary); font-weight:600;"></p>
+    </section>
+
+    <!-- Previous results -->
+    <section class="card" style="margin-top:1rem;" aria-label="Saved results">
+      <h3>Saved Results</h3>
+      <p id="saved-score">No quiz score saved yet.</p>
+      <p id="saved-pledge">No pledge saved yet.</p>
+    </section>
+
+    <a href="index.html" class="btn btn--secondary" style="margin-top:1rem;">← Back to Home</a>
+  </main>
+
+  <footer class="site-footer">
+    PlateWise AR &mdash; Educational Prototype &mdash; SDG&nbsp;12
+  </footer>
+
+  <script type="module" src="./src/app.js"></script>
+  <script type="module" src="./src/quiz.js"></script>
+</body>
+</html>
