@@ -16,4 +16,4 @@ them by these paths. To compile the targets file, see the parent
 [`../README.md`](../README.md).
 
 Good targets are sharp, well-lit, feature-rich (lots of detail/texture) and not
-too uniform — the three above work well.
+too uniform — the five above work well.

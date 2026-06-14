@@ -7,9 +7,10 @@ image tracking. At runtime the app needs one compiled targets file:
 public/assets/targets/food-waste-targets.mind
 ```
 
-This file is **generated from the source images** in `source/` and is **not** committed by
-default (you generate it once). Until it exists, the Scan page shows a friendly
-“Scan targets not installed” screen and Demo Mode still works.
+This file is **generated from the source images** in `source/`. A compiled
+`food-waste-targets.mind` (5 targets) is already included in this repo. If it is ever
+missing, the Scan page shows a friendly “Scan targets not installed” screen and Demo Mode
+still works — regenerate it with the steps below.
 
 ## Source images and order (important)
 
@@ -30,7 +31,7 @@ The order you add the images to the compiler **must** match `targetIndex` in
 
 1. Open the MindAR Image Target Compiler:
    <https://hiukim.github.io/mind-ar-js-doc/tools/compile>
-2. **Add images in the exact order above** (0, 1, 2).
+2. **Add all five images in the exact order above** (0, 1, 2, 3, 4).
 3. Click **Start** to compile, then **Download** — it produces `targets.mind`.
 4. Rename it to `food-waste-targets.mind` and place it in this folder
    (`public/assets/targets/`).

@@ -65,10 +65,13 @@
     MindAR scene — image targets
     ==========================================================================
     imageTargetSrc points to the compiled targets file. autoStart:no so the
-    controller can run camera pre-checks first. The 3 target entities below
-    each hold a floating "museum label" exhibit; MindAR shows/hides them as the
+    controller can run camera pre-checks first. The 5 target entities below
+    (targetIndex 0–4) each hold a hollow gold "highlight frame" sized to the
+    image plus a floating "museum label" card. MindAR shows/hides them as the
     matching food-waste image is found/lost. Exhibit text is filled from
     src/food-targets.js (single source of truth). DO NOT rename the arx-* ids.
+    Frame heights match each image's aspect ratio (MindAR normalises width to 1,
+    so height = imageHeight / imageWidth).
   -->
   <a-scene
     id="mindar-scene"
@@ -80,68 +83,93 @@
   >
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-    <!-- Target 0 — Leftover rice -->
+    <!-- Target 0 — Leftover rice (image 1200x675 → h≈0.563) -->
     <a-entity class="exhibit" mindar-image-target="targetIndex: 0">
-      <a-plane class="exhibit-frame" position="0 0 -0.02" width="1.06" height="0.72" color="#c98a2b" opacity="0.85"></a-plane>
-      <a-entity position="0 0.66 0.02">
-        <a-plane width="1.18" height="0.5" color="#fbf7ef" opacity="0.97"></a-plane>
-        <a-text id="arx-title-0" value="" align="center" color="#22262f" width="2" position="0 0.16 0.01" wrap-count="22"></a-text>
-        <a-text value="SDG 12" align="center" color="#1f6e47" width="1.7" position="0 0.04 0.01"></a-text>
-        <a-text id="arx-stat-0" value="" align="center" color="#5e6660" width="1.5" position="0 -0.07 0.01" wrap-count="36"></a-text>
-        <a-plane position="0 -0.2 0.01" width="0.62" height="0.11" color="#1f6e47"></a-plane>
-        <a-text id="arx-action-0" value="" align="center" color="#ffffff" width="1.7" position="0 -0.2 0.02"></a-text>
+      <a-entity class="exhibit-frame">
+        <a-plane position="0 0.282 0.01" width="1.04" height="0.035" color="#c98a2b"></a-plane>
+        <a-plane position="0 -0.282 0.01" width="1.04" height="0.035" color="#c98a2b"></a-plane>
+        <a-plane position="-0.52 0 0.01" width="0.035" height="0.563" color="#c98a2b"></a-plane>
+        <a-plane position="0.52 0 0.01" width="0.035" height="0.563" color="#c98a2b"></a-plane>
+      </a-entity>
+      <a-entity position="0 0.08 0.06">
+        <a-plane width="1.15" height="0.42" color="#fbf7ef" opacity="0.96"></a-plane>
+        <a-text id="arx-title-0" value="" align="center" color="#22262f" width="1.45" wrap-count="12" position="0 0.12 0.01"></a-text>
+        <a-text value="SDG 12" align="center" color="#855613" width="1.2" position="0 0 0.01"></a-text>
+        <a-text id="arx-stat-0" value="" align="center" color="#5e6660" width="1.25" wrap-count="30" position="0 -0.09 0.01"></a-text>
+        <a-plane position="0 -0.165 0.005" width="0.72" height="0.11" color="#1f6e47"></a-plane>
+        <a-text id="arx-action-0" value="" align="center" color="#ffffff" width="1.5" position="0 -0.165 0.015"></a-text>
       </a-entity>
     </a-entity>
 
-    <!-- Target 1 — Fruit peels -->
+    <!-- Target 1 — Fruit peels (612x459 → h≈0.750) -->
     <a-entity class="exhibit" mindar-image-target="targetIndex: 1">
-      <a-plane class="exhibit-frame" position="0 0 -0.02" width="1.06" height="0.72" color="#c98a2b" opacity="0.85"></a-plane>
-      <a-entity position="0 0.66 0.02">
-        <a-plane width="1.18" height="0.5" color="#fbf7ef" opacity="0.97"></a-plane>
-        <a-text id="arx-title-1" value="" align="center" color="#22262f" width="2" position="0 0.16 0.01" wrap-count="22"></a-text>
-        <a-text value="SDG 12" align="center" color="#1f6e47" width="1.7" position="0 0.04 0.01"></a-text>
-        <a-text id="arx-stat-1" value="" align="center" color="#5e6660" width="1.5" position="0 -0.07 0.01" wrap-count="36"></a-text>
-        <a-plane position="0 -0.2 0.01" width="0.62" height="0.11" color="#1f6e47"></a-plane>
-        <a-text id="arx-action-1" value="" align="center" color="#ffffff" width="1.7" position="0 -0.2 0.02"></a-text>
+      <a-entity class="exhibit-frame">
+        <a-plane position="0 0.375 0.01" width="1.04" height="0.035" color="#c98a2b"></a-plane>
+        <a-plane position="0 -0.375 0.01" width="1.04" height="0.035" color="#c98a2b"></a-plane>
+        <a-plane position="-0.52 0 0.01" width="0.035" height="0.75" color="#c98a2b"></a-plane>
+        <a-plane position="0.52 0 0.01" width="0.035" height="0.75" color="#c98a2b"></a-plane>
+      </a-entity>
+      <a-entity position="0 0.08 0.06">
+        <a-plane width="1.15" height="0.42" color="#fbf7ef" opacity="0.96"></a-plane>
+        <a-text id="arx-title-1" value="" align="center" color="#22262f" width="1.45" wrap-count="12" position="0 0.12 0.01"></a-text>
+        <a-text value="SDG 12" align="center" color="#855613" width="1.2" position="0 0 0.01"></a-text>
+        <a-text id="arx-stat-1" value="" align="center" color="#5e6660" width="1.25" wrap-count="30" position="0 -0.09 0.01"></a-text>
+        <a-plane position="0 -0.165 0.005" width="0.72" height="0.11" color="#1f6e47"></a-plane>
+        <a-text id="arx-action-1" value="" align="center" color="#ffffff" width="1.5" position="0 -0.165 0.015"></a-text>
       </a-entity>
     </a-entity>
 
-    <!-- Target 2 — Bread waste -->
+    <!-- Target 2 — Bread waste (750x500 → h≈0.667) -->
     <a-entity class="exhibit" mindar-image-target="targetIndex: 2">
-      <a-plane class="exhibit-frame" position="0 0 -0.02" width="1.06" height="0.72" color="#c98a2b" opacity="0.85"></a-plane>
-      <a-entity position="0 0.66 0.02">
-        <a-plane width="1.18" height="0.5" color="#fbf7ef" opacity="0.97"></a-plane>
-        <a-text id="arx-title-2" value="" align="center" color="#22262f" width="2" position="0 0.16 0.01" wrap-count="22"></a-text>
-        <a-text value="SDG 12" align="center" color="#1f6e47" width="1.7" position="0 0.04 0.01"></a-text>
-        <a-text id="arx-stat-2" value="" align="center" color="#5e6660" width="1.5" position="0 -0.07 0.01" wrap-count="36"></a-text>
-        <a-plane position="0 -0.2 0.01" width="0.62" height="0.11" color="#1f6e47"></a-plane>
-        <a-text id="arx-action-2" value="" align="center" color="#ffffff" width="1.7" position="0 -0.2 0.02"></a-text>
+      <a-entity class="exhibit-frame">
+        <a-plane position="0 0.334 0.01" width="1.04" height="0.035" color="#c98a2b"></a-plane>
+        <a-plane position="0 -0.334 0.01" width="1.04" height="0.035" color="#c98a2b"></a-plane>
+        <a-plane position="-0.52 0 0.01" width="0.035" height="0.667" color="#c98a2b"></a-plane>
+        <a-plane position="0.52 0 0.01" width="0.035" height="0.667" color="#c98a2b"></a-plane>
+      </a-entity>
+      <a-entity position="0 0.08 0.06">
+        <a-plane width="1.15" height="0.42" color="#fbf7ef" opacity="0.96"></a-plane>
+        <a-text id="arx-title-2" value="" align="center" color="#22262f" width="1.45" wrap-count="12" position="0 0.12 0.01"></a-text>
+        <a-text value="SDG 12" align="center" color="#855613" width="1.2" position="0 0 0.01"></a-text>
+        <a-text id="arx-stat-2" value="" align="center" color="#5e6660" width="1.25" wrap-count="30" position="0 -0.09 0.01"></a-text>
+        <a-plane position="0 -0.165 0.005" width="0.72" height="0.11" color="#1f6e47"></a-plane>
+        <a-text id="arx-action-2" value="" align="center" color="#ffffff" width="1.5" position="0 -0.165 0.015"></a-text>
       </a-entity>
     </a-entity>
 
-    <!-- Target 3 — Mixed leftovers -->
+    <!-- Target 3 — Mixed leftovers (612x408 → h≈0.667) -->
     <a-entity class="exhibit" mindar-image-target="targetIndex: 3">
-      <a-plane class="exhibit-frame" position="0 0 -0.02" width="1.06" height="0.72" color="#c98a2b" opacity="0.85"></a-plane>
-      <a-entity position="0 0.66 0.02">
-        <a-plane width="1.18" height="0.5" color="#fbf7ef" opacity="0.97"></a-plane>
-        <a-text id="arx-title-3" value="" align="center" color="#22262f" width="2" position="0 0.16 0.01" wrap-count="22"></a-text>
-        <a-text value="SDG 12" align="center" color="#1f6e47" width="1.7" position="0 0.04 0.01"></a-text>
-        <a-text id="arx-stat-3" value="" align="center" color="#5e6660" width="1.5" position="0 -0.07 0.01" wrap-count="36"></a-text>
-        <a-plane position="0 -0.2 0.01" width="0.62" height="0.11" color="#1f6e47"></a-plane>
-        <a-text id="arx-action-3" value="" align="center" color="#ffffff" width="1.7" position="0 -0.2 0.02"></a-text>
+      <a-entity class="exhibit-frame">
+        <a-plane position="0 0.334 0.01" width="1.04" height="0.035" color="#c98a2b"></a-plane>
+        <a-plane position="0 -0.334 0.01" width="1.04" height="0.035" color="#c98a2b"></a-plane>
+        <a-plane position="-0.52 0 0.01" width="0.035" height="0.667" color="#c98a2b"></a-plane>
+        <a-plane position="0.52 0 0.01" width="0.035" height="0.667" color="#c98a2b"></a-plane>
+      </a-entity>
+      <a-entity position="0 0.08 0.06">
+        <a-plane width="1.15" height="0.42" color="#fbf7ef" opacity="0.96"></a-plane>
+        <a-text id="arx-title-3" value="" align="center" color="#22262f" width="1.45" wrap-count="12" position="0 0.12 0.01"></a-text>
+        <a-text value="SDG 12" align="center" color="#855613" width="1.2" position="0 0 0.01"></a-text>
+        <a-text id="arx-stat-3" value="" align="center" color="#5e6660" width="1.25" wrap-count="30" position="0 -0.09 0.01"></a-text>
+        <a-plane position="0 -0.165 0.005" width="0.72" height="0.11" color="#1f6e47"></a-plane>
+        <a-text id="arx-action-3" value="" align="center" color="#ffffff" width="1.5" position="0 -0.165 0.015"></a-text>
       </a-entity>
     </a-entity>
 
-    <!-- Target 4 — Drink waste -->
+    <!-- Target 4 — Drink waste (740x580 → h≈0.784) -->
     <a-entity class="exhibit" mindar-image-target="targetIndex: 4">
-      <a-plane class="exhibit-frame" position="0 0 -0.02" width="1.06" height="0.78" color="#c98a2b" opacity="0.85"></a-plane>
-      <a-entity position="0 0.7 0.02">
-        <a-plane width="1.18" height="0.5" color="#fbf7ef" opacity="0.97"></a-plane>
-        <a-text id="arx-title-4" value="" align="center" color="#22262f" width="2" position="0 0.16 0.01" wrap-count="22"></a-text>
-        <a-text value="SDG 12" align="center" color="#1f6e47" width="1.7" position="0 0.04 0.01"></a-text>
-        <a-text id="arx-stat-4" value="" align="center" color="#5e6660" width="1.5" position="0 -0.07 0.01" wrap-count="36"></a-text>
-        <a-plane position="0 -0.2 0.01" width="0.62" height="0.11" color="#1f6e47"></a-plane>
-        <a-text id="arx-action-4" value="" align="center" color="#ffffff" width="1.7" position="0 -0.2 0.02"></a-text>
+      <a-entity class="exhibit-frame">
+        <a-plane position="0 0.392 0.01" width="1.04" height="0.035" color="#c98a2b"></a-plane>
+        <a-plane position="0 -0.392 0.01" width="1.04" height="0.035" color="#c98a2b"></a-plane>
+        <a-plane position="-0.52 0 0.01" width="0.035" height="0.784" color="#c98a2b"></a-plane>
+        <a-plane position="0.52 0 0.01" width="0.035" height="0.784" color="#c98a2b"></a-plane>
+      </a-entity>
+      <a-entity position="0 0.08 0.06">
+        <a-plane width="1.15" height="0.42" color="#fbf7ef" opacity="0.96"></a-plane>
+        <a-text id="arx-title-4" value="" align="center" color="#22262f" width="1.45" wrap-count="12" position="0 0.12 0.01"></a-text>
+        <a-text value="SDG 12" align="center" color="#855613" width="1.2" position="0 0 0.01"></a-text>
+        <a-text id="arx-stat-4" value="" align="center" color="#5e6660" width="1.25" wrap-count="30" position="0 -0.09 0.01"></a-text>
+        <a-plane position="0 -0.165 0.005" width="0.72" height="0.11" color="#1f6e47"></a-plane>
+        <a-text id="arx-action-4" value="" align="center" color="#ffffff" width="1.5" position="0 -0.165 0.015"></a-text>
       </a-entity>
     </a-entity>
   </a-scene>

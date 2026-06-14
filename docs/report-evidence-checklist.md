@@ -17,31 +17,31 @@ Use this checklist to ensure you have captured all required evidence for your ac
 |---|----------|-----------|-------|
 | 1 | Home page (full view on mobile) | ☐ | |
 | 2 | Home page (desktop view) | ☐ | |
-| 3 | Marker page showing the **real Hiro marker image** (`hiro-marker.jpg`) | ☐ | |
-| 4 | Marker page — Print and Download buttons + instructions | ☐ | |
-| 5 | Printed marker on paper (black border intact) | ☐ | |
+| 3 | Scan images page — the five curated food-waste images | ☐ | |
+| 4 | Scan images page — "curated images only" note + Download buttons | ☐ | |
+| 5 | One curated target shown on another screen / printed (ready to scan) | ☐ | |
 
-### AR Experience — camera & error states
-
-| # | Evidence | Captured? | Notes |
-|---|----------|-----------|-------|
-| 6 | AR page — "Starting camera… / permission needed" state | ☐ | |
-| 7 | AR page — camera permission dialog | ☐ | |
-| 8 | AR page — "AR ready" / live camera | ☐ | |
-| 9 | AR page — an error state (e.g. permission denied / HTTPS required / AR failed) with troubleshooting + Demo fallback | ☐ | |
-
-### AR Experience — scene, facts, actions
+### AR Experience — camera & setup states
 
 | # | Evidence | Captured? | Notes |
 |---|----------|-----------|-------|
-| 10 | AR page — "Marker not detected" status | ☐ | |
-| 11 | AR page — "Marker detected" with AR scene visible (plate, food pile, SDG 12 label) | ☐ | |
-| 12 | AR page — fact navigation showing a statistic **and its source label** | ☐ | |
-| 13 | AR page — progress indicator advancing (Step 1 → 2 → 3 → 4) | ☐ | |
-| 14 | AR page — "Throw Away" action and feedback | ☐ | |
-| 15 | AR page — "Save Leftovers" action and feedback | ☐ | |
-| 16 | AR page — "Share" action and feedback | ☐ | |
-| 17 | AR page — "Compost" action and feedback | ☐ | |
+| 6 | Scan page — "Starting camera… / permission needed" state | ☐ | |
+| 7 | Scan page — camera permission dialog | ☐ | |
+| 8 | Scan page — "Ready to scan" / live camera with scan hint | ☐ | |
+| 9 | Scan page — an error/setup state (permission denied / HTTPS required / AR failed / targets not installed) with troubleshooting + Demo fallback | ☐ | |
+
+### AR Experience — detection, exhibit, actions
+
+| # | Evidence | Captured? | Notes |
+|---|----------|-----------|-------|
+| 10 | Scan page — "Point at a food-waste image" scan hint (nothing detected) | ☐ | |
+| 11 | Scan page — **target detected**: AR exhibit card over the image (title, SDG 12 tag, statistic, best-action badge, gold highlight frame) | ☐ | |
+| 12 | Scan page — contextual bottom sheet titled with the detected exhibit + source label | ☐ | |
+| 13 | Scan page — recommended action marked (★) and bottom sheet expand/collapse via handle | ☐ | |
+| 14 | Scan page — "Throw" action and target-specific guidance | ☐ | |
+| 15 | Scan page — "Save" action and target-specific guidance | ☐ | |
+| 16 | Scan page — "Share" action and target-specific guidance | ☐ | |
+| 17 | Scan page — "Compost" action + "Ask more" drawer open | ☐ | |
 
 ### Demo Mode (mirror of AR)
 
@@ -73,7 +73,7 @@ Use this checklist to ensure you have captured all required evidence for your ac
 
 | # | Evidence | Captured? | Notes |
 |---|----------|-----------|-------|
-| 29 | Browser console — debug logs (status changes, marker found, action selected) | ☐ | |
+| 29 | Browser console — debug logs (status changes, `targetFound index: N`, action selected) | ☐ | |
 | 30 | Browser console — quiz score saved | ☐ | |
 | 31 | localStorage — stored data (DevTools → Application → Local Storage) | ☐ | |
 | 32 | Network tab — AR libraries load from local `/vendor/` (no CDN/master) | ☐ | |

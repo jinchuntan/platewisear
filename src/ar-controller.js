@@ -64,6 +64,23 @@ const askMore = initAskMore();
 debug('ar-controller.js (MindAR) loaded.');
 
 // ===========================================================================
+// Lightweight debug indicator — only when the URL has ?debug (e.g. ?debug=1).
+// Logs always go to the console; the on-screen pill is opt-in so the demo
+// stays clean by default.
+// ===========================================================================
+const DEBUG_ON = new URLSearchParams(location.search).has('debug');
+let debugEl = null;
+if (DEBUG_ON) {
+  debugEl = document.createElement('div');
+  debugEl.className = 'ar-debug';
+  debugEl.textContent = 'debug: starting…';
+  document.body.appendChild(debugEl);
+}
+function setDebug(msg) {
+  if (debugEl) debugEl.textContent = `debug:\n${msg}`;
+}
+
+// ===========================================================================
 // Status-screen state machine
 // ===========================================================================
 const STATUS = {
@@ -185,6 +202,7 @@ function onArReady() {
   arReady = true;
   if (loadTimeoutId) clearTimeout(loadTimeoutId);
   debug('EVENT: arReady');
+  setDebug('ready — point at a target');
   setStatus('ready');
   setTimeout(() => { hideStatusScreen(); showScanHint(); }, 700);
 }
@@ -220,11 +238,28 @@ function populateExhibits() {
   debug('Exhibits populated.');
 }
 
+/**
+ * Read the real targetIndex from the `mindar-image-target` attribute rather
+ * than relying on DOM order. After A-Frame initialises the component,
+ * getAttribute returns the parsed object; before that it's the raw string —
+ * handle both, and fall back to DOM order only if parsing fails.
+ */
+function readTargetIndex(el, fallback) {
+  const parsed = el.getAttribute('mindar-image-target');
+  if (parsed && typeof parsed === 'object' && parsed.targetIndex != null) {
+    return Number(parsed.targetIndex);
+  }
+  const raw = (typeof parsed === 'string' ? parsed : el.attributes['mindar-image-target']?.value) || '';
+  const m = /targetIndex\s*:\s*(\d+)/.exec(raw);
+  return m ? Number(m[1]) : fallback;
+}
+
 function attachTargetHandlers() {
   const entities = document.querySelectorAll('#mindar-scene [mindar-image-target]');
   entities.forEach((el, i) => {
-    el.addEventListener('targetFound', () => onTargetFound(i));
-    el.addEventListener('targetLost', () => onTargetLost(i));
+    const index = readTargetIndex(el, i);
+    el.addEventListener('targetFound', () => onTargetFound(index));
+    el.addEventListener('targetLost', () => onTargetLost(index));
   });
   debug('Target handlers attached:', entities.length);
 }
@@ -232,17 +267,20 @@ function attachTargetHandlers() {
 function onTargetFound(index) {
   if (lostTimerId) { clearTimeout(lostTimerId); lostTimerId = null; }
   const target = getTargetByIndex(index);
-  if (!target) return;
+  debug('targetFound index:', index, target ? `→ ${target.id} (${target.title})` : '→ (no content mapped)');
+  if (!target) { setDebug(`found #${index}\n(no content mapped)`); return; }
   currentTarget = target;
-  debug('EVENT: targetFound', target.id);
+  setDebug(`found #${index}\n${target.id} — ${target.title}`);
   showSheet(target);
 }
 
 function onTargetLost(index) {
+  debug('targetLost index:', index);
   // debounce flicker — only drop the sheet if not re-found shortly
   if (lostTimerId) clearTimeout(lostTimerId);
   lostTimerId = setTimeout(() => {
-    debug('targetLost (settled)', index);
+    debug('targetLost (settled) index:', index);
+    setDebug(`lost #${index}\nscanning…`);
     currentTarget = null;
     hideSheet();
     showScanHint();
@@ -272,13 +310,14 @@ function showSheet(target) {
 
   highlightRecommended(target.recommendedAction);
 
+  // Open compact first (keeps the AR exhibit visible); user expands via handle.
   sheetEl.hidden = false;
-  sheetEl.classList.remove('collapsed');
+  sheetEl.classList.remove('is-expanded');
   requestAnimationFrame(() => sheetEl.classList.add('is-open'));
 }
 
 function hideSheet() {
-  sheetEl.classList.remove('is-open');
+  sheetEl.classList.remove('is-open', 'is-expanded');
   sheetEl.hidden = true;
 }
 
@@ -313,7 +352,7 @@ btnShare?.addEventListener('click', () => applyAction('share'));
 btnCompost?.addEventListener('click', () => applyAction('compost'));
 btnAskMore?.addEventListener('click', () => askMore.open(currentTarget));
 
-sheetToggleEl?.addEventListener('click', () => sheetEl.classList.toggle('collapsed'));
+sheetToggleEl?.addEventListener('click', () => sheetEl.classList.toggle('is-expanded'));
 
 // ===========================================================================
 // Scene init
