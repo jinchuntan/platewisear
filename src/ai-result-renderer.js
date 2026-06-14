@@ -1,6 +1,6 @@
 /**
- * ai-result-renderer.js — Renders a normalized AI Photo Mode result into the
- * PlateWise exhibit/sheet DOM on ai.html. Locale-aware: the trusted fact and
+ * ai-result-renderer.js — Renders a normalized AI Scan result into the
+ * PlateNudge exhibit/sheet DOM on ai.html. Locale aware so the trusted fact and
  * the static labels follow the active language; the AI's free-text fields stay
  * in the language they were generated in.
  */
@@ -30,8 +30,19 @@ export function renderAiResult(result) {
   // Exhibit card
   $('ai-title').textContent = result.arTitle;
   $('ai-best').textContent = `${t('common.bestPrefix') || 'Best: '}${actionLabel(result.recommendedAction)}`;
+  // Detected badge — only when the AI clearly saw a food-waste scene. For an
+  // uploaded image that was not clearly food waste we hide it rather than
+  // overclaim a detection.
+  const detectedBadge = $('ai-detected-badge');
+  if (detectedBadge) {
+    const detected = !result.sceneStatus || result.sceneStatus === 'detected';
+    detectedBadge.textContent = t('ai.sceneDetected') || 'Food waste scene detected';
+    detectedBadge.hidden = !detected;
+  }
 
   // Summary
+  const wasteEl = $('ai-waste');
+  if (wasteEl) wasteEl.textContent = result.wasteType || '—';
   $('ai-visible').textContent = result.visibleItems.length ? result.visibleItems.join(', ') : '—';
   const uncertainRow = $('ai-uncertain-row');
   if (result.uncertainItems.length) {

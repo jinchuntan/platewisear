@@ -1,6 +1,6 @@
 # Legacy Hiro marker (no longer used)
 
-PlateWise AR now uses **image-target scanning** of curated food-waste images
+PlateNudge now uses **image-target scanning** of curated food-waste images
 (MindAR), not the Hiro marker. See [`../targets/README.md`](../targets/README.md).
 
 These files are kept only for reference / history:

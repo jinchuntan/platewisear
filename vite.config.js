@@ -1,5 +1,5 @@
 /**
- * Vite Configuration for PlateWise AR
+ * Vite Configuration for PlateNudge
  *
  * Multi-page setup: each HTML file is a separate entry point.
  * This allows `npm run build` to produce a static site with all pages.

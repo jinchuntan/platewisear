@@ -1,7 +1,7 @@
 {
-  "name": "platewise-ar",
+  "name": "platenudge",
   "version": "1.0.0",
-  "description": "PlateWise AR — A Mobile WebAR Application for Food Waste Awareness under SDG 12",
+  "description": "PlateNudge, an AR and AI food waste learning app for SDG 12",
   "type": "module",
   "scripts": {
     "dev": "vite",

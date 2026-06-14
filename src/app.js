@@ -31,7 +31,7 @@ function injectTopBar() {
   const bar = document.createElement('header');
   bar.className = 'topbar';
   bar.innerHTML =
-    `<a class="topbar__brand" href="index.html" aria-label="PlateWise AR home">${LEAF}<span>PlateWise</span></a>` +
+    `<a class="topbar__brand" href="index.html" aria-label="PlateNudge home">${LEAF}<span>PlateNudge</span></a>` +
     `<div class="topbar__right">` +
     `<nav class="navpills" aria-label="Primary">` +
     PILLS.map((p) => {

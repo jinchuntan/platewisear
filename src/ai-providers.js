@@ -1,5 +1,5 @@
 /**
- * ai-providers.js — Server-side provider plumbing for AI Photo Mode.
+ * ai-providers.js — Server-side provider plumbing for AI Scan.
  *
  * OpenAI-compatible chat calls to OpenRouter (primary) and Groq (backup).
  * Reads API keys + model names from process.env at call time. NEVER imported by
@@ -67,7 +67,7 @@ export function openrouterChat(messages, opts) {
     ...opts,
     extraHeaders: {
       'HTTP-Referer': process.env.PUBLIC_SITE_URL || 'https://platewise-ar.vercel.app',
-      'X-Title': 'PlateWise AR',
+      'X-Title': 'PlateNudge',
     },
   });
 }

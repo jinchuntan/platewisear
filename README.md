@@ -1,8 +1,8 @@
-# PlateWise AR
+# PlateNudge
 
-**A Mobile WebAR Application for Food Waste Awareness under SDG 12**
+**An AR and AI food waste learning app for SDG 12**
 
-PlateWise AR turns **curated food-waste images into AR learning exhibits**. Scan a food-waste image and a short AR exhibit appears over it — explaining what the waste represents, why it matters under SDG 12, and what you can do next. Inspired by food-waste museum concepts.
+PlateNudge turns **curated food-waste images into AR learning exhibits**. Scan a food-waste image and a short AR exhibit appears over it. It explains what the waste represents, why it matters under SDG 12, and what you can do next. PlateNudge also has an optional AI Photo Mode that analyses your own food-waste photo and suggests a next action. Inspired by food-waste museum concepts.
 
 > **Recognition scope (honest):** the curated AR scan recognises **only the curated image targets** included with it — not arbitrary food photos. An **optional [AI Photo Mode](#ai-photo-mode-optional)** can analyse an uploaded photo via serverless routes, but it does **not** confirm food safety and never estimates exact weight or carbon. The curated AR scan is the core and works without AI.
 
@@ -102,7 +102,7 @@ The dev server will print a local URL (e.g. `http://localhost:5173`) and a netwo
 
 ## AI Photo Mode (optional)
 
-PlateWise includes an **optional** AI Photo Mode (`ai.html`) that analyses an uploaded food-waste photo through serverless routes in `api/` (**OpenRouter** primary, **Groq** backup). It is fully additive: with **no keys configured** the page shows a friendly “not configured” message and the curated AR scan, Demo, Quiz, and language switching keep working.
+PlateNudge includes an **optional** AI Photo Mode (`ai.html`) that analyses an uploaded food-waste photo through serverless routes in `api/` (**OpenRouter** primary, **Groq** backup). It is fully additive. With **no keys configured** the page shows a friendly “not configured” message and the curated AR scan, Demo, Quiz, and language switching keep working.
 
 Set these in **Vercel → Project → Settings → Environment Variables**. They are **server-side only — never prefix with `VITE_`** (that would expose them to the browser bundle). Keys are read only inside `api/` functions and are never shipped to the frontend.
 

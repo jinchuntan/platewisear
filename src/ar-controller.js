@@ -1,5 +1,5 @@
 /**
- * ar-controller.js — MindAR image-target experience for PlateWise AR.
+ * ar-controller.js — MindAR image-target experience for PlateNudge.
  *
  * Flow:
  *   1. Check the compiled image-target file exists (graceful "not installed").

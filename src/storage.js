@@ -1,5 +1,5 @@
 /**
- * storage.js — localStorage helpers for PlateWise AR
+ * storage.js — localStorage helpers for PlateNudge
  *
  * Provides simple get/save wrappers so every page interacts with
  * localStorage through a consistent interface.
@@ -31,7 +31,7 @@ export function getQuizScore() {
  */
 export function saveQuizScore(score) {
   localStorage.setItem(PREFIX + 'quizScore', String(score));
-  console.log('[PlateWise] Quiz score saved:', score);
+  console.log('[PlateNudge] Quiz score saved:', score);
 }
 
 // ---------------------------------------------------------------------------
@@ -52,7 +52,7 @@ export function getPledge() {
  */
 export function savePledge(pledge) {
   localStorage.setItem(PREFIX + 'pledge', pledge);
-  console.log('[PlateWise] Pledge saved:', pledge);
+  console.log('[PlateNudge] Pledge saved:', pledge);
 }
 
 // ---------------------------------------------------------------------------
@@ -73,7 +73,7 @@ export function getLastAction() {
  */
 export function saveLastAction(actionId) {
   localStorage.setItem(PREFIX + 'lastAction', actionId);
-  console.log('[PlateWise] Last action saved:', actionId);
+  console.log('[PlateNudge] Last action saved:', actionId);
 }
 
 // ---------------------------------------------------------------------------
@@ -88,4 +88,22 @@ export function getScanGuideSeen() {
 /** Remember that the user dismissed the scan guide. */
 export function setScanGuideSeen() {
   localStorage.setItem(PREFIX + 'scanGuideSeen', '1');
+}
+
+// ---------------------------------------------------------------------------
+// "How AI Scan works" guide — separate from the curated-scan guide because the
+// steps are different. Uses its own key so dismissing one does not hide the
+// other. The key name was requested explicitly, so it is kept as-is.
+// ---------------------------------------------------------------------------
+
+const AI_GUIDE_KEY = 'platenudge-ai-guide-seen';
+
+/** @returns {boolean} true if the AI Scan guide has already been dismissed. */
+export function getAiGuideSeen() {
+  return localStorage.getItem(AI_GUIDE_KEY) === '1';
+}
+
+/** Remember that the user dismissed the AI Scan guide. */
+export function setAiGuideSeen() {
+  localStorage.setItem(AI_GUIDE_KEY, '1');
 }

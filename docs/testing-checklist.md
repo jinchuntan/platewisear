@@ -1,4 +1,4 @@
-# PlateWise AR — Testing Checklist
+# PlateNudge — Testing Checklist
 
 Mark each test Pass / Fail with notes.
 
@@ -80,7 +80,7 @@ Mark each test Pass / Fail with notes.
 
 | # | Test | Result | Notes |
 |---|------|--------|-------|
-| F1 | Browser tab shows the PlateWise favicon on every page | | |
+| F1 | Browser tab shows the PlateNudge favicon on every page | | |
 | F2 | `favicon.svg`, `icon-192/512.svg`, `manifest.webmanifest` all return 200 (no broken icon requests) | | |
 | F3 | Manifest theme/background match the design (#1f6e47 / #faf7ef) | | |
 

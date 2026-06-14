@@ -1,7 +1,7 @@
 {
-  "name": "PlateWise AR",
-  "short_name": "PlateWise",
-  "description": "A Mobile WebAR Application for Food Waste Awareness under SDG 12",
+  "name": "PlateNudge",
+  "short_name": "PlateNudge",
+  "description": "An AR and AI food waste learning app for SDG 12",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#faf7ef",

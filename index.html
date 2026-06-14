@@ -3,30 +3,39 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="PlateWise AR — scan your leftovers, learn what to do next. An AR food-waste learning experience for SDG 12." />
+  <meta name="description" content="PlateNudge. Scan food waste, learn what it means, and choose a better next action. An AR and AI food waste learning app for SDG 12." />
   <meta name="theme-color" content="#1f6e47" />
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="./assets/icons/icon-192.svg" />
-  <title data-i18n="meta.titleHome">PlateWise AR</title>
+  <title data-i18n="meta.titleHome">PlateNudge</title>
   <link rel="stylesheet" href="./src/styles.css" />
 </head>
 <body>
 
   <main class="page">
     <section class="hero">
-      <span class="chip" data-i18n="hero.chip">Food-waste museum, in AR</span>
+      <span class="chip" data-i18n="hero.chip">AR and AI for SDG 12</span>
 
       <h1 class="hero__title">
-        <span data-i18n="hero.title1">Scan your leftovers.</span><br>
-        <span class="accent" data-i18n="hero.title2">Learn what to do next.</span>
+        <span data-i18n="hero.title1">Scan. Learn.</span><br>
+        <span class="accent" data-i18n="hero.title2">Choose better.</span>
       </h1>
-      <p class="hero__sub" data-i18n="hero.sub">An AR food-waste learning experience for SDG&nbsp;12.</p>
+      <p class="hero__sub" data-i18n="hero.sub">An AR and AI food waste learning app for SDG&nbsp;12.</p>
 
       <div class="hero__cta">
-        <a href="ar.html" class="btn" data-i18n="hero.startScan">Start scan</a>
-        <a href="ai.html" class="btn btn--accent" data-i18n="ai.cta">AI photo mode</a>
-        <a href="demo.html" class="btn btn--secondary" data-i18n="hero.tryDemo">Try demo</a>
+        <div class="hero__choice">
+          <a href="ar.html" class="btn" data-i18n="hero.startScan">Start scan</a>
+          <span class="hero__choice-note" data-i18n="hero.startScanDesc">For curated AR image targets</span>
+        </div>
+        <div class="hero__choice">
+          <a href="ai.html" class="btn btn--accent" data-i18n="ai.cta">AI Scan</a>
+          <span class="hero__choice-note" data-i18n="ai.scanDesc">For camera based AI guidance</span>
+        </div>
+        <div class="hero__choice">
+          <a href="demo.html" class="btn btn--secondary" data-i18n="hero.tryDemo">Try demo</a>
+          <span class="hero__choice-note" data-i18n="hero.tryDemoDesc">For a no camera walkthrough</span>
+        </div>
       </div>
 
       <p class="linkrow mt-4">
@@ -57,16 +66,16 @@
       <div class="journey__intro">
         <span class="eyebrow" data-i18n="journey.eyebrow">For learners.</span>
         <h2 class="section__title" data-i18n="journey.title">Built for everyday food decisions.</h2>
-        <p class="section__sub" data-i18n="journey.subtitle">You do not need to be a sustainability expert. PlateWise turns food-waste images into short AR exhibits that help you see the issue, choose an action, and reflect on what happens next.</p>
+        <p class="section__sub" data-i18n="journey.subtitle">You do not need to be a sustainability expert. PlateNudge turns food-waste images into short AR exhibits that help you see the issue, choose an action, and reflect on what happens next.</p>
       </div>
 
-      <div class="fan" aria-label="What PlateWise helps you do">
+      <div class="fan" aria-label="What PlateNudge helps you do">
         <article class="fan__card fan__card--1">
           <div class="fan__media"><img src="./assets/illustrations/learn-see.jpg" alt="" data-i18n-alt="journey.card1Alt" loading="lazy" /></div>
           <div class="fan__text">
             <span class="fan__num">01</span>
             <h3 class="fan__title" data-i18n="journey.card1Title">Visualise, not just read.</h3>
-            <p class="fan__body" data-i18n="journey.card1Body">Food waste often feels invisible after it leaves the plate. PlateWise uses AR to place the impact back in front of the learner.</p>
+            <p class="fan__body" data-i18n="journey.card1Body">Food waste often feels invisible after it leaves the plate. PlateNudge uses AR to put the impact back in front of the learner.</p>
           </div>
         </article>
 
@@ -100,7 +109,7 @@
   <section class="impact">
     <div class="impact__wrap">
       <h2 class="impact__title" data-i18n="impact.title">Small choices add up.</h2>
-      <p class="impact__sub" data-i18n="impact.subtitle">PlateWise connects food-waste facts to simple decisions. Each scan turns a curated image into an AR learning moment: awareness, visualisation, decision, feedback, and reflection.</p>
+      <p class="impact__sub" data-i18n="impact.subtitle">PlateNudge connects food-waste facts to simple decisions. Each scan turns a curated image into an AR learning moment. You build awareness, see the impact, choose an action, get feedback, and reflect.</p>
 
       <div class="stat-grid">
         <article class="stat-card stat-card--a">
@@ -112,7 +121,7 @@
         <article class="stat-card stat-card--b">
           <div class="stat-card__num" data-i18n="impact.stat2Num">60%</div>
           <div class="stat-card__label" data-i18n="impact.stat2Label">comes from households</div>
-          <p class="stat-card__body" data-i18n="impact.stat2Body">Household decisions matter. PlateWise focuses on everyday situations learners can recognise and act on.</p>
+          <p class="stat-card__body" data-i18n="impact.stat2Body">Household decisions matter. PlateNudge focuses on everyday situations learners can recognise and act on.</p>
         </article>
 
         <article class="stat-card stat-card--c">
@@ -124,7 +133,7 @@
         <article class="stat-card stat-card--d">
           <div class="stat-card__num" data-i18n="impact.stat4Num">SDG 12.3</div>
           <div class="stat-card__label" data-i18n="impact.stat4Label">halve food waste by 2030</div>
-          <p class="stat-card__body" data-i18n="impact.stat4Body">PlateWise supports awareness of responsible consumption and encourages users to prevent waste before disposal.</p>
+          <p class="stat-card__body" data-i18n="impact.stat4Body">PlateNudge supports awareness of responsible consumption and encourages people to prevent waste before it is thrown away.</p>
         </article>
       </div>
 

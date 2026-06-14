@@ -1,15 +1,15 @@
 /**
- * utils.js — Shared utility helpers for PlateWise AR
+ * utils.js — Shared utility helpers for PlateNudge
  */
 
 /**
- * Simple debug logger that prepends a [PlateWise] tag.
+ * Simple debug logger that prepends a [PlateNudge] tag for the console.
  * Messages appear in the browser console for report evidence.
  *
  * @param  {...any} args
  */
 export function debug(...args) {
-  console.log('[PlateWise]', ...args);
+  console.log('[PlateNudge]', ...args);
 }
 
 /**

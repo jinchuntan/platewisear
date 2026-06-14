@@ -1,4 +1,4 @@
-# PlateWise AR — Report Evidence Checklist
+# PlateNudge — Report Evidence Checklist
 
 Use this checklist to ensure you have captured all required evidence for your academic report. Mark each item when the screenshot or evidence has been collected.
 

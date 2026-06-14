@@ -1,5 +1,5 @@
 /**
- * api/analyze-food.js — Vercel serverless function for AI Photo Mode.
+ * api/analyze-food.js — Vercel serverless function for AI Scan.
  *
  * Flow: validate input → OpenRouter (primary) → Groq (backup) → normalize →
  * return. Never exposes API keys. If no keys are set, returns `not_configured`
@@ -49,6 +49,9 @@ export default async function handler(req, res) {
   const body = await readBody(req);
   const image = body?.image;
   const locale = normLocale(body?.locale);
+  // "camera" or "upload" — informational only, used for logging. The analysis
+  // itself does not change based on where the image came from.
+  const source = body?.source === 'camera' ? 'camera' : 'upload';
 
   const match = typeof image === 'string' && IMAGE_RE.exec(image);
   if (!match) return send(res, 400, { ok: false, error: 'bad_image' });
@@ -86,6 +89,6 @@ export default async function handler(req, res) {
   if (!result) return send(res, 502, { ok: false, error: 'unavailable' });
 
   result.provider = provider;
-  console.log(`[analyze-food] success via ${provider} (locale: ${locale})`);
+  console.log(`[analyze-food] success via ${provider} (locale: ${locale}, source: ${source})`);
   return send(res, 200, { ok: true, result });
 }

@@ -1,4 +1,4 @@
-# PlateWise AR — Debugging Log
+# PlateNudge — Debugging Log
 
 Use this template to document issues encountered during development and testing. Each row records a bug or problem, its cause, the fix applied, and a placeholder for evidence screenshots.
 
@@ -27,7 +27,7 @@ Use this template to document issues encountered during development and testing.
 
 ## Console Log Evidence
 
-PlateWise AR prints debug messages to the browser console prefixed with `[PlateWise]`. To capture console evidence:
+PlateNudge prints debug messages to the browser console prefixed with `[PlateNudge]`. To capture console evidence:
 
 1. Open DevTools (F12 or right-click → Inspect).
 2. Go to the **Console** tab.
@@ -36,15 +36,15 @@ PlateWise AR prints debug messages to the browser console prefixed with `[PlateW
 
 Example console messages (MindAR image tracking):
 ```
-[PlateWise] app.js loaded — page: /ar.html
-[PlateWise] ar-controller.js (MindAR) loaded.
-[PlateWise] AR status → ready
-[PlateWise] EVENT: arReady
-[PlateWise] Target handlers attached: 5
-[PlateWise] targetFound index: 0 → leftover-rice (Leftover rice)
-[PlateWise] ACTION saveLeftovers on leftover-rice
-[PlateWise] Last action saved: saveLeftovers
-[PlateWise] targetLost index: 0
+[PlateNudge] app.js loaded — page: /ar.html
+[PlateNudge] ar-controller.js (MindAR) loaded.
+[PlateNudge] AR status → ready
+[PlateNudge] EVENT: arReady
+[PlateNudge] Target handlers attached: 5
+[PlateNudge] targetFound index: 0 → leftover-rice (Leftover rice)
+[PlateNudge] ACTION saveLeftovers on leftover-rice
+[PlateNudge] Last action saved: saveLeftovers
+[PlateNudge] targetLost index: 0
 ```
 
 Tip: append `?debug=1` to the Scan URL (e.g. `/ar.html?debug=1`) to show a small

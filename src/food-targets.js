@@ -1,7 +1,7 @@
 /**
  * food-targets.js — Curated food-waste image targets and their exhibit content.
  *
- * PlateWise AR turns curated food-waste images into AR "museum exhibits". Each
+ * PlateNudge turns curated food-waste images into AR "museum exhibits". Each
  * entry maps a compiled MindAR image target (by `targetIndex`) to the content
  * shown in the AR exhibit card, the contextual bottom sheet, and the Ask-More
  * drawer.

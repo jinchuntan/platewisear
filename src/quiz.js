@@ -1,5 +1,5 @@
 /**
- * quiz.js — Quiz and pledge logic for PlateWise AR
+ * quiz.js — Quiz and pledge logic for PlateNudge
  *
  * Renders quiz questions and the pledge from content.js (locale-aware), tracks
  * answers, calculates the score, and persists results to localStorage.

@@ -1,5 +1,5 @@
 /**
- * api/ask-food.js — Phase 2 contextual "Ask more" for AI Photo Mode.
+ * api/ask-food.js — Phase 2 contextual "Ask more" for AI Scan.
  *
  * Answers ONLY about the current analysis result (passed in by the client).
  * This is NOT a general homepage chatbot. Same provider fallback + safety

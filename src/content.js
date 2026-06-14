@@ -1,5 +1,5 @@
 /**
- * content.js — Central data store for PlateWise AR
+ * content.js — Central data store for PlateNudge
  *
  * All educational content, statistics, quiz questions, and source references
  * are maintained here so every page draws from a single source of truth.
@@ -123,11 +123,11 @@ export const actions = {
 export const quizQuestions = [
   {
     id: 'q1',
-    question: 'Which Sustainable Development Goal is PlateWise AR aligned with?',
+    question: 'Which Sustainable Development Goal is PlateNudge aligned with?',
     options: ['SDG 2', 'SDG 7', 'SDG 12', 'SDG 15'],
     correctIndex: 2,
     explanation:
-      'PlateWise AR is aligned with SDG 12 — Responsible Consumption and Production.',
+      'PlateNudge is aligned with SDG 12. It supports Responsible Consumption and Production.',
   },
   {
     id: 'q2',
@@ -148,7 +148,7 @@ export const quizQuestions = [
     ],
     correctIndex: 2,
     explanation:
-      'Composting is most appropriate for unavoidable scraps such as peels, cores, and shells — food that cannot be eaten, saved, or shared.',
+      'Composting is most appropriate for unavoidable scraps such as peels, cores, and shells. This is food that cannot be eaten, saved, or shared.',
   },
   {
     id: 'q4',
@@ -161,7 +161,7 @@ export const quizQuestions = [
     ],
     correctIndex: 1,
     explanation:
-      'When food is wasted, all the resources used to produce, transport, and store it — water, land, energy, labour, and packaging — are also lost.',
+      'When food is wasted, all the resources used to produce, transport, and store it are also lost. That includes water, land, energy, labour, and packaging.',
   },
   {
     id: 'q5',

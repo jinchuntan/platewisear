@@ -1,6 +1,6 @@
-# PlateWise AR — User Manual
+# PlateNudge — User Manual
 
-> **Scope:** This is the **core, non-AI** version. PlateWise AR scans a small set of **curated
+> **Scope:** This is the **core, non-AI** version. PlateNudge scans a small set of **curated
 > food-waste images** and shows AR exhibits. It does **not** recognise arbitrary food photos and
 > does **not** judge food safety. AI image analysis is future work.
 

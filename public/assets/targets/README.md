@@ -1,6 +1,6 @@
 # Food-waste image targets
 
-PlateWise AR scans **curated food-waste images** using [MindAR](https://github.com/hiukim/mind-ar-js)
+PlateNudge scans **curated food-waste images** using [MindAR](https://github.com/hiukim/mind-ar-js)
 image tracking. At runtime the app needs one compiled targets file:
 
 ```

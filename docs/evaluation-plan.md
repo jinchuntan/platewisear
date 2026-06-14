@@ -1,4 +1,4 @@
-# PlateWise AR — Evaluation Plan
+# PlateNudge — Evaluation Plan
 
 This document outlines a simple evaluation plan suitable for a short academic AR project report. Results must be filled in after actual testing is conducted.
 
@@ -6,7 +6,7 @@ This document outlines a simple evaluation plan suitable for a short academic AR
 
 ## Objectives
 
-1. Assess whether PlateWise AR effectively supports **awareness** of food waste and SDG 12.
+1. Assess whether PlateNudge effectively supports **awareness** of food waste and SDG 12.
 2. Evaluate the **usability** of the AR interface and decision-making flow.
 3. Measure **behavioural intention** — whether users report increased willingness to reduce food waste after using the app.
 
@@ -25,7 +25,7 @@ This document outlines a simple evaluation plan suitable for a short academic AR
 1. **Briefing** (2 minutes) — Explain the purpose of the study and obtain consent.
 2. **Pre-test questionnaire** — Baseline awareness and attitudes (see below).
 3. **Task-based testing** (5–10 minutes):
-   - Open PlateWise AR on a mobile device.
+   - Open PlateNudge on a mobile device.
    - Print or display the marker.
    - Start the AR experience and scan the marker.
    - Browse at least 3 facts.
@@ -52,7 +52,7 @@ This document outlines a simple evaluation plan suitable for a short academic AR
 
 | # | Question | Scale |
 |---|----------|-------|
-| 4 | After using PlateWise AR, how aware are you of SDG 12? | 1 (Not at all) – 5 (Very aware) |
+| 4 | After using PlateNudge, how aware are you of SDG 12? | 1 (Not at all) – 5 (Very aware) |
 | 5 | Did you learn something new about food waste from this app? | Yes / No |
 | 6 | Which fact was most surprising to you? | Open-ended |
 
@@ -70,10 +70,10 @@ This document outlines a simple evaluation plan suitable for a short academic AR
 
 | # | Question | Scale |
 |---|----------|-------|
-| 12 | After using PlateWise AR, I am more likely to save leftovers. | 1 (Strongly disagree) – 5 (Strongly agree) |
-| 13 | After using PlateWise AR, I am more likely to share surplus food. | 1 (Strongly disagree) – 5 (Strongly agree) |
-| 14 | After using PlateWise AR, I am more likely to compost unavoidable scraps. | 1 (Strongly disagree) – 5 (Strongly agree) |
-| 15 | After using PlateWise AR, I feel more motivated to reduce food waste. | 1 (Strongly disagree) – 5 (Strongly agree) |
+| 12 | After using PlateNudge, I am more likely to save leftovers. | 1 (Strongly disagree) – 5 (Strongly agree) |
+| 13 | After using PlateNudge, I am more likely to share surplus food. | 1 (Strongly disagree) – 5 (Strongly agree) |
+| 14 | After using PlateNudge, I am more likely to compost unavoidable scraps. | 1 (Strongly disagree) – 5 (Strongly agree) |
+| 15 | After using PlateNudge, I feel more motivated to reduce food waste. | 1 (Strongly disagree) – 5 (Strongly agree) |
 
 ---
 

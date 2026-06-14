@@ -1,5 +1,5 @@
 /**
- * ai-config.js — Centralised AI model configuration for AI Photo Mode.
+ * ai-config.js — Centralised AI model configuration for AI Scan.
  *
  * Pinned, safe default model IDs so the feature works out of the box once the
  * API keys are set. Each default can be overridden by a server-side environment

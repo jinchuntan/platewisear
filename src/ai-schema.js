@@ -1,6 +1,6 @@
 /**
  * ai-schema.js — Shared schema, trusted facts, and a safety-aware normalizer
- * for AI Photo Mode. Pure ESM with NO browser or Node-only APIs, so it can be
+ * for AI Scan. Pure ESM with NO browser or Node-only APIs, so it can be
  * imported by both the frontend (ai-controller / renderer) and the serverless
  * functions in /api.
  *
@@ -13,6 +13,9 @@
 
 export const ALLOWED_ACTIONS = ['throwAway', 'saveLeftovers', 'share', 'compost'];
 export const ALLOWED_CONFIDENCE = ['low', 'medium', 'high'];
+// Whether the camera frame actually shows a food-waste scene. Used by the
+// camera scan flow to decide between showing a result and asking for a retry.
+export const ALLOWED_SCENE_STATUS = ['detected', 'unclear', 'not_food_waste'];
 export const ALLOWED_FACT_KEYS = [
   'household_food_waste',
   'consumer_food_waste',
@@ -93,6 +96,11 @@ const DEFAULTS = {
     ms: 'Berdasarkan item yang kelihatan, tindakan umum ini biasanya terbaik.',
     'zh-CN': '根据可见的物品，这个一般性的做法通常最合适。',
   },
+  detectionMessage: {
+    en: 'I cannot clearly see food waste yet. Move closer, improve lighting, or try another angle.',
+    ms: 'Saya belum nampak sisa makanan dengan jelas. Dekatkan lagi, tingkatkan pencahayaan, atau cuba sudut lain.',
+    'zh-CN': '暂时看不清食物浪费。靠近一点、改善光线，或换个角度再试。',
+  },
   guidance: {
     throwAway: {
       en: 'Throw away only if spoiled or unsafe.',
@@ -158,7 +166,7 @@ export function extractJson(content) {
 }
 
 /**
- * Validate + sanitize a raw model object into the canonical PlateWise AI shape.
+ * Validate + sanitize a raw model object into the canonical PlateNudge AI shape.
  * Enforces enums, scrubs disallowed claims, and forces our safety note.
  * Throws only if `raw` is not an object (so the caller can try the other provider).
  * @param {*} raw
@@ -171,6 +179,12 @@ export function normalizeResult(raw, locale = 'en') {
   const recommendedAction = ALLOWED_ACTIONS.includes(raw.recommendedAction) ? raw.recommendedAction : 'compost';
   const confidence = ALLOWED_CONFIDENCE.includes(raw.confidence) ? raw.confidence : 'low';
   const factKey = ALLOWED_FACT_KEYS.includes(raw.factKey) ? raw.factKey : 'household_food_waste';
+
+  // Scene detection (camera scan). Default to "detected" so an older model that
+  // omits the field still behaves like the original upload flow.
+  const sceneStatus = ALLOWED_SCENE_STATUS.includes(raw.sceneStatus) ? raw.sceneStatus : 'detected';
+  const isFoodWasteLikely =
+    typeof raw.isFoodWasteLikely === 'boolean' ? raw.isFoodWasteLikely : sceneStatus === 'detected';
 
   const rawGuidance = raw.guidance && typeof raw.guidance === 'object' ? raw.guidance : {};
   const guidance = {};
@@ -189,6 +203,9 @@ export function normalizeResult(raw, locale = 'en') {
     uncertainItems: asArray(raw.uncertainItems),
     wasteType,
     confidence,
+    sceneStatus,
+    isFoodWasteLikely,
+    detectionMessage: clean(raw.detectionMessage, pick(DEFAULTS.detectionMessage, locale)),
     recommendedAction,
     actionReason: clean(raw.actionReason, pick(DEFAULTS.actionReason, locale)),
     factKey,
