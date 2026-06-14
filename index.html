@@ -3,90 +3,59 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="PlateWise AR — A Mobile WebAR Application for Food Waste Awareness under SDG 12" />
-  <meta name="theme-color" content="#2e7d32" />
+  <meta name="description" content="PlateWise AR — Scan. Decide. Waste less. A WebAR learning experience for food waste and SDG 12." />
+  <meta name="theme-color" content="#1f6e47" />
   <link rel="manifest" href="./manifest.webmanifest" />
   <title>PlateWise AR</title>
   <link rel="stylesheet" href="./src/styles.css" />
 </head>
 <body>
 
-  <!-- Navigation -->
-  <nav class="site-nav" aria-label="Main navigation">
-    <a href="index.html">Home</a>
-    <a href="ar.html">AR Experience</a>
-    <a href="demo.html">Demo</a>
-    <a href="marker.html">Marker</a>
-    <a href="quiz.html">Quiz</a>
-    <a href="about.html">About</a>
-  </nav>
-
-  <!-- HTTPS warning (hidden by default, shown via JS) -->
-  <div id="https-warning" class="https-warning" role="alert">
-    ⚠ AR camera features require HTTPS or localhost. Some features may not work on plain HTTP.
-  </div>
-
-  <!-- Main content -->
   <main class="page">
-    <header style="text-align:center; margin-bottom:1.5rem;">
-      <h1>🍽️ PlateWise AR</h1>
-      <p class="subtitle">A Mobile WebAR Application for Food Waste Awareness under SDG&nbsp;12</p>
-    </header>
+    <section class="hero">
+      <span class="brand">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 20C6 20 4 15 4 11c5 0 7 3 7 7"/><path d="M12 20c0-7 4-12 8-13 0 8-3 13-8 13"/></svg>
+        PlateWise AR
+      </span>
 
-    <div class="card">
-      <p>
-        <strong>PlateWise AR</strong> is an educational prototype that uses Augmented Reality to
-        help you explore how everyday food-waste decisions connect to environmental impact,
-        household responsibility, and sustainable behaviour.
+      <h1 class="hero__title">Scan.<br>Decide.<br>Waste less.</h1>
+      <p class="hero__sub">A WebAR learning experience for food waste and SDG&nbsp;12.</p>
+
+      <div class="hero__cta">
+        <a href="ar.html" class="btn">Start AR</a>
+        <a href="marker.html" class="btn btn--secondary">View Marker</a>
+      </div>
+
+      <p class="linkrow mt-4">
+        <a href="demo.html">Try Demo</a>
+        <span aria-hidden="true" class="muted">·</span>
+        <a href="about.html">About</a>
       </p>
-      <p>
-        Point your phone camera at a printed marker to see an interactive AR scene — then
-        choose what to do with leftover food and learn how your choices relate to
-        <strong>SDG&nbsp;12: Responsible Consumption and Production</strong>.
-      </p>
-    </div>
+    </section>
 
-    <!-- Primary actions -->
-    <div class="btn-group">
-      <a href="ar.html" class="btn" aria-label="Start Augmented Reality experience">
-        📷 Start AR Experience
-      </a>
-      <a href="marker.html" class="btn btn--secondary" aria-label="View or print the AR marker">
-        🖨️ Print / View Marker
-      </a>
-      <a href="demo.html" class="btn btn--secondary" aria-label="Try the demo without camera">
-        🖥️ Try Non-AR Demo Mode
-      </a>
-      <a href="about.html" class="btn btn--secondary" aria-label="About this project">
-        ℹ️ About the Project
-      </a>
-    </div>
+    <!-- 3-step at a glance -->
+    <ol class="steps" aria-label="How it works">
+      <li class="step">
+        <span class="step__ico"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8"/><path d="M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8"/><path d="M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16"/><path d="M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16"/><path d="M4 12h16"/></svg></span>
+        <span class="step__n">1</span>
+        <span class="step__label">Scan marker</span>
+      </li>
+      <li class="step">
+        <span class="step__ico"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5 11 15l4.5-5"/></svg></span>
+        <span class="step__n">2</span>
+        <span class="step__label">Choose action</span>
+      </li>
+      <li class="step">
+        <span class="step__ico"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 18h5"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.5.4.9 1 1 1.7l.1.5h5l.1-.5c.1-.7.5-1.3 1-1.7A6 6 0 0 0 12 3z"/></svg></span>
+        <span class="step__n">3</span>
+        <span class="step__label">Learn what to do</span>
+      </li>
+    </ol>
 
-    <!-- Quick instructions -->
-    <div class="card">
-      <h2>How It Works</h2>
-      <ol style="padding-left:1.25rem;">
-        <li>Print or display the <a href="marker.html">PlateWise marker</a>.</li>
-        <li>Tap <strong>Start AR Experience</strong> and allow camera access.</li>
-        <li>Point your camera at the marker — an AR scene will appear.</li>
-        <li>Navigate food-waste facts and choose an action.</li>
-        <li>Complete the <a href="quiz.html">quiz &amp; reflection</a>.</li>
-      </ol>
-    </div>
-
-    <div class="card" style="background:#e8f5e9;">
-      <h3>SDG 12 — Responsible Consumption and Production</h3>
-      <p style="margin-bottom:0;">
-        This prototype is aligned with United Nations Sustainable Development Goal&nbsp;12 and
-        its target&nbsp;12.3, which aims to halve per-capita global food waste at retail and
-        consumer levels by&nbsp;2030.
-      </p>
-    </div>
+    <p class="center mt-5">
+      <span class="chip">SDG 12 · Responsible Consumption</span>
+    </p>
   </main>
-
-  <footer class="site-footer">
-    PlateWise AR &mdash; Educational Prototype &mdash; SDG&nbsp;12
-  </footer>
 
   <script type="module" src="./src/app.js"></script>
 </body>

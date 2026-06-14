@@ -3,75 +3,55 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="PlateWise AR — Quiz and Reflection" />
-  <meta name="theme-color" content="#2e7d32" />
-  <title>PlateWise AR — Quiz / Reflection</title>
+  <meta name="description" content="PlateWise AR — quick check and pledge" />
+  <meta name="theme-color" content="#1f6e47" />
+  <title>PlateWise AR — Quick check</title>
   <link rel="stylesheet" href="./src/styles.css" />
 </head>
 <body>
 
-  <!-- Navigation -->
-  <nav class="site-nav" aria-label="Main navigation">
-    <a href="index.html">Home</a>
-    <a href="ar.html">AR Experience</a>
-    <a href="demo.html">Demo</a>
-    <a href="marker.html">Marker</a>
-    <a href="quiz.html">Quiz</a>
-    <a href="about.html">About</a>
-  </nav>
+  <main class="page stack">
+    <header>
+      <span class="eyebrow">Reflection</span>
+      <h1 class="mt-2">Quick check</h1>
+      <p class="lede">Five short questions.</p>
+    </header>
 
-  <div id="https-warning" class="https-warning" role="alert">
-    ⚠ AR camera features require HTTPS or localhost. Some features may not work on plain HTTP.
-  </div>
-
-  <main class="page">
-    <h1>Quiz &amp; Reflection</h1>
-    <p class="subtitle">Test your understanding of food waste and SDG 12</p>
-
-    <!-- Recall of the user's last AR / Demo action (shown via JS if one is saved) -->
+    <!-- Recall of the last AR / Demo action (shown via JS if one is saved) -->
     <div class="last-action-note" id="last-action-note" hidden></div>
 
-    <!-- Quiz section — questions are injected by quiz.js -->
-    <section id="quiz-section" aria-label="Quiz questions">
-      <div id="quiz-container"></div>
+    <!-- Questions (injected by quiz.js) -->
+    <section aria-label="Quiz questions">
+      <div id="quiz-container" class="stack"></div>
 
-      <!-- Score (shown after all questions are answered) -->
-      <div id="quiz-result" class="card" style="display:none;">
+      <!-- Result (shown after all questions answered) -->
+      <div id="quiz-result" class="card center" style="display:none;">
         <div class="score-display" id="score-display"></div>
-        <p id="score-message" style="text-align:center;"></p>
-        <button class="btn btn--secondary btn--small" id="btn-retry" style="margin-top:0.5rem;">
-          🔄 Retry Quiz
-        </button>
+        <p id="score-message" class="muted"></p>
+        <button type="button" class="btn btn--secondary btn--small mt-3" id="btn-retry">Retry</button>
       </div>
     </section>
 
-    <!-- Pledge section -->
-    <section id="pledge-section" class="card" style="margin-top:1.5rem;" aria-label="Action pledge">
-      <h2>My Action Pledge</h2>
-      <p>Choose one action you intend to take after using PlateWise AR:</p>
+    <!-- Pledge -->
+    <section class="card" aria-label="Action pledge">
+      <h2>Make a pledge</h2>
+      <p class="muted text-sm mb-3">Pick one change you'll try.</p>
 
       <div id="pledge-options"></div>
 
-      <button class="btn btn--small" id="btn-save-pledge" style="margin-top:0.75rem;" aria-label="Save pledge">
-        ✅ Save My Pledge
-      </button>
-
-      <p id="pledge-confirmation" style="display:none; margin-top:0.5rem; color:var(--clr-primary); font-weight:600;"></p>
+      <button type="button" class="btn mt-3" id="btn-save-pledge">Save pledge</button>
+      <p id="pledge-confirmation" class="center mt-3" style="display:none; font-weight:600;"></p>
     </section>
 
-    <!-- Previous results -->
-    <section class="card" style="margin-top:1rem;" aria-label="Saved results">
-      <h3>Saved Results</h3>
-      <p id="saved-score">No quiz score saved yet.</p>
-      <p id="saved-pledge">No pledge saved yet.</p>
-    </section>
-
-    <a href="index.html" class="btn btn--secondary" style="margin-top:1rem;">← Back to Home</a>
+    <!-- Saved results -->
+    <details class="acc">
+      <summary>Your saved results</summary>
+      <div class="acc__body">
+        <p id="saved-score">No quiz score saved yet.</p>
+        <p id="saved-pledge">No pledge saved yet.</p>
+      </div>
+    </details>
   </main>
-
-  <footer class="site-footer">
-    PlateWise AR &mdash; Educational Prototype &mdash; SDG&nbsp;12
-  </footer>
 
   <script type="module" src="./src/app.js"></script>
   <script type="module" src="./src/quiz.js"></script>

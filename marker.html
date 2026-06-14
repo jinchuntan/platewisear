@@ -3,165 +3,62 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="PlateWise AR — Printable Hiro Marker" />
-  <meta name="theme-color" content="#2e7d32" />
+  <meta name="description" content="PlateWise AR — the Hiro marker to scan" />
+  <meta name="theme-color" content="#1f6e47" />
   <title>PlateWise AR — Marker</title>
   <link rel="stylesheet" href="./src/styles.css" />
   <style>
-    /* Marker page specific styles */
-    .marker-print-area {
-      background: #fff;
-      border: 2px dashed var(--clr-border);
-      border-radius: var(--radius);
-      padding: 2rem 1rem;
-      text-align: center;
-      margin: 1rem 0;
-    }
-    .marker-print-area h2 {
-      margin-top: 0;
-    }
-    /* Wrapper around the marker image — NO extra border so we never
-       interfere with the marker's own black border, which AR.js needs. */
-    .marker-image-wrapper {
-      display: inline-block;
-      background: #fff;
-      padding: 0;
-      line-height: 0;
-    }
-    .marker-image {
-      display: block;
-      width: 100%;
-      max-width: 320px;
-      height: auto;
-      margin: 0 auto;
-      /* keep edges crisp when scaled up for printing */
-      image-rendering: -webkit-optimize-contrast;
-    }
-
-    /* Print: make the marker a known physical size (~10 cm) and hide
-       everything except the marker + its caption. */
+    /* Print: show only the marker, sized ~10 cm so it scans well */
     @media print {
-      .marker-print-area {
-        border: none;
-        padding: 0;
-        margin: 0;
-      }
-      /* Hide page chrome and helper cards when printing. */
-      .no-print {
-        display: none !important;
-      }
-      .marker-image {
-        /* ~10 cm square — comfortably scannable from 20–40 cm */
-        width: 100mm;
-        max-width: 100mm;
-        height: 100mm;
-      }
-      .marker-print-caption {
-        margin-top: 6mm;
-        font-size: 11pt;
-      }
+      .marker-image { width: 100mm; max-width: 100mm; height: 100mm; margin: 0 auto; }
+      .marker-caption { margin-top: 6mm; font-size: 11pt; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Navigation -->
-  <nav class="site-nav no-print" aria-label="Main navigation">
-    <a href="index.html">Home</a>
-    <a href="ar.html">AR Experience</a>
-    <a href="demo.html">Demo</a>
-    <a href="marker.html">Marker</a>
-    <a href="quiz.html">Quiz</a>
-    <a href="about.html">About</a>
-  </nav>
+  <main class="page stack">
+    <header class="center">
+      <h1>Scan this marker</h1>
+      <p class="lede">Print it, or open it on another screen.</p>
+    </header>
 
-  <div id="https-warning" class="https-warning no-print" role="alert">
-    ⚠ AR camera features require HTTPS or localhost. Some features may not work on plain HTTP.
-  </div>
-
-  <main class="page">
-    <h1 class="no-print">PlateWise AR Marker</h1>
-    <p class="subtitle no-print">
-      This is the standard <strong>Hiro</strong> marker used by AR.js. Print it or open it on a
-      second screen, then scan it from the AR page.
-    </p>
-
-    <!-- Actions: print + download -->
-    <div class="card no-print">
-      <h2>Get the Marker</h2>
-      <p>Print the marker below, or download the image to print or share it later.</p>
-      <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
-        <button class="btn btn--secondary btn--small" onclick="window.print()"
-                aria-label="Print this marker page" style="width:auto; flex:1; min-width:160px;">
-          🖨️ Print This Page
-        </button>
-        <a class="btn btn--small" href="./assets/marker/hiro-marker.jpg"
-           download="platewise-hiro-marker.jpg"
-           aria-label="Download the Hiro marker image"
-           style="width:auto; flex:1; min-width:160px;">
-          ⬇️ Download Marker
-        </a>
-      </div>
-    </div>
-
-    <!-- How to use the marker -->
-    <div class="card no-print">
-      <h2>How to Use the Marker</h2>
-      <ol style="padding-left:1.25rem;">
-        <li><strong>Print clearly in black and white</strong> on plain white paper.</li>
-        <li><strong>Do not crop the black border</strong> — AR.js needs the full black frame to detect it.</li>
-        <li><strong>Keep the marker flat and well-lit</strong> — avoid bends, glare, and deep shadows.</li>
-        <li><strong>Scan from around 20–40 cm away</strong> with the camera roughly square to the marker.</li>
-        <li>Open the <a href="ar.html">AR Experience</a> on your phone and point the camera at the marker.</li>
-      </ol>
-      <p style="font-size:0.85rem; color:var(--clr-text-muted); margin-bottom:0;">
-        No printer? Display this page on a laptop or tablet screen and scan it with your phone
-        (lower the screen brightness if there is glare).
-      </p>
-    </div>
-
-    <!-- Printable marker area -->
-    <div class="marker-print-area" id="marker-print-area">
-      <h2 class="no-print" style="color:var(--clr-primary-dark);">🍽️ PlateWise AR — Hiro Marker</h2>
-      <p class="no-print" style="font-size:0.9rem; color:var(--clr-text-muted);">
-        SDG 12 — Responsible Consumption &amp; Production
-      </p>
-
-      <div class="marker-image-wrapper">
-        <!--
-          Real, standard Hiro marker image (public/assets/marker/hiro-marker.jpg).
-          This is the exact marker AR.js recognises via <a-marker preset="hiro">.
-          Do not add a border around it — the marker's own black border must stay intact.
-        -->
+    <!-- Marker (the real, standard Hiro image) -->
+    <div class="marker-card">
+      <div class="marker-image-wrap">
         <img
           class="marker-image"
           src="./assets/marker/hiro-marker.jpg"
           alt="Standard Hiro AR marker — a black square border with the word Hiro in the centre"
-          width="320"
-          height="320"
+          width="280"
+          height="280"
         />
       </div>
-
-      <p class="marker-print-caption" style="margin-top:1rem; font-size:0.85rem; color:var(--clr-text-muted);">
-        Standard <strong>Hiro</strong> marker · PlateWise AR · SDG&nbsp;12<br>
-        Keep the marker flat, well-lit, and do not cover the black border.
-      </p>
+      <p class="marker-caption muted text-sm">Standard Hiro marker · keep the black border intact</p>
     </div>
 
-    <div class="card no-print">
-      <h3>Tips for Best Results</h3>
-      <ul style="padding-left:1.25rem;">
-        <li>Print at a reasonable size — at least 8 cm × 8 cm (the print layout uses ~10 cm).</li>
-        <li>Ensure even lighting — avoid glare and deep shadows on the marker.</li>
-        <li>Hold your phone about 20–40 cm from the marker.</li>
-        <li>Keep the marker flat and do not bend, fold, or crop it.</li>
-      </ul>
+    <!-- Actions -->
+    <div class="stack no-print">
+      <a href="ar.html" class="btn">Start AR</a>
+      <div class="btn-row">
+        <button type="button" class="btn btn--secondary" onclick="window.print()">Print</button>
+        <a class="btn btn--secondary" href="./assets/marker/hiro-marker.jpg" download="platewise-hiro-marker.jpg">Download</a>
+      </div>
     </div>
+
+    <!-- Tips tucked away -->
+    <details class="acc no-print">
+      <summary>Scanning tips</summary>
+      <div class="acc__body">
+        <ul>
+          <li>Print clearly in black &amp; white on white paper.</li>
+          <li>Keep the marker flat and well-lit — avoid glare.</li>
+          <li>Don't crop or cover the black border.</li>
+          <li>Hold the camera about 20–40 cm away.</li>
+        </ul>
+      </div>
+    </details>
   </main>
-
-  <footer class="site-footer no-print">
-    PlateWise AR &mdash; Educational Prototype &mdash; SDG&nbsp;12
-  </footer>
 
   <script type="module" src="./src/app.js"></script>
 </body>

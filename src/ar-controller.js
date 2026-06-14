@@ -496,7 +496,7 @@ function applyAction(actionId) {
   }
 
   // 4. Update DOM feedback panel
-  feedbackPanelEl.textContent = `${action.icon} ${action.label}: ${action.feedback}`;
+  feedbackPanelEl.textContent = `${action.label}: ${action.feedback}`;
   feedbackPanelEl.className = 'feedback-panel';
   if (action.impactLevel === 'negative') feedbackPanelEl.classList.add('feedback-panel--negative');
   if (action.impactLevel === 'neutral') feedbackPanelEl.classList.add('feedback-panel--neutral');

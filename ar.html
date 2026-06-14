@@ -3,100 +3,77 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <meta name="description" content="PlateWise AR — Augmented Reality Food Waste Experience" />
-  <meta name="theme-color" content="#2e7d32" />
-  <title>PlateWise AR — AR Experience</title>
+  <meta name="description" content="PlateWise AR — Augmented Reality food-waste experience" />
+  <meta name="theme-color" content="#1f6e47" />
+  <title>PlateWise AR — AR</title>
   <link rel="stylesheet" href="./src/styles.css" />
 
   <!--
     ==========================================================================
     AR dependencies — PINNED & LOCALLY VENDORED for stability
     ==========================================================================
-    A-Frame 1.6.0 and AR.js 3.4.8 are committed to /public/vendor/ instead of
-    being loaded from a CDN. This removes the previous dependency on the
-    AR.js "master" branch via raw.githack (a moving target, not for production)
-    and guarantees the AR engine loads even on networks that block CDNs or when
-    offline. See README → "AR Dependencies" for the rationale and upstream URLs.
-
-    These two <script> tags MUST be classic (non-module) scripts in <head>:
-    AR.js registers A-Frame components at parse time and the scene relies on
-    AFRAME being a global before it is created.
+    A-Frame 1.6.0 and AR.js 3.4.8 are committed to /public/vendor/ (no CDN /
+    "master" branch). These MUST be classic scripts in <head> so AFRAME is a
+    global before the scene is created. See README → "AR Dependencies".
   -->
   <script src="./vendor/aframe-1.6.0.min.js"></script>
   <script src="./vendor/aframe-ar-3.4.8.js"></script>
 
   <style>
-    /* AR page overrides — camera fills the viewport */
-    html, body {
-      margin: 0;
-      overflow: hidden;
-      background: #000;
-      height: 100%;
-    }
-    /* Hide A-Frame default UI elements */
-    .a-enter-vr, .a-orientation-modal {
-      display: none !important;
-    }
+    /* AR page only — camera fills the viewport */
+    html, body { margin: 0; height: 100%; overflow: hidden; background: #000; }
+    .a-enter-vr, .a-orientation-modal { display: none !important; }
   </style>
 </head>
-<body>
+<body data-tabbar="off">
 
   <!--
     ==========================================================================
-    AR STATUS / ERROR SCREEN
+    AR STATUS / LOADING SCREEN
     ==========================================================================
-    Full-viewport layer shown while the camera/AR is starting, and for any
-    error state (permission denied, unsupported browser, load failure, etc.).
-    It is hidden once AR is ready. Text is updated by ar-controller.js.
+    Full-viewport layer shown while the camera/AR starts and for every error
+    state. Hidden once AR is ready. Text is driven by ar-controller.js.
   -->
   <div id="ar-status-screen" class="ar-status" role="status" aria-live="polite">
     <div class="ar-status__box">
       <div class="ar-status__icon" id="ar-status-icon">📷</div>
       <h1 class="ar-status__title" id="ar-status-title">Starting camera…</h1>
-      <p class="ar-status__message" id="ar-status-message">
-        Please allow camera access when your browser asks.
-      </p>
+      <p class="ar-status__message" id="ar-status-message">Allow camera access when asked.</p>
 
       <div class="ar-status__spinner" id="ar-status-spinner" aria-hidden="true"></div>
 
-      <!-- Troubleshooting tips — shown only on failure states -->
-      <div class="ar-status__troubleshoot" id="ar-status-troubleshoot" hidden>
-        <h2>Troubleshooting</h2>
-        <ul>
-          <li>Make sure the page is opened over <strong>HTTPS</strong> or on <strong>localhost</strong>.</li>
-          <li>Check that the browser has <strong>camera permission</strong> for this site (tap the address-bar icon).</li>
-          <li>Close other apps or tabs that may be using the camera.</li>
-          <li>Use <strong>Chrome or Firefox on Android</strong> for best results; some iOS browsers limit camera access.</li>
-          <li>Reload the page and allow the camera when prompted.</li>
-        </ul>
-      </div>
+      <!-- Troubleshooting — collapsed accordion, revealed only on errors -->
+      <details class="acc ar-status__troubleshoot" id="ar-status-troubleshoot" hidden>
+        <summary>Troubleshooting</summary>
+        <div class="acc__body">
+          <ul>
+            <li>Open the page over <strong>HTTPS</strong> or on <strong>localhost</strong>.</li>
+            <li>Allow <strong>camera permission</strong> for this site.</li>
+            <li>Close other apps or tabs using the camera.</li>
+            <li>Use <strong>Chrome / Firefox on Android</strong> for best results.</li>
+          </ul>
+        </div>
+      </details>
 
-      <!-- Action buttons — shown on failure states; Demo Mode is always offered -->
+      <!-- Error actions — Demo Mode is always offered -->
       <div class="ar-status__actions" id="ar-status-actions" hidden>
-        <button type="button" class="btn btn--small" id="ar-retry">🔄 Try Again</button>
-        <a href="demo.html" class="btn btn--accent btn--small" id="ar-demo-link">🖥️ Open Demo Mode (no camera)</a>
-        <a href="index.html" class="btn btn--secondary btn--small">← Back to Home</a>
+        <button type="button" class="btn btn--small" id="ar-retry">Try again</button>
+        <a href="demo.html" class="btn btn--accent btn--small" id="ar-demo-link">Open Demo Mode</a>
+        <a href="index.html" class="btn btn--ghost btn--small">Home</a>
       </div>
     </div>
   </div>
 
-  <!--
-    Mount point for the AR scene. The <a-scene> lives inside the <template>
-    below and is injected here by ar-controller.js ONLY after the camera
-    pre-checks pass. Keeping it inert until then guarantees a single, clean
-    camera acquisition and lets us show precise pre-camera error states.
-  -->
+  <!-- Mount point: the scene template is cloned here only after camera checks pass -->
   <div id="ar-scene-mount"></div>
 
   <!--
     ==========================================================================
-    A-Frame AR Scene (inert template — cloned in once camera checks pass)
+    A-Frame AR Scene (inert template — cloned in by ar-controller.js)
     ==========================================================================
-    - arjs sourceType is the webcam
-    - debugUIEnabled false hides AR.js default debug overlay
-    - a-marker preset="hiro" listens for the STANDARD Hiro marker
-      (the same marker shown on marker.html: public/assets/marker/hiro-marker.jpg)
-    - All 3D content is nested under the marker so it tracks the marker position
+    preset="hiro" matches the printed marker (public/assets/marker/hiro-marker.jpg).
+    All 3D content is nested under the marker so it tracks the marker position.
+    DO NOT change entity IDs — ar-controller.js references them.
   -->
   <template id="ar-scene-template">
     <a-scene
@@ -105,36 +82,13 @@
       renderer="logarithmicDepthBuffer: true; antialias: true"
       vr-mode-ui="enabled: false"
     >
-      <!-- Hiro marker — all AR content is placed as children -->
       <a-marker id="hiro-marker" preset="hiro" smooth="true" smoothCount="5" smoothTolerance="0.01" smoothThreshold="2">
 
-        <!--
-          PLATE — a flat cylinder representing a dinner plate
-          White/light-grey colour, positioned at marker centre
-        -->
-        <a-cylinder
-          id="ar-plate"
-          position="0 0.02 0"
-          radius="0.6"
-          height="0.04"
-          color="#f5f5f5"
-          opacity="0.9"
-          shadow
-        ></a-cylinder>
+        <!-- PLATE -->
+        <a-cylinder id="ar-plate" position="0 0.02 0" radius="0.6" height="0.04" color="#f5f5f5" opacity="0.9" shadow></a-cylinder>
+        <a-torus position="0 0.045 0" radius="0.6" radius-tubular="0.015" color="#bdbdbd" rotation="90 0 0"></a-torus>
 
-        <!-- Plate rim -->
-        <a-torus
-          position="0 0.045 0"
-          radius="0.6"
-          radius-tubular="0.015"
-          color="#bdbdbd"
-          rotation="90 0 0"
-        ></a-torus>
-
-        <!--
-          FOOD PILE — group of small spheres representing leftover food
-          Visibility and scale change based on user actions
-        -->
+        <!-- FOOD PILE -->
         <a-entity id="ar-food-pile" position="0 0.1 0">
           <a-sphere position="0 0 0" radius="0.08" color="#e65100"></a-sphere>
           <a-sphere position="0.1 0 0.05" radius="0.06" color="#f9a825"></a-sphere>
@@ -143,30 +97,21 @@
           <a-sphere position="-0.05 0 -0.05" radius="0.065" color="#ff8f00"></a-sphere>
         </a-entity>
 
-        <!--
-          WASTE PILE — warning state shown when user throws food away
-          Hidden by default; grows / appears on "Throw Away" action
-        -->
+        <!-- WASTE (Throw Away) -->
         <a-entity id="ar-waste" visible="false" position="0 0.1 0">
           <a-box position="0 0.1 0" width="0.3" height="0.3" depth="0.25" color="#5d4037"></a-box>
           <a-sphere position="0 0.3 0" radius="0.06" color="#d32f2f"></a-sphere>
           <a-text value="!" position="0 0.3 0.07" color="#fff" align="center" width="1.5"></a-text>
         </a-entity>
 
-        <!--
-          SAVE CONTAINER — shown when user saves leftovers
-          A simple box representing a food container
-        -->
+        <!-- SAVE -->
         <a-entity id="ar-save" visible="false" position="0.5 0.15 0">
           <a-box width="0.25" height="0.15" depth="0.2" color="#1565c0"></a-box>
           <a-box position="0 0.09 0" width="0.27" height="0.02" depth="0.22" color="#1976d2"></a-box>
           <a-text value="SAVED" position="0 0.2 0.11" color="#1565c0" align="center" width="1.2"></a-text>
         </a-entity>
 
-        <!--
-          SHARE ICON — shown when user chooses to share food
-          Two small figures side by side representing sharing
-        -->
+        <!-- SHARE -->
         <a-entity id="ar-share" visible="false" position="-0.5 0.1 0">
           <a-cylinder position="-0.08 0.05 0" radius="0.04" height="0.15" color="#7b1fa2"></a-cylinder>
           <a-sphere position="-0.08 0.16 0" radius="0.05" color="#7b1fa2"></a-sphere>
@@ -175,10 +120,7 @@
           <a-text value="SHARE" position="0 0.28 0" color="#7b1fa2" align="center" width="1.2"></a-text>
         </a-entity>
 
-        <!--
-          COMPOST — shown when user composts scraps
-          Brown base with a small green plant
-        -->
+        <!-- COMPOST -->
         <a-entity id="ar-compost" visible="false" position="0 0.05 -0.5">
           <a-cylinder position="0 0.03 0" radius="0.2" height="0.06" color="#4e342e"></a-cylinder>
           <a-cone position="0 0.18 0" radius-bottom="0.06" radius-top="0" height="0.2" color="#388e3c"></a-cone>
@@ -186,135 +128,83 @@
           <a-text value="COMPOST" position="0 0.35 0" color="#4e342e" align="center" width="1.2"></a-text>
         </a-entity>
 
-        <!--
-          SDG 12 LABEL — always visible on the marker
-          Positioned above the plate
-        -->
-        <a-text
-          id="ar-sdg-label"
-          value="SDG 12: Responsible\nConsumption & Production"
-          position="0 0.6 0"
-          color="#2e7d32"
-          align="center"
-          width="1.8"
-          anchor="center"
-        ></a-text>
+        <!-- SDG 12 LABEL -->
+        <a-text id="ar-sdg-label" value="SDG 12: Responsible\nConsumption & Production" position="0 0.6 0" color="#2e7d32" align="center" width="1.8" anchor="center"></a-text>
 
-        <!--
-          FACT TEXT — updates when user navigates facts
-          Shows current food-waste statistic in AR space
-        -->
-        <a-text
-          id="ar-fact-text"
-          value="Scan marker to begin"
-          position="0 0.45 0"
-          color="#424242"
-          align="center"
-          width="1.4"
-          anchor="center"
-          wrap-count="35"
-        ></a-text>
+        <!-- FACT TEXT + SOURCE -->
+        <a-text id="ar-fact-text" value="Scan marker to begin" position="0 0.45 0" color="#424242" align="center" width="1.4" anchor="center" wrap-count="35"></a-text>
+        <a-text id="ar-fact-source" value="" position="0 0.33 0" color="#9e9e9e" align="center" width="1.1" anchor="center" wrap-count="48"></a-text>
 
-        <!--
-          FACT SOURCE — shows the citation for the current fact in AR space
-        -->
-        <a-text
-          id="ar-fact-source"
-          value=""
-          position="0 0.33 0"
-          color="#9e9e9e"
-          align="center"
-          width="1.1"
-          anchor="center"
-          wrap-count="48"
-        ></a-text>
-
-        <!--
-          FEEDBACK TEXT — updates after each action
-        -->
-        <a-text
-          id="ar-feedback-text"
-          value=""
-          position="0 -0.3 0.5"
-          color="#1b5e20"
-          align="center"
-          width="1.2"
-          anchor="center"
-          wrap-count="40"
-          visible="false"
-        ></a-text>
+        <!-- FEEDBACK TEXT -->
+        <a-text id="ar-feedback-text" value="" position="0 -0.3 0.5" color="#1b5e20" align="center" width="1.2" anchor="center" wrap-count="40" visible="false"></a-text>
 
       </a-marker>
 
-      <!-- Camera entity required by AR.js -->
       <a-entity camera></a-entity>
     </a-scene>
   </template>
 
   <!--
     ==========================================================================
-    DOM Overlay Panel
+    DOM bottom sheet (hidden until AR is ready)
     ==========================================================================
-    Positioned over the camera feed at the bottom of the screen.
-    Hidden until AR is ready. Contains the learning-flow progress indicator,
-    marker status, fact navigation + source, action buttons, and feedback.
   -->
   <div class="ar-overlay" id="ar-overlay" hidden>
-    <!-- Drag handle to collapse/expand -->
-    <button type="button" class="ar-overlay__toggle" id="overlay-toggle" aria-label="Toggle panel"></button>
+    <button type="button" class="ar-overlay__toggle" id="overlay-toggle" aria-label="Collapse or expand panel"></button>
 
-    <!-- Learning-flow progress indicator -->
-    <ol class="ar-progress" id="ar-progress" aria-label="Learning progress">
-      <li class="ar-progress__step is-active" data-step="1">
-        <span class="ar-progress__num">1</span><span class="ar-progress__label">Scan marker</span>
-      </li>
-      <li class="ar-progress__step" data-step="2">
-        <span class="ar-progress__num">2</span><span class="ar-progress__label">Read facts</span>
-      </li>
-      <li class="ar-progress__step" data-step="3">
-        <span class="ar-progress__num">3</span><span class="ar-progress__label">Choose action</span>
-      </li>
-      <li class="ar-progress__step" data-step="4">
-        <span class="ar-progress__num">4</span><span class="ar-progress__label">Complete quiz</span>
-      </li>
+    <!-- Learning-flow progress (consumed by ar-controller.js) -->
+    <ol class="ar-progress" id="ar-progress" aria-label="Progress">
+      <li class="ar-progress__step is-active" data-step="1"><span class="ar-progress__num">1</span><span class="ar-progress__label">Scan</span></li>
+      <li class="ar-progress__step" data-step="2"><span class="ar-progress__num">2</span><span class="ar-progress__label">Facts</span></li>
+      <li class="ar-progress__step" data-step="3"><span class="ar-progress__num">3</span><span class="ar-progress__label">Action</span></li>
+      <li class="ar-progress__step" data-step="4"><span class="ar-progress__num">4</span><span class="ar-progress__label">Quiz</span></li>
     </ol>
 
-    <!-- Header row: marker status + nav link -->
     <div class="ar-overlay__header">
       <span id="marker-status" class="status-badge status-badge--lost">Marker not detected</span>
-      <a href="index.html" class="btn btn--small btn--secondary" style="width:auto;">Home</a>
+      <a href="index.html" class="btn btn--ghost btn--small">Home</a>
     </div>
 
-    <!-- Current fact -->
-    <div class="fact-display" id="fact-display">Point your camera at the Hiro marker.</div>
-
-    <!-- Fact source label (citation) -->
+    <!-- One fact at a time + small source -->
+    <p class="fact" id="fact-display">Point your phone at the marker.</p>
     <p class="fact-source" id="fact-source"></p>
 
-    <!-- Fact navigation -->
-    <div style="display:flex; gap:0.5rem; margin-bottom:0.5rem;">
-      <button type="button" class="btn btn--small btn--secondary" id="btn-prev-fact" aria-label="Previous fact" style="flex:1;">← Previous</button>
-      <button type="button" class="btn btn--small btn--secondary" id="btn-next-fact" aria-label="Next fact" style="flex:1;">Next →</button>
+    <div class="fact-nav">
+      <button type="button" class="icon-btn" id="btn-prev-fact" aria-label="Previous fact">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+      </button>
+      <span class="fact-nav__count muted text-sm">Facts</span>
+      <button type="button" class="icon-btn" id="btn-next-fact" aria-label="Next fact">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
     </div>
 
-    <!-- Action buttons -->
-    <div class="action-grid">
-      <button type="button" class="btn btn--danger btn--small" id="btn-throw" aria-label="Throw food away">🗑️ Throw Away</button>
-      <button type="button" class="btn btn--small" id="btn-save" aria-label="Save leftovers" style="background:#1565c0;">📦 Save</button>
-      <button type="button" class="btn btn--small" id="btn-share" aria-label="Share surplus food" style="background:#7b1fa2;">🤝 Share</button>
-      <button type="button" class="btn btn--small btn--accent" id="btn-compost" aria-label="Compost scraps">🌱 Compost</button>
+    <!-- Four actions -->
+    <div class="actions">
+      <button type="button" class="action action--throw" id="btn-throw" aria-label="Throw food away">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6.5 7l1 13a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1l1-13"/><path d="M10 11v6M14 11v6"/></svg>
+        <span>Throw</span>
+      </button>
+      <button type="button" class="action action--save" id="btn-save" aria-label="Save leftovers">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8.5 12 4l9 4.5v7L12 20l-9-4.5z"/><path d="M3 8.5 12 13l9-4.5"/><path d="M12 13v7"/></svg>
+        <span>Save</span>
+      </button>
+      <button type="button" class="action action--share" id="btn-share" aria-label="Share surplus food">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="12" r="2.4"/><circle cx="17.5" cy="6" r="2.4"/><circle cx="17.5" cy="18" r="2.4"/><path d="M8.2 10.9 15.3 7.1"/><path d="M8.2 13.1 15.3 16.9"/></svg>
+        <span>Share</span>
+      </button>
+      <button type="button" class="action action--compost" id="btn-compost" aria-label="Compost scraps">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21v-8"/><path d="M12 13c0-3.3 2.4-5 6-5 0 3.3-2.4 5-6 5z"/><path d="M12 11C12 8 9.4 6 6 6c0 3 2.6 5 6 5z"/></svg>
+        <span>Compost</span>
+      </button>
     </div>
 
-    <!-- Feedback message -->
-    <div class="feedback-panel" id="feedback-panel">
-      Choose an action above to see its environmental impact.
-    </div>
+    <!-- Short feedback -->
+    <div class="feedback-panel" id="feedback-panel">Choose what happens next.</div>
 
-    <!-- Link to quiz -->
-    <a href="quiz.html" class="btn btn--secondary btn--small" id="quiz-link" style="margin-top:0.5rem;">📝 Go to Quiz / Reflection</a>
+    <a href="quiz.html" class="btn btn--secondary" id="quiz-link">Quick check →</a>
   </div>
 
-  <!-- AR controller script (module) -->
   <script type="module" src="./src/ar-controller.js"></script>
 </body>
 </html>

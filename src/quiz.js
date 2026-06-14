@@ -143,13 +143,13 @@ function showResult() {
   const total = quizQuestions.length;
   scoreDisplayEl.textContent = `${correctCount} / ${total}`;
 
-  // Contextual message
+  // Contextual message — short and encouraging
   if (correctCount === total) {
-    scoreMessageEl.textContent = 'Excellent! You have a strong understanding of food waste and SDG 12.';
+    scoreMessageEl.textContent = 'Perfect — you know your food-waste facts.';
   } else if (correctCount >= total * 0.6) {
-    scoreMessageEl.textContent = 'Good effort! Review the explanations above to strengthen your understanding.';
+    scoreMessageEl.textContent = 'Nice work. Check the answers to learn more.';
   } else {
-    scoreMessageEl.textContent = 'Keep learning! Try the AR experience again and review the facts.';
+    scoreMessageEl.textContent = 'Keep exploring — revisit the facts and try again.';
   }
 
   quizResultEl.style.display = 'block';
@@ -257,8 +257,7 @@ function showLastAction() {
   }
 
   lastActionNoteEl.innerHTML =
-    `<strong>Your last choice:</strong> ${action.icon} ${action.label}.<br>` +
-    `<span style="font-size:0.85rem;">${action.feedback}</span>`;
+    `<strong>Your last choice: ${action.label}</strong><br>${action.feedback}`;
   lastActionNoteEl.hidden = false;
   debug('Last action recalled:', lastId);
 }

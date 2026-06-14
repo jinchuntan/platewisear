@@ -86,8 +86,7 @@ export const actions = {
     label: 'Throw Away',
     icon: '🗑️',
     ariaLabel: 'Throw food away',
-    feedback:
-      'Throwing away edible food wastes the embedded resources that went into producing it — land, water, labour, transport, energy, and packaging. Consider saving or sharing instead.',
+    feedback: 'Binning edible food wastes the water, land and energy used to grow it.',
     impactLevel: 'negative',
   },
   saveLeftovers: {
@@ -95,8 +94,7 @@ export const actions = {
     label: 'Save Leftovers',
     icon: '📦',
     ariaLabel: 'Save leftovers for later',
-    feedback:
-      'Storing edible leftovers is one of the simplest ways to reduce household food waste. Proper storage extends freshness and prevents unnecessary disposal.',
+    feedback: 'Storing leftovers is the easiest way to cut household food waste.',
     impactLevel: 'positive',
   },
   share: {
@@ -104,8 +102,7 @@ export const actions = {
     label: 'Share',
     icon: '🤝',
     ariaLabel: 'Share surplus food',
-    feedback:
-      'Sharing edible surplus with others — when safe and appropriate — redistributes food that might otherwise go to waste and supports community wellbeing.',
+    feedback: 'Sharing safe surplus feeds people instead of filling bins.',
     impactLevel: 'positive',
   },
   compost: {
@@ -113,8 +110,7 @@ export const actions = {
     label: 'Compost',
     icon: '🌱',
     ariaLabel: 'Compost scraps',
-    feedback:
-      'Composting diverts unavoidable scraps from landfill and returns nutrients to the soil. Remember: edible food should be eaten, saved, or shared before composting is considered.',
+    feedback: 'Compost what can’t be eaten — it returns nutrients to the soil.',
     impactLevel: 'neutral',
   },
 };
