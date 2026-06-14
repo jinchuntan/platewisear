@@ -18,7 +18,7 @@
  */
 
 import { TARGETS, getTargetByIndex, localizedTarget, actionLabel } from './food-targets.js';
-import { saveLastAction, getScanGuideSeen, setScanGuideSeen } from './storage.js';
+import { saveLastAction, saveLastTarget, getScanGuideSeen, setScanGuideSeen } from './storage.js';
 import { initAskMore } from './askmore.js';
 import { debug, isSecureContext, prefersReducedMotion } from './utils.js';
 import { t, initI18n, mountLanguageSwitcher } from './i18n.js';
@@ -246,8 +246,82 @@ function populateExhibits() {
     const actionEl = document.getElementById(`arx-action-${i}`);
     titleEl?.setAttribute('value', lt.title);
     actionEl?.setAttribute('value', `${t('common.bestPrefix') || 'Best: '}${actionLabel(tg.recommendedAction)}`);
+    applyArVariant(tg, titleEl, actionEl);
   });
   debug('Exhibits populated.');
+}
+
+/**
+ * Apply a small, target-specific visual variant to an exhibit card:
+ *  - tint the "Best action" bar with the target's accent colour
+ *  - add a small geometric marker (box / leaf / ring / split / cup) above the card
+ * Keeps the stable card structure; no long text, no heavy assets. The marker is
+ * created once (idempotent) so re-running on language change does not duplicate.
+ */
+function applyArVariant(tg, titleEl, actionEl) {
+  const variant = tg.arVariant;
+  if (!variant) return;
+
+  // Tint the action bar (the plane immediately before the action text).
+  const bar = actionEl && actionEl.previousElementSibling;
+  if (bar && bar.tagName && bar.tagName.toLowerCase() === 'a-plane' && variant.accent) {
+    bar.setAttribute('color', variant.accent);
+  }
+
+  // Add the marker once, parented to the floating label card.
+  const card = titleEl && titleEl.parentElement;
+  if (card && !card.querySelector('.ar-variant')) {
+    const marker = buildVariantMarker(variant);
+    if (marker) card.appendChild(marker);
+  }
+}
+
+// Flat, double-sided material so the accent reads the same under any lighting.
+function flatMat(color) {
+  return `shader: flat; side: double; color: ${color}`;
+}
+
+/** Build a small A-Frame primitive marker for a variant (no fonts, no models). */
+function buildVariantMarker(variant) {
+  const accent = variant.accent || '#c98a2b';
+  let el;
+  switch (variant.shape) {
+    case 'leaf': // compost
+      el = document.createElement('a-triangle');
+      el.setAttribute('scale', '0.075 0.075 0.075');
+      el.setAttribute('material', flatMat(accent));
+      break;
+    case 'ring': // share
+      el = document.createElement('a-ring');
+      el.setAttribute('radius-inner', '0.018');
+      el.setAttribute('radius-outer', '0.033');
+      el.setAttribute('material', flatMat(accent));
+      break;
+    case 'split': { // sort — two small planes in two accents
+      el = document.createElement('a-entity');
+      const left = document.createElement('a-plane');
+      left.setAttribute('width', '0.03'); left.setAttribute('height', '0.05');
+      left.setAttribute('position', '-0.019 0 0'); left.setAttribute('material', flatMat(accent));
+      const right = document.createElement('a-plane');
+      right.setAttribute('width', '0.03'); right.setAttribute('height', '0.05');
+      right.setAttribute('position', '0.019 0 0'); right.setAttribute('material', flatMat(variant.accent2 || '#8a5a2b'));
+      el.appendChild(left); el.appendChild(right);
+      break;
+    }
+    case 'cup': // reuse — small bottle/cup silhouette
+      el = document.createElement('a-cylinder');
+      el.setAttribute('radius', '0.022'); el.setAttribute('height', '0.058');
+      el.setAttribute('material', flatMat(accent));
+      break;
+    case 'box': // save
+    default:
+      el = document.createElement('a-box');
+      el.setAttribute('width', '0.05'); el.setAttribute('height', '0.05'); el.setAttribute('depth', '0.02');
+      el.setAttribute('material', flatMat(accent));
+  }
+  el.classList.add('ar-variant');
+  el.setAttribute('position', '0 0.235 0.02'); // floats just above the label card
+  return el;
 }
 
 /** Read the real targetIndex from the component (not DOM order). */
@@ -277,6 +351,7 @@ function onTargetFound(index) {
   debug('targetFound index:', index, target ? `→ ${target.id} (${target.title})` : '→ (no content mapped)');
   if (!target) { setDebug(`found #${index}\n(no content mapped)`); return; }
   currentTarget = target;
+  saveLastTarget(target.id); // remember the context so Quick Check can lead with it
   setDebug(`found #${index}\n${target.id} — ${target.title}`);
   showSheet(target);
 }

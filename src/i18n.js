@@ -228,6 +228,10 @@ export const translations = {
     },
     quiz: {
       eyebrow: 'Reflection', title: 'Quick check', lede: 'Five short questions.',
+      titleFor: 'Quick check for {x}',
+      contextTarget: 'You last explored {x}. This quick check starts with questions about that exhibit.',
+      contextAi: 'You last used AI Scan. This quick check starts with questions about AI assisted guidance.',
+      contextNone: 'Answer a few questions about food waste and SDG 12.',
       makePledge: 'Make a pledge', pledgePick: "Pick one change you'll try.",
       savePledge: 'Save pledge', savedResults: 'Your saved results',
       noScore: 'No quiz score saved yet.', noPledge: 'No pledge saved yet.', retry: 'Retry',
@@ -459,6 +463,10 @@ export const translations = {
     },
     quiz: {
       eyebrow: 'Renungan', title: 'Semakan pantas', lede: 'Lima soalan ringkas.',
+      titleFor: 'Semakan pantas untuk {x}',
+      contextTarget: 'Anda baru meneroka {x}. Semakan pantas ini bermula dengan soalan tentang pameran itu.',
+      contextAi: 'Anda baru menggunakan Imbas AI. Semakan pantas ini bermula dengan soalan tentang panduan berbantukan AI.',
+      contextNone: 'Jawab beberapa soalan tentang sisa makanan dan SDG 12.',
       makePledge: 'Buat ikrar', pledgePick: 'Pilih satu perubahan yang akan anda cuba.',
       savePledge: 'Simpan ikrar', savedResults: 'Keputusan tersimpan anda',
       noScore: 'Tiada skor kuiz disimpan lagi.', noPledge: 'Tiada ikrar disimpan lagi.', retry: 'Cuba semula',
@@ -690,6 +698,10 @@ export const translations = {
     },
     quiz: {
       eyebrow: '反思', title: '快速测验', lede: '五道简短的题目。',
+      titleFor: '{x}快速测验',
+      contextTarget: '你刚刚了解了{x}。本次快速测验会先从该展品的相关问题开始。',
+      contextAi: '你刚刚使用了 AI 扫描。本次快速测验会先从 AI 辅助建议的相关问题开始。',
+      contextNone: '回答几个关于食物浪费和 SDG 12 的问题。',
       makePledge: '做出承诺', pledgePick: '选择一个你愿意尝试的改变。',
       savePledge: '保存承诺', savedResults: '你保存的结果',
       noScore: '尚未保存测验成绩。', noPledge: '尚未保存承诺。', retry: '重试',
@@ -842,6 +854,80 @@ const dataTranslations = {
       'Saya akan berkongsi lebihan yang boleh dimakan apabila selamat.',
       'Saya akan mengkompos sisa yang tidak dapat dielak.',
     ],
+    targetQuizQuestions: {
+      'leftover-rice': [
+        {
+          question: 'Apakah tindakan pertama yang biasanya lebih baik untuk sisa nasi yang boleh dimakan?',
+          options: ['Buang serta-merta', 'Simpan dengan selamat dan makan segera', 'Kompos sebelum menyemak', 'Abaikan'],
+          explanation: 'Lebihan yang boleh dimakan patut disimpan dahulu jika ia disimpan dengan selamat. PlateNudge tidak boleh mengesahkan keselamatan makanan, jadi tempoh simpanan dan bau tetap penting.',
+        },
+        {
+          question: 'Mengapa membazirkan nasi yang dimasak itu penting?',
+          options: ['Ia hanya membazirkan nasi itu sahaja', 'Ia juga membazirkan air, tenaga, tenaga kerja, pengangkutan, dan pembungkusan', 'Ia tiada kesan yang lebih luas', 'Ia hanya masalah penglihatan'],
+          explanation: 'Makanan yang dimasak membawa sumber terkandung. Membuangnya membazirkan lebih daripada makanan di atas pinggan.',
+        },
+      ],
+      'fruit-peels': [
+        {
+          question: 'Bilakah pengkomposan paling sesuai?',
+          options: ['Untuk sisa tidak boleh dimakan yang tidak dapat dielak', 'Untuk semua lebihan yang boleh dimakan', 'Untuk lebihan makanan yang tertutup', 'Untuk setiap bekas minuman'],
+          explanation: 'Pengkomposan berguna untuk sisa seperti kulit dan jangat, manakala makanan yang boleh dimakan patut dimakan, disimpan, atau dikongsi dahulu.',
+        },
+        {
+          question: 'Mengapa kulit buah contoh kompos yang baik?',
+          options: ['Ia biasanya sisa yang tidak dapat dielak', 'Ia sentiasa selamat untuk dikongsi', 'Ia sama seperti lebihan yang dimasak', 'Ia patut sentiasa dihantar ke tapak pelupusan'],
+          explanation: 'Kulit dan jangat selalunya tidak boleh dimakan, jadi pengkomposan boleh mengembalikan nutrien kepada tanah apabila kemudahan ada.',
+        },
+      ],
+      'bread-waste': [
+        {
+          question: 'Apakah yang biasanya lebih baik daripada membuang roti lebihan yang boleh dimakan?',
+          options: ['Kongsi atau bekukannya jika sesuai', 'Buang dahulu', 'Kompos setiap keping', 'Biarkan tidak bertutup'],
+          explanation: 'Lebihan yang boleh dimakan paling baik digunakan sebelum menjadi sisa. Roti selalunya boleh dikongsi atau dibekukan, tetapi roti berkulat tidak boleh dimakan atau dikongsi.',
+        },
+        {
+          question: 'Apakah yang patut anda semak sebelum berkongsi roti?',
+          options: ['Sama ada ia jelas selamat dan tidak berkulat', 'Sama ada aplikasi berkata ia pasti selamat', 'Sama ada ia kelihatan mahal', 'Sama ada ia sudah berada di dalam tong sampah'],
+          explanation: 'PlateNudge tidak boleh mengesahkan keselamatan makanan. Jangan kongsi makanan yang meragukan atau berkulat.',
+        },
+      ],
+      'mixed-leftovers': [
+        {
+          question: 'Apakah yang patut anda lakukan sebelum mengkompos lebihan bercampur?',
+          options: ['Asingkan bahagian yang boleh dimakan daripada sisa sebenar', 'Kompos semuanya serta-merta', 'Abaikan bahagian yang boleh dimakan', 'Campurkan dengan pembungkusan'],
+          explanation: 'Gunakan bahagian yang boleh dimakan dahulu. Pengkomposan patut untuk sisa sebenar yang tidak boleh dimakan, disimpan, atau dikongsi.',
+        },
+        {
+          question: 'Mengapa pengasingan sisa bercampur membantu?',
+          options: ['Ia membantu memulihkan makanan yang boleh dimakan dan mengkompos sisa yang tidak dapat dielak', 'Ia menjadikan semua makanan selamat', 'Ia menghapuskan keperluan SDG 12', 'Ia mencipta data karbon yang tepat'],
+          explanation: 'Pengasingan menyokong keputusan yang lebih baik kerana makanan yang boleh dimakan dan sisa yang tidak boleh dimakan memerlukan tindakan berbeza.',
+        },
+      ],
+      'drink-waste': [
+        {
+          question: 'Apakah tindakan pencegahan yang baik untuk sisa minuman?',
+          options: ['Beli atau buat hanya apa yang akan anda habiskan', 'Sentiasa beli minuman yang lebih besar', 'Buang minuman yang belum dibuka', 'Abaikan pembungkusan'],
+          explanation: 'Mencegah lebihan biasanya lebih baik daripada menangani sisa kemudian.',
+        },
+        {
+          question: 'Item minuman manakah yang biasanya lebih sesuai untuk dikongsi?',
+          options: ['Minuman tertutup yang belum dibuka', 'Minuman yang dibuka dan dibiarkan berjam-jam', 'Cawan pakai buang yang kotor', 'Minuman dengan kandungan yang tidak diketahui'],
+          explanation: 'Perkongsian patut terhad kepada lebihan yang tertutup atau jelas sesuai. PlateNudge tidak boleh mengesahkan keselamatan makanan.',
+        },
+      ],
+      'ai-scan': [
+        {
+          question: 'Apakah yang dianalisis oleh Imbas AI?',
+          options: ['Satu tangkapan kamera', 'Aliran penjejakan langsung yang berterusan', 'Status keselamatan makanan yang tepat', 'Berat sisa yang tepat'],
+          explanation: 'Imbas AI menganalisis satu tangkapan dan mencipta pameran pembelajaran. Ia tidak melakukan penjejakan objek langsung.',
+        },
+        {
+          question: 'Apakah yang patut anda ingat tentang panduan AI?',
+          options: ['Ia tidak boleh mengesahkan keselamatan makanan', 'Ia sentiasa tahu sama ada makanan selamat', 'Ia memberi nilai karbon yang tepat', 'Ia menggantikan akal fikiran'],
+          explanation: 'Panduan berbantukan AI hanyalah alat bantu pembelajaran. Periksa tempoh simpanan, bau, pencemaran, dan panduan keselamatan makanan tempatan.',
+        },
+      ],
+    },
   },
   'zh-CN': {
     targets: {
@@ -949,15 +1035,91 @@ const dataTranslations = {
       '在安全的情况下，我会分享多余的食物。',
       '我会把无法避免的残渣拿去堆肥。',
     ],
+    targetQuizQuestions: {
+      'leftover-rice': [
+        {
+          question: '对于可食用的剩饭，通常更好的第一步行动是什么？',
+          options: ['立即丢弃', '安全保存并尽快食用', '先堆肥再检查', '置之不理'],
+          explanation: '可食用的剩余应在安全保存的前提下先保存起来。PlateNudge 无法确认食物是否安全，因此存放时间和气味仍然重要。',
+        },
+        {
+          question: '为什么浪费熟米饭很重要？',
+          options: ['它只浪费了米饭本身', '它还浪费了水、能源、人力、运输和包装', '它没有更广泛的影响', '它只是外观上的问题'],
+          explanation: '熟食含有内含资源。丢弃它浪费的不只是盘中的食物。',
+        },
+      ],
+      'fruit-peels': [
+        {
+          question: '什么时候最适合堆肥？',
+          options: ['无法避免、不可食用的残渣', '所有可食用的剩余', '密封的余量食物', '每一个饮料容器'],
+          explanation: '堆肥适用于果皮和外皮等残渣，而可食用的食物应先食用、保存或分享。',
+        },
+        {
+          question: '为什么果皮是很好的堆肥例子？',
+          options: ['它们通常是无法避免的残渣', '它们总是可以安全分享', '它们和熟剩菜一样', '它们应该总是送往垃圾填埋场'],
+          explanation: '果皮和外皮通常不可食用，因此在有设施时，堆肥能把养分归还给土壤。',
+        },
+      ],
+      'bread-waste': [
+        {
+          question: '比起把可食用的余量面包丢进垃圾桶，通常更好的做法是什么？',
+          options: ['如果合适就分享或冷冻', '先把它丢掉', '把每一片都拿去堆肥', '不加遮盖地放着'],
+          explanation: '可食用的余量最好在变成废弃物之前使用。面包通常可以分享或冷冻，但发霉的面包不应食用或分享。',
+        },
+        {
+          question: '分享面包之前你应该检查什么？',
+          options: ['它是否明显安全且没有发霉', '应用是否说它一定安全', '它看起来是否昂贵', '它是否已经在垃圾桶里'],
+          explanation: 'PlateNudge 无法确认食物是否安全。请勿分享可疑或发霉的食物。',
+        },
+      ],
+      'mixed-leftovers': [
+        {
+          question: '在把混合剩菜拿去堆肥之前，你应该做什么？',
+          options: ['把可食用的部分与真正的残渣分开', '立即把全部拿去堆肥', '忽略可食用的部分', '把它和包装混在一起'],
+          explanation: '先利用可食用的部分。堆肥应用于无法食用、保存或分享的真正残渣。',
+        },
+        {
+          question: '为什么对混合垃圾进行分类有帮助？',
+          options: ['它有助于回收可食用的食物并堆肥无法避免的残渣', '它能让所有食物变得安全', '它消除了对 SDG 12 的需要', '它能生成精确的碳数据'],
+          explanation: '分类有助于做出更好的决定，因为可食用的食物和不可食用的残渣需要不同的处理方式。',
+        },
+      ],
+      'drink-waste': [
+        {
+          question: '对于饮料浪费，好的预防行动是什么？',
+          options: ['只购买或制作你会喝完的量', '总是购买更大份的饮料', '丢弃未开封的饮料', '忽略包装'],
+          explanation: '预防多余通常比事后处理浪费更好。',
+        },
+        {
+          question: '哪一种饮料通常更适合分享？',
+          options: ['一份密封未开封的饮料', '开封后放置了数小时的饮料', '一个脏的一次性杯子', '一份内容不明的饮料'],
+          explanation: '分享应仅限于密封或明显合适的余量。PlateNudge 无法确认食物是否安全。',
+        },
+      ],
+      'ai-scan': [
+        {
+          question: 'AI 扫描会分析什么？',
+          options: ['一张相机快照', '持续的实时追踪画面', '精确的食品安全状态', '废弃物的精确重量'],
+          explanation: 'AI 扫描分析一张快照并生成学习卡片。它不进行实时物体追踪。',
+        },
+        {
+          question: '关于 AI 建议，你应该记住什么？',
+          options: ['它无法确认食物是否安全', '它总是知道食物是否安全', '它会给出精确的碳数值', '它可以取代常识'],
+          explanation: 'AI 辅助建议只是学习辅助。请检查存放时间、气味、是否受污染，并参考当地的食品安全指南。',
+        },
+      ],
+    },
   },
 };
 
 // Merge data translations into the main table (keeps en pointing at sources).
 translations.ms.targets = dataTranslations.ms.targets;
 translations.ms.quizQuestions = dataTranslations.ms.quizQuestions;
+translations.ms.targetQuizQuestions = dataTranslations.ms.targetQuizQuestions;
 translations.ms.pledgeOptions = dataTranslations.ms.pledgeOptions;
 translations['zh-CN'].targets = dataTranslations['zh-CN'].targets;
 translations['zh-CN'].quizQuestions = dataTranslations['zh-CN'].quizQuestions;
+translations['zh-CN'].targetQuizQuestions = dataTranslations['zh-CN'].targetQuizQuestions;
 translations['zh-CN'].pledgeOptions = dataTranslations['zh-CN'].pledgeOptions;
 
 // ===========================================================================

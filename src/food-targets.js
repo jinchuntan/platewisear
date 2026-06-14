@@ -73,6 +73,8 @@ export function localizedTarget(target) {
  * @property {string} askMoreTitle
  * @property {string} askMoreExplanation
  * @property {string} safetyNote
+ * @property {{theme:string, accent:string, accent2?:string, shape:string}} arVariant
+ *           Small AR-card theming: accent colour + a simple primitive marker.
  */
 
 /** @type {FoodTarget[]} */
@@ -98,6 +100,7 @@ export const TARGETS = [
     askMoreExplanation:
       'Wasted cooked food represents embedded resources such as water, energy, labour, transport, and packaging.',
     safetyNote: 'The app cannot confirm food safety. Check smell, storage time, and contamination. Cooked rice in particular should be cooled quickly, refrigerated, and reheated only once.',
+    arVariant: { theme: 'save', accent: '#1f6e47', shape: 'box' },
   },
   {
     targetIndex: 1,
@@ -120,6 +123,7 @@ export const TARGETS = [
     askMoreExplanation:
       'Composting is the right step for genuinely inedible scraps. It keeps organic matter out of landfill (where it releases methane) and returns nutrients to the soil.',
     safetyNote: 'Compost unavoidable scraps only — edible food should be eaten, saved, or shared first.',
+    arVariant: { theme: 'compost', accent: '#5b7f2f', shape: 'leaf' },
   },
   {
     targetIndex: 2,
@@ -142,6 +146,7 @@ export const TARGETS = [
     askMoreExplanation:
       'Throwing away edible surplus wastes the water, land, energy, and labour used to produce it. Preventing and redistributing surplus sits at the top of the food-waste hierarchy.',
     safetyNote: 'The app cannot confirm food safety. Do not share or eat bread showing mould.',
+    arVariant: { theme: 'share', accent: '#b5832a', shape: 'ring' },
   },
   {
     targetIndex: 3,
@@ -164,6 +169,7 @@ export const TARGETS = [
     askMoreExplanation:
       'Much plate and prep waste is avoidable. Planning portions, using edible trimmings, and composting only the rest cut waste at the source — the cheapest, most effective step.',
     safetyNote: 'The app cannot confirm food safety. When in doubt, do not eat or share questionable food.',
+    arVariant: { theme: 'sort', accent: '#2f7e7e', accent2: '#8a5a2b', shape: 'split' },
   },
   {
     targetIndex: 4,
@@ -186,6 +192,7 @@ export const TARGETS = [
     askMoreExplanation:
       'Drinks carry embedded water and ingredients, and single-use cups add packaging waste. Buying only what you finish and using reusables cuts both.',
     safetyNote: 'The app cannot confirm drink safety. Discard drinks left out too long.',
+    arVariant: { theme: 'reuse', accent: '#2f6f9e', shape: 'cup' },
   },
 ];
 

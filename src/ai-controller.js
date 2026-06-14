@@ -23,7 +23,7 @@
 
 import { t, getLocale, initI18n, mountLanguageSwitcher } from './i18n.js';
 import { actionLabel } from './food-targets.js';
-import { saveLastAction, getAiGuideSeen, setAiGuideSeen } from './storage.js';
+import { saveLastAction, saveLastTarget, getAiGuideSeen, setAiGuideSeen } from './storage.js';
 import { normalizeResult } from './ai-schema.js';
 import { renderAiResult } from './ai-result-renderer.js';
 import { debug, isSecureContext, prefersReducedMotion } from './utils.js';
@@ -405,6 +405,9 @@ function showResult(result) {
   currentResult = result;
   resultShown = true;
   stopCamera(); // the snapshot is already captured; free the camera
+
+  // Remember the AI Scan context (text only) so Quick Check leads with AI questions.
+  saveLastTarget('ai-scan');
 
   hideAllOverlays();
   statusScreen.hidden = true;

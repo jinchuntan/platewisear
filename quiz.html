@@ -16,8 +16,9 @@
   <main class="page stack">
     <header>
       <span class="eyebrow" data-i18n="quiz.eyebrow">Reflection</span>
-      <h1 class="mt-2" data-i18n="quiz.title">Quick check</h1>
-      <p class="lede" data-i18n="quiz.lede">Five short questions.</p>
+      <h1 class="mt-2" id="quiz-title" data-i18n="quiz.title">Quick check</h1>
+      <!-- Learning context line — set by quiz.js from the last scanned/selected target -->
+      <p class="lede" id="quiz-context-note" data-i18n="quiz.contextNone">Answer a few questions about food waste and SDG 12.</p>
     </header>
 
     <!-- Recall of the last AR / Demo action (shown via JS if one is saved) -->

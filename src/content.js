@@ -175,6 +175,101 @@ export const quizQuestions = [
 ];
 
 // ---------------------------------------------------------------------------
+// Target-specific quiz questions (2 per learning context)
+//
+// The Quick Check blends 2 of these with 3 general questions, so each scan or
+// selection leads to a slightly more contextual quiz. English lives here;
+// Malay + Chinese live in src/i18n.js under `targetQuizQuestions`. Keep the
+// option ORDER identical across languages — correctIndex is language-neutral.
+// ---------------------------------------------------------------------------
+export const targetQuizQuestions = {
+  'leftover-rice': [
+    {
+      question: 'What is usually the better first action for edible leftover rice?',
+      options: ['Throw it away immediately', 'Store it safely and eat it soon', 'Compost it before checking', 'Ignore it'],
+      correctIndex: 1,
+      explanation: 'Edible leftovers should be saved first when they have been stored safely. PlateNudge cannot confirm food safety, so storage time and smell still matter.',
+    },
+    {
+      question: 'Why does wasting cooked rice matter?',
+      options: ['It only wastes the rice itself', 'It also wastes water, energy, labour, transport, and packaging', 'It has no wider impact', 'It is only a visual problem'],
+      correctIndex: 1,
+      explanation: 'Cooked food carries embedded resources. Throwing it away wastes more than the food on the plate.',
+    },
+  ],
+  'fruit-peels': [
+    {
+      question: 'When is composting most suitable?',
+      options: ['For unavoidable inedible scraps', 'For all edible leftovers', 'For sealed surplus food', 'For every drink container'],
+      correctIndex: 0,
+      explanation: 'Composting is useful for scraps such as peels and skins, while edible food should be eaten, saved, or shared first.',
+    },
+    {
+      question: 'Why are fruit peels a good compost example?',
+      options: ['They are usually unavoidable scraps', 'They are always safe to share', 'They are the same as cooked leftovers', 'They should always go to landfill'],
+      correctIndex: 0,
+      explanation: 'Peels and skins are often inedible, so composting can return nutrients to the soil when facilities exist.',
+    },
+  ],
+  'bread-waste': [
+    {
+      question: 'What is usually better than binning edible surplus bread?',
+      options: ['Share it or freeze it if it is suitable', 'Throw it away first', 'Compost every slice', 'Leave it uncovered'],
+      correctIndex: 0,
+      explanation: 'Edible surplus is best used before it becomes waste. Bread can often be shared or frozen, but mouldy bread should not be eaten or shared.',
+    },
+    {
+      question: 'What should you check before sharing bread?',
+      options: ['Whether it is clearly safe and not mouldy', 'Whether the app says it is definitely safe', 'Whether it looks expensive', 'Whether it is already in the bin'],
+      correctIndex: 0,
+      explanation: 'PlateNudge cannot confirm food safety. Do not share questionable or mouldy food.',
+    },
+  ],
+  'mixed-leftovers': [
+    {
+      question: 'What should you do before composting mixed leftovers?',
+      options: ['Separate edible parts from true scraps', 'Compost everything immediately', 'Ignore the edible parts', 'Mix it with packaging'],
+      correctIndex: 0,
+      explanation: 'Use edible portions first. Composting should be for genuine scraps that cannot be eaten, saved, or shared.',
+    },
+    {
+      question: 'Why does sorting mixed waste help?',
+      options: ['It helps recover edible food and compost unavoidable scraps', 'It makes all food safe', 'It removes the need for SDG 12', 'It creates exact carbon data'],
+      correctIndex: 0,
+      explanation: 'Sorting supports better decisions because edible food and inedible scraps need different actions.',
+    },
+  ],
+  'drink-waste': [
+    {
+      question: 'What is a good prevention action for drink waste?',
+      options: ['Buy or make only what you will finish', 'Always buy larger drinks', 'Throw away unopened drinks', 'Ignore packaging'],
+      correctIndex: 0,
+      explanation: 'Preventing surplus is usually better than dealing with waste later.',
+    },
+    {
+      question: 'Which drink item is usually more suitable to share?',
+      options: ['A sealed unopened drink', 'An opened drink left out for hours', 'A dirty disposable cup', 'A drink with unknown contents'],
+      correctIndex: 0,
+      explanation: 'Sharing should be limited to sealed or clearly suitable surplus. PlateNudge cannot confirm food safety.',
+    },
+  ],
+  'ai-scan': [
+    {
+      question: 'What does AI Scan analyse?',
+      options: ['One camera snapshot', 'A continuous live tracking stream', 'The exact food safety status', 'The exact weight of the waste'],
+      correctIndex: 0,
+      explanation: 'AI Scan analyses one snapshot and creates a learning exhibit. It does not perform live object tracking.',
+    },
+    {
+      question: 'What should you remember about AI guidance?',
+      options: ['It cannot confirm food safety', 'It always knows if food is safe', 'It gives exact carbon values', 'It replaces common sense'],
+      correctIndex: 0,
+      explanation: 'AI assisted guidance is only a learning aid. Check storage time, smell, contamination, and local food safety guidance.',
+    },
+  ],
+};
+
+// ---------------------------------------------------------------------------
 // Pledge options for the reflection section
 // ---------------------------------------------------------------------------
 export const pledgeOptions = [
@@ -223,6 +318,42 @@ export function getQuizQuestions() {
     options: tr[i]?.options ?? q.options,
     explanation: tr[i]?.explanation ?? q.explanation,
   }));
+}
+
+/**
+ * Target-specific questions for a context id, localised (or null if none).
+ * Mirrors getQuizQuestions: English from this module, ms/zh from i18n, with the
+ * language-neutral correctIndex preserved.
+ * @param {string} targetId
+ */
+export function getTargetQuizQuestions(targetId) {
+  const base = targetQuizQuestions[targetId];
+  if (!Array.isArray(base)) return null;
+  const tr = t(`targetQuizQuestions.${targetId}`);
+  return base.map((q, i) => {
+    const trq = Array.isArray(tr) ? tr[i] : null;
+    return {
+      ...q,
+      question: trq?.question ?? q.question,
+      options: trq?.options ?? q.options,
+      explanation: trq?.explanation ?? q.explanation,
+    };
+  });
+}
+
+/**
+ * Build the Quick Check for a learning context: 2 target-specific questions
+ * followed by 3 general SDG 12 questions. Falls back to the full general quiz
+ * when there is no known target. Stays at ~5 questions so the quiz stays short.
+ * @param {string|null} targetId
+ */
+export function getBlendedQuiz(targetId) {
+  const general = getQuizQuestions();
+  const targetQs = targetId ? getTargetQuizQuestions(targetId) : null;
+  if (!targetQs || !targetQs.length) return general;
+  // General subset: SDG 12 alignment, embedded resources, household share.
+  const generalSubset = [general[0], general[3], general[4]].filter(Boolean);
+  return [...targetQs, ...generalSubset];
 }
 
 /** Pledge option strings for the active locale. */

@@ -8,6 +8,7 @@
  *   platewise_quizScore   — number (0–5)
  *   platewise_pledge      — string (pledge text)
  *   platewise_lastAction  — string (action id)
+ *   platewise_lastTarget  — string (target id, or "ai-scan")
  */
 
 const PREFIX = 'platewise_';
@@ -74,6 +75,35 @@ export function getLastAction() {
 export function saveLastAction(actionId) {
   localStorage.setItem(PREFIX + 'lastAction', actionId);
   console.log('[PlateNudge] Last action saved:', actionId);
+}
+
+// ---------------------------------------------------------------------------
+// Last learning context — which exhibit the user most recently scanned,
+// selected in Demo, or got from AI Scan. The Quick Check reads this to lead
+// with target-specific questions. We store only a short id (never an image).
+//   curated / demo → 'leftover-rice' | 'fruit-peels' | 'bread-waste' |
+//                    'mixed-leftovers' | 'drink-waste'
+//   AI Scan        → 'ai-scan'
+// ---------------------------------------------------------------------------
+
+/**
+ * Remember the most recent learning context for the Quick Check.
+ * @param {string} targetId
+ */
+export function saveLastTarget(targetId) {
+  if (!targetId) return;
+  localStorage.setItem(PREFIX + 'lastTarget', targetId);
+  console.log('[PlateNudge] Last target saved:', targetId);
+}
+
+/** @returns {string|null} the last target id, or null if none. */
+export function getLastTarget() {
+  return localStorage.getItem(PREFIX + 'lastTarget');
+}
+
+/** Forget the last learning context (e.g. to reset to the general quiz). */
+export function clearLastTarget() {
+  localStorage.removeItem(PREFIX + 'lastTarget');
 }
 
 // ---------------------------------------------------------------------------

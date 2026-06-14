@@ -8,7 +8,7 @@
  */
 
 import { TARGETS, localizedTarget, actionLabel } from './food-targets.js';
-import { saveLastAction } from './storage.js';
+import { saveLastAction, saveLastTarget } from './storage.js';
 import { initAskMore } from './askmore.js';
 import { debug } from './utils.js';
 import { t } from './i18n.js';
@@ -106,6 +106,7 @@ function selectTarget(index) {
   if (!target) return;
   currentTarget = target;
   lastActionId = null;
+  saveLastTarget(target.id); // remember the context so Quick Check can lead with it
   debug('Demo selected:', target.id);
 
   renderStage();
