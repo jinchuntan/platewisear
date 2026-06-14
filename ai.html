@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="PlateWise AR — AI Photo Mode (optional, AI-assisted food-waste guidance)" />
+  <meta name="theme-color" content="#1f6e47" />
+  <title data-i18n="ai.title">PlateWise AR — AI Photo Mode</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="./assets/icons/icon-192.svg" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="stylesheet" href="./src/styles.css" />
+</head>
+<body>
+
+  <main class="page stack">
+    <header class="center">
+      <span class="chip chip--accent" data-i18n="ai.cta">AI photo mode</span>
+      <h1 class="mt-3" data-i18n="ai.title">AI Photo Mode</h1>
+      <p class="lede" data-i18n="ai.intro">Upload or take a photo of food waste. PlateWise AI describes what it sees and suggests an action. It cannot confirm food safety.</p>
+    </header>
+
+    <!-- Always-visible disclaimer -->
+    <p class="ai-disclaimer" data-i18n="ai.disclaimer">AI-assisted guidance only. PlateWise cannot confirm food safety.</p>
+
+    <!-- 1. Upload / capture -->
+    <section id="ai-upload" class="stack">
+      <label class="ai-drop" for="ai-file">
+        <svg class="ai-drop__ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M5 20h14"/></svg>
+        <span data-i18n="ai.chooseLabel">Choose or take a photo</span>
+      </label>
+      <input type="file" id="ai-file" accept="image/*" hidden />
+
+      <div class="ai-preview" id="ai-preview" hidden>
+        <img id="ai-preview-img" alt="" />
+      </div>
+
+      <p class="ai-error" id="ai-error" hidden></p>
+
+      <button type="button" class="btn" id="ai-analyse" data-i18n="ai.analyse" disabled>Analyse photo</button>
+      <button type="button" class="btn btn--ghost btn--small" id="ai-change" hidden data-i18n="ai.changePhoto">Change photo</button>
+
+      <p class="linkrow">
+        <a href="ar.html" data-i18n="hero.startScan">Start scan</a>
+        <span aria-hidden="true" class="muted">·</span>
+        <a href="demo.html" data-i18n="hero.tryDemo">Try demo</a>
+      </p>
+    </section>
+
+    <!-- 2. Loading -->
+    <section id="ai-loading" class="ai-loading center" hidden>
+      <div class="ar-status__spinner" aria-hidden="true"></div>
+      <p class="ai-loading__title" data-i18n="ai.analysing">Analysing photo…</p>
+      <p class="muted text-sm" data-i18n="ai.loadingHint">Looking for visible food-waste clues…</p>
+    </section>
+
+    <!-- 3. Result -->
+    <section id="ai-result" class="stack" hidden>
+      <div class="exhibit-preview">
+        <img id="ai-result-img" alt="" />
+        <div class="exhibit-card">
+          <p class="sheet__eyebrow" data-i18n="ai.aiExhibit">AI exhibit</p>
+          <h2 class="exhibit-card__title" id="ai-title">—</h2>
+          <span class="chip">SDG 12</span>
+          <span class="badge" id="ai-best">Best: —</span>
+        </div>
+      </div>
+
+      <div class="card stack">
+        <dl class="ai-summary">
+          <div class="ai-summary__row">
+            <dt data-i18n="ai.visibleItems">Visible items</dt>
+            <dd id="ai-visible">—</dd>
+          </div>
+          <div class="ai-summary__row" id="ai-uncertain-row" hidden>
+            <dt data-i18n="ai.uncertainItems">Uncertain items</dt>
+            <dd id="ai-uncertain">—</dd>
+          </div>
+          <div class="ai-summary__row">
+            <dt data-i18n="ai.confidence">Confidence</dt>
+            <dd><span class="ai-conf" id="ai-confidence">—</span></dd>
+          </div>
+          <div class="ai-summary__row">
+            <dt data-i18n="ai.whyAction">Why this action</dt>
+            <dd id="ai-reason">—</dd>
+          </div>
+        </dl>
+
+        <p class="ai-low-note" id="ai-low-note" data-i18n="ai.lowConfidenceNote" hidden>Low confidence — please double-check before acting.</p>
+
+        <p class="fact" id="ai-fact">—</p>
+        <p class="fact-source" id="ai-fact-source"></p>
+
+        <div class="actions" id="ai-actions">
+          <button type="button" class="action action--throw" data-action="throwAway" data-i18n-aria-label="actions.throwAway.aria" aria-label="Throw food away">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6.5 7l1 13a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1l1-13"/><path d="M10 11v6M14 11v6"/></svg>
+            <span data-i18n="actions.throwAway.short">Throw</span>
+          </button>
+          <button type="button" class="action action--save" data-action="saveLeftovers" data-i18n-aria-label="actions.saveLeftovers.aria" aria-label="Save leftovers">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8.5 12 4l9 4.5v7L12 20l-9-4.5z"/><path d="M3 8.5 12 13l9-4.5"/><path d="M12 13v7"/></svg>
+            <span data-i18n="actions.saveLeftovers.short">Save</span>
+          </button>
+          <button type="button" class="action action--share" data-action="share" data-i18n-aria-label="actions.share.aria" aria-label="Share surplus food">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="12" r="2.4"/><circle cx="17.5" cy="6" r="2.4"/><circle cx="17.5" cy="18" r="2.4"/><path d="M8.2 10.9 15.3 7.1"/><path d="M8.2 13.1 15.3 16.9"/></svg>
+            <span data-i18n="actions.share.short">Share</span>
+          </button>
+          <button type="button" class="action action--compost" data-action="compost" data-i18n-aria-label="actions.compost.aria" aria-label="Compost scraps">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21v-8"/><path d="M12 13c0-3.3 2.4-5 6-5 0 3.3-2.4 5-6 5z"/><path d="M12 11C12 8 9.4 6 6 6c0 3 2.6 5 6 5z"/></svg>
+            <span data-i18n="actions.compost.short">Compost</span>
+          </button>
+        </div>
+
+        <div class="feedback-panel" id="ai-feedback" data-i18n="scan.chooseNext">Choose what happens next.</div>
+
+        <!-- Prominent safety note (not hidden in small text) -->
+        <div class="ai-safety">
+          <h3 data-i18n="scan.askSafety">Safety note</h3>
+          <p id="ai-safety"></p>
+        </div>
+
+        <div class="sheet__foot">
+          <button type="button" class="btn btn--secondary btn--small" id="ai-askmore" data-i18n="scan.askMore">Ask more</button>
+          <a href="quiz.html" class="btn btn--secondary btn--small" data-i18n="scan.quickCheck">Quick check →</a>
+        </div>
+        <div class="btn-row">
+          <a href="ar.html" class="btn btn--ghost btn--small" data-i18n="ai.tryScan">Start curated AR scan</a>
+          <a href="index.html" class="btn btn--ghost btn--small" data-i18n="scan.backHome">← Back to home</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Fallback / unavailable -->
+    <section id="ai-fallback" class="card center stack" hidden>
+      <p id="ai-fallback-msg"></p>
+      <a href="ar.html" class="btn" data-i18n="hero.startScan">Start scan</a>
+      <a href="demo.html" class="btn btn--secondary" data-i18n="hero.tryDemo">Try demo</a>
+      <button type="button" class="btn btn--ghost btn--small" id="ai-retry" data-i18n="ai.changePhoto">Change photo</button>
+    </section>
+  </main>
+
+  <!-- Ask-More drawer (AI variant; populated by ai-controller.js) -->
+  <div class="drawer" id="askmore" hidden role="dialog" aria-modal="true" aria-labelledby="askmore-title">
+    <div class="drawer__backdrop" id="askmore-backdrop"></div>
+    <div class="drawer__panel">
+      <button type="button" class="drawer__close" id="askmore-close" data-i18n-aria-label="common.close" aria-label="Close">✕</button>
+      <h2 class="drawer__title" id="askmore-title" data-i18n="ai.aiExhibit">AI exhibit</h2>
+      <div class="drawer__section"><h3 data-i18n="scan.askLook">What am I looking at?</h3><p id="askmore-look"></p></div>
+      <div class="drawer__section"><h3 data-i18n="scan.askWhy">Why it matters</h3><p id="askmore-why"></p></div>
+      <div class="drawer__section"><h3 data-i18n="scan.askDo">What should I do?</h3><p id="askmore-do"></p></div>
+      <div class="drawer__section" id="askmore-followups-wrap" hidden>
+        <h3 data-i18n="ai.followUps">You might ask</h3>
+        <ul class="askmore-followups" id="askmore-followups"></ul>
+        <div class="askmore-qrow">
+          <input type="text" id="askmore-q" class="askmore-input" data-i18n-placeholder="ai.askPlaceholder" placeholder="Ask a question…" maxlength="200" />
+          <button type="button" class="btn btn--small" id="askmore-ask" data-i18n="ai.ask">Ask</button>
+        </div>
+        <p class="askmore-answer" id="askmore-answer" hidden></p>
+      </div>
+      <div class="drawer__section drawer__safety"><h3 data-i18n="scan.askSafety">Safety note</h3><p id="askmore-safety"></p></div>
+      <p class="ai-disclaimer ai-disclaimer--drawer" data-i18n="ai.disclaimer">AI-assisted guidance only. PlateWise cannot confirm food safety.</p>
+    </div>
+  </div>
+
+  <script type="module" src="./src/app.js"></script>
+  <script type="module" src="./src/ai-controller.js"></script>
+</body>
+</html>

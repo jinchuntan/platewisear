@@ -364,9 +364,10 @@ function hideSheet() {
 // The real Throw/Save/Share/Compost buttons stay in the sheet (reliable path);
 // if a browser drops the 3D tap, nothing breaks — the sheet still works.
 // ===========================================================================
-function onArCardTap(index) {
+function onArCardTap(index, source = 'cue') {
   const target = getTargetByIndex(index);
-  debug('AR card tapped index:', index, target ? `→ ${target.id} (${target.title})` : '→ (no content mapped)');
+  debug('AR card tapped index:', index, `(${source})`, target ? `→ ${target.id} (${target.title})` : '→ (no content mapped)');
+  setDebug(`tapped #${index} (${source})\n${target ? `${target.id} — ${target.title}` : 'no content mapped'}`);
   if (!target) return;
 
   // Make sure the sheet reflects the tapped card.
@@ -397,7 +398,11 @@ function attachCardTapHandlers() {
   hits.forEach((el) => {
     const anchor = el.closest('[mindar-image-target]');
     const index = anchor ? readTargetIndex(anchor, 0) : 0;
-    el.addEventListener('click', () => onArCardTap(index));
+    // Desktop / browsers that deliver canvas clicks. Mobile Safari often does
+    // not (it preventDefaults canvas touches), so the HTML cue button below is
+    // the reliable path — both call the same onArCardTap().
+    el.addEventListener('click', () => onArCardTap(index, '3d'));
+    debug('AR card tap handler attached: index', index);
   });
   debug('AR card tap handlers attached:', hits.length);
 }
@@ -426,6 +431,12 @@ btnSave?.addEventListener('click', () => applyAction('saveLeftovers'));
 btnShare?.addEventListener('click', () => applyAction('share'));
 btnCompost?.addEventListener('click', () => applyAction('compost'));
 btnAskMore?.addEventListener('click', () => askMore.open(currentTarget));
+
+// Reliable AR-layer interaction on every device: the overlay cue is a real
+// button that runs the same focus-the-actions behaviour as tapping the 3D card.
+tapCueEl?.addEventListener('click', () => {
+  if (currentTarget) onArCardTap(currentTarget.targetIndex, 'cue');
+});
 
 sheetToggleEl?.addEventListener('click', () => {
   const expanded = sheetEl.classList.toggle('is-expanded');

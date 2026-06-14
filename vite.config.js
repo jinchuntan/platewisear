@@ -16,6 +16,7 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         ar: resolve(__dirname, 'ar.html'),
+        ai: resolve(__dirname, 'ai.html'),
         demo: resolve(__dirname, 'demo.html'),
         marker: resolve(__dirname, 'marker.html'),
         quiz: resolve(__dirname, 'quiz.html'),
