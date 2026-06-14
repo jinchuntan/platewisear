@@ -24,6 +24,7 @@ let currentFactIndex = 0;
 // ---------------------------------------------------------------------------
 
 const factDisplayEl = document.getElementById('fact-display');
+const factSourceEl = document.getElementById('fact-source');
 const feedbackPanelEl = document.getElementById('feedback-panel');
 const demoPlateEl = document.getElementById('demo-plate');
 const demoFoodIconEl = document.getElementById('demo-food-icon');
@@ -48,6 +49,7 @@ debug('demo-controller.js loaded');
 function updateFactDisplay() {
   const fact = facts[currentFactIndex];
   factDisplayEl.textContent = `${fact.short} (${currentFactIndex + 1}/${facts.length})`;
+  if (factSourceEl) factSourceEl.textContent = `Source: ${fact.source}`;
   debug('Demo fact updated:', currentFactIndex + 1, '/', facts.length);
 }
 
@@ -128,7 +130,7 @@ function applyAction(actionId) {
   }
 
   // Update feedback panel
-  feedbackPanelEl.textContent = action.feedback;
+  feedbackPanelEl.textContent = `${action.icon} ${action.label}: ${action.feedback}`;
   feedbackPanelEl.className = 'feedback-panel';
   if (action.impactLevel === 'negative') feedbackPanelEl.classList.add('feedback-panel--negative');
   if (action.impactLevel === 'neutral') feedbackPanelEl.classList.add('feedback-panel--neutral');

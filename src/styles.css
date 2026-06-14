@@ -415,21 +415,220 @@ p {
   margin: 0 0 0.25rem;
 }
 
+/* ---- AR status / error screen ---- */
+.ar-status {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  background: linear-gradient(160deg, #1b5e20, #2e7d32 60%, #0d3010);
+  color: #fff;
+  overflow-y: auto;
+}
+/* Hidden once AR is ready (toggled by JS) */
+.ar-status[hidden] {
+  display: none;
+}
+.ar-status__box {
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+}
+.ar-status__icon {
+  font-size: 3rem;
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+.ar-status__title {
+  color: #fff;
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+}
+.ar-status__message {
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+/* Spinner shown during loading states */
+.ar-status__spinner {
+  width: 38px;
+  height: 38px;
+  margin: 0.5rem auto 1rem;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: ar-spin 0.9s linear infinite;
+}
+.ar-status__spinner[hidden] {
+  display: none;
+}
+@keyframes ar-spin {
+  to { transform: rotate(360deg); }
+}
+body.reduced-motion .ar-status__spinner {
+  animation: none;
+}
+.ar-status__troubleshoot {
+  text-align: left;
+  background: rgba(0, 0, 0, 0.22);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+  margin: 0.5rem 0 1rem;
+  font-size: 0.85rem;
+}
+.ar-status__troubleshoot[hidden] {
+  display: none;
+}
+.ar-status__troubleshoot h2 {
+  color: #fff;
+  font-size: 0.95rem;
+  margin: 0 0 0.4rem;
+}
+.ar-status__troubleshoot ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+.ar-status__troubleshoot li {
+  margin-bottom: 0.3rem;
+}
+.ar-status__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.ar-status__actions[hidden] {
+  display: none;
+}
+
+/* ---- AR learning-flow progress indicator ---- */
+.ar-progress {
+  list-style: none;
+  display: flex;
+  gap: 0.25rem;
+  margin: 0 0 0.6rem;
+  padding: 0;
+  counter-reset: none;
+}
+.ar-progress__step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.65rem;
+  color: var(--clr-text-muted);
+  text-align: center;
+  position: relative;
+}
+/* Connector line between steps */
+.ar-progress__step::before {
+  content: '';
+  position: absolute;
+  top: 11px;
+  left: -50%;
+  width: 100%;
+  height: 2px;
+  background: var(--clr-border);
+  z-index: 0;
+}
+.ar-progress__step:first-child::before {
+  display: none;
+}
+.ar-progress__num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--clr-border);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  position: relative;
+  z-index: 1;
+  transition: background var(--transition);
+}
+.ar-progress__label {
+  line-height: 1.2;
+}
+/* Active step */
+.ar-progress__step.is-active .ar-progress__num {
+  background: var(--clr-accent);
+  box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.25);
+}
+.ar-progress__step.is-active .ar-progress__label {
+  color: var(--clr-text);
+  font-weight: 700;
+}
+/* Completed step */
+.ar-progress__step.is-done .ar-progress__num {
+  background: var(--clr-primary);
+}
+.ar-progress__step.is-done .ar-progress__num::after {
+  content: '✓';
+}
+.ar-progress__step.is-done .ar-progress__num {
+  font-size: 0; /* hide the number, show the tick from ::after */
+}
+.ar-progress__step.is-done .ar-progress__num::after {
+  font-size: 0.85rem;
+}
+.ar-progress__step.is-done::before,
+.ar-progress__step.is-active::before {
+  background: var(--clr-primary);
+}
+
+/* ---- Fact source label (AR overlay + demo) ---- */
+.fact-source {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--clr-text-muted);
+  margin: -0.25rem 0 0.6rem;
+  min-height: 1rem;
+}
+.fact-source::before {
+  content: '📚 ';
+}
+.fact-source:empty {
+  display: none;
+}
+
+/* ---- Last-action recall note (quiz / reflection) ---- */
+.last-action-note {
+  background: #e8f5e9;
+  border-left: 4px solid var(--clr-primary);
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+.last-action-note[hidden] {
+  display: none;
+}
+
 /* ---- AR overlay panel ---- */
 .ar-overlay {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.97);
   border-top-left-radius: 16px;
   border-top-right-radius: 16px;
   padding: 0.75rem 1rem 1rem;
   box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.15);
   z-index: 9999;
-  max-height: 55vh;
+  max-height: 62vh;
   overflow-y: auto;
   transition: transform 0.3s ease;
+}
+/* Hidden until AR is ready */
+.ar-overlay[hidden] {
+  display: none;
 }
 .ar-overlay.collapsed {
   transform: translateY(calc(100% - 48px));

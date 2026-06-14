@@ -9,8 +9,8 @@
  * Heavily commented for the technical report.
  */
 
-import { quizQuestions, pledgeOptions } from './content.js';
-import { getQuizScore, saveQuizScore, getPledge, savePledge } from './storage.js';
+import { quizQuestions, pledgeOptions, actions } from './content.js';
+import { getQuizScore, saveQuizScore, getPledge, savePledge, getLastAction } from './storage.js';
 import { debug } from './utils.js';
 
 // ---------------------------------------------------------------------------
@@ -27,6 +27,7 @@ const btnSavePledge = document.getElementById('btn-save-pledge');
 const pledgeConfirmEl = document.getElementById('pledge-confirmation');
 const savedScoreEl = document.getElementById('saved-score');
 const savedPledgeEl = document.getElementById('saved-pledge');
+const lastActionNoteEl = document.getElementById('last-action-note');
 
 // ---------------------------------------------------------------------------
 // State
@@ -238,9 +239,35 @@ function updateSavedDisplay() {
 }
 
 // ---------------------------------------------------------------------------
+// Recall the last AR / Demo action (carried over via localStorage)
+// ---------------------------------------------------------------------------
+
+/**
+ * If the user chose a food-waste action in AR or Demo mode, surface it here so
+ * the reflection connects back to what they just did.
+ */
+function showLastAction() {
+  if (!lastActionNoteEl) return;
+  const lastId = getLastAction();
+  const action = lastId ? actions[lastId] : null;
+
+  if (!action) {
+    lastActionNoteEl.hidden = true;
+    return;
+  }
+
+  lastActionNoteEl.innerHTML =
+    `<strong>Your last choice:</strong> ${action.icon} ${action.label}.<br>` +
+    `<span style="font-size:0.85rem;">${action.feedback}</span>`;
+  lastActionNoteEl.hidden = false;
+  debug('Last action recalled:', lastId);
+}
+
+// ---------------------------------------------------------------------------
 // Initialise
 // ---------------------------------------------------------------------------
 
 renderQuiz();
 renderPledgeOptions();
 updateSavedDisplay();
+showLastAction();

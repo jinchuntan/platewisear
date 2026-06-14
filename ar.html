@@ -9,19 +9,29 @@
   <link rel="stylesheet" href="./src/styles.css" />
 
   <!--
-    A-Frame and AR.js loaded via CDN.
-    AR.js provides marker-based AR tracking using the device camera.
-    The 'hiro' preset marker is used for simplicity and reliability.
+    ==========================================================================
+    AR dependencies — PINNED & LOCALLY VENDORED for stability
+    ==========================================================================
+    A-Frame 1.6.0 and AR.js 3.4.8 are committed to /public/vendor/ instead of
+    being loaded from a CDN. This removes the previous dependency on the
+    AR.js "master" branch via raw.githack (a moving target, not for production)
+    and guarantees the AR engine loads even on networks that block CDNs or when
+    offline. See README → "AR Dependencies" for the rationale and upstream URLs.
+
+    These two <script> tags MUST be classic (non-module) scripts in <head>:
+    AR.js registers A-Frame components at parse time and the scene relies on
+    AFRAME being a global before it is created.
   -->
-  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-  <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+  <script src="./vendor/aframe-1.6.0.min.js"></script>
+  <script src="./vendor/aframe-ar-3.4.8.js"></script>
 
   <style>
     /* AR page overrides — camera fills the viewport */
-    body {
+    html, body {
       margin: 0;
       overflow: hidden;
       background: #000;
+      height: 100%;
     }
     /* Hide A-Frame default UI elements */
     .a-enter-vr, .a-orientation-modal {
@@ -33,160 +43,241 @@
 
   <!--
     ==========================================================================
-    A-Frame AR Scene
+    AR STATUS / ERROR SCREEN
     ==========================================================================
-    - arjs source is the webcam
+    Full-viewport layer shown while the camera/AR is starting, and for any
+    error state (permission denied, unsupported browser, load failure, etc.).
+    It is hidden once AR is ready. Text is updated by ar-controller.js.
+  -->
+  <div id="ar-status-screen" class="ar-status" role="status" aria-live="polite">
+    <div class="ar-status__box">
+      <div class="ar-status__icon" id="ar-status-icon">📷</div>
+      <h1 class="ar-status__title" id="ar-status-title">Starting camera…</h1>
+      <p class="ar-status__message" id="ar-status-message">
+        Please allow camera access when your browser asks.
+      </p>
+
+      <div class="ar-status__spinner" id="ar-status-spinner" aria-hidden="true"></div>
+
+      <!-- Troubleshooting tips — shown only on failure states -->
+      <div class="ar-status__troubleshoot" id="ar-status-troubleshoot" hidden>
+        <h2>Troubleshooting</h2>
+        <ul>
+          <li>Make sure the page is opened over <strong>HTTPS</strong> or on <strong>localhost</strong>.</li>
+          <li>Check that the browser has <strong>camera permission</strong> for this site (tap the address-bar icon).</li>
+          <li>Close other apps or tabs that may be using the camera.</li>
+          <li>Use <strong>Chrome or Firefox on Android</strong> for best results; some iOS browsers limit camera access.</li>
+          <li>Reload the page and allow the camera when prompted.</li>
+        </ul>
+      </div>
+
+      <!-- Action buttons — shown on failure states; Demo Mode is always offered -->
+      <div class="ar-status__actions" id="ar-status-actions" hidden>
+        <button type="button" class="btn btn--small" id="ar-retry">🔄 Try Again</button>
+        <a href="demo.html" class="btn btn--accent btn--small" id="ar-demo-link">🖥️ Open Demo Mode (no camera)</a>
+        <a href="index.html" class="btn btn--secondary btn--small">← Back to Home</a>
+      </div>
+    </div>
+  </div>
+
+  <!--
+    Mount point for the AR scene. The <a-scene> lives inside the <template>
+    below and is injected here by ar-controller.js ONLY after the camera
+    pre-checks pass. Keeping it inert until then guarantees a single, clean
+    camera acquisition and lets us show precise pre-camera error states.
+  -->
+  <div id="ar-scene-mount"></div>
+
+  <!--
+    ==========================================================================
+    A-Frame AR Scene (inert template — cloned in once camera checks pass)
+    ==========================================================================
+    - arjs sourceType is the webcam
     - debugUIEnabled false hides AR.js default debug overlay
-    - a-marker preset="hiro" listens for the standard Hiro marker
+    - a-marker preset="hiro" listens for the STANDARD Hiro marker
+      (the same marker shown on marker.html: public/assets/marker/hiro-marker.jpg)
     - All 3D content is nested under the marker so it tracks the marker position
   -->
-  <a-scene
-    embedded
-    arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;"
-    renderer="logarithmicDepthBuffer: true; antialias: true"
-    vr-mode-ui="enabled: false"
-  >
-    <!-- Hiro marker — all AR content is placed as children -->
-    <a-marker id="hiro-marker" preset="hiro" smooth="true" smoothCount="5" smoothTolerance="0.01" smoothThreshold="2">
+  <template id="ar-scene-template">
+    <a-scene
+      embedded
+      arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;"
+      renderer="logarithmicDepthBuffer: true; antialias: true"
+      vr-mode-ui="enabled: false"
+    >
+      <!-- Hiro marker — all AR content is placed as children -->
+      <a-marker id="hiro-marker" preset="hiro" smooth="true" smoothCount="5" smoothTolerance="0.01" smoothThreshold="2">
 
-      <!--
-        PLATE — a flat cylinder representing a dinner plate
-        White/light-grey colour, positioned at marker centre
-      -->
-      <a-cylinder
-        id="ar-plate"
-        position="0 0.02 0"
-        radius="0.6"
-        height="0.04"
-        color="#f5f5f5"
-        opacity="0.9"
-        shadow
-      ></a-cylinder>
+        <!--
+          PLATE — a flat cylinder representing a dinner plate
+          White/light-grey colour, positioned at marker centre
+        -->
+        <a-cylinder
+          id="ar-plate"
+          position="0 0.02 0"
+          radius="0.6"
+          height="0.04"
+          color="#f5f5f5"
+          opacity="0.9"
+          shadow
+        ></a-cylinder>
 
-      <!-- Plate rim -->
-      <a-torus
-        position="0 0.045 0"
-        radius="0.6"
-        radius-tubular="0.015"
-        color="#bdbdbd"
-        rotation="90 0 0"
-      ></a-torus>
+        <!-- Plate rim -->
+        <a-torus
+          position="0 0.045 0"
+          radius="0.6"
+          radius-tubular="0.015"
+          color="#bdbdbd"
+          rotation="90 0 0"
+        ></a-torus>
 
-      <!--
-        FOOD PILE — group of small spheres representing leftover food
-        Visibility and scale change based on user actions
-      -->
-      <a-entity id="ar-food-pile" position="0 0.1 0">
-        <a-sphere position="0 0 0" radius="0.08" color="#e65100"></a-sphere>
-        <a-sphere position="0.1 0 0.05" radius="0.06" color="#f9a825"></a-sphere>
-        <a-sphere position="-0.08 0 0.08" radius="0.07" color="#558b2f"></a-sphere>
-        <a-sphere position="0.05 0 -0.07" radius="0.055" color="#d84315"></a-sphere>
-        <a-sphere position="-0.05 0 -0.05" radius="0.065" color="#ff8f00"></a-sphere>
-      </a-entity>
+        <!--
+          FOOD PILE — group of small spheres representing leftover food
+          Visibility and scale change based on user actions
+        -->
+        <a-entity id="ar-food-pile" position="0 0.1 0">
+          <a-sphere position="0 0 0" radius="0.08" color="#e65100"></a-sphere>
+          <a-sphere position="0.1 0 0.05" radius="0.06" color="#f9a825"></a-sphere>
+          <a-sphere position="-0.08 0 0.08" radius="0.07" color="#558b2f"></a-sphere>
+          <a-sphere position="0.05 0 -0.07" radius="0.055" color="#d84315"></a-sphere>
+          <a-sphere position="-0.05 0 -0.05" radius="0.065" color="#ff8f00"></a-sphere>
+        </a-entity>
 
-      <!--
-        WASTE PILE — warning state shown when user throws food away
-        Hidden by default; grows / appears on "Throw Away" action
-      -->
-      <a-entity id="ar-waste" visible="false" position="0 0.1 0">
-        <a-box position="0 0.1 0" width="0.3" height="0.3" depth="0.25" color="#5d4037"></a-box>
-        <a-sphere position="0 0.3 0" radius="0.06" color="#d32f2f"></a-sphere>
-        <a-text value="!" position="0 0.3 0.07" color="#fff" align="center" width="1.5"></a-text>
-      </a-entity>
+        <!--
+          WASTE PILE — warning state shown when user throws food away
+          Hidden by default; grows / appears on "Throw Away" action
+        -->
+        <a-entity id="ar-waste" visible="false" position="0 0.1 0">
+          <a-box position="0 0.1 0" width="0.3" height="0.3" depth="0.25" color="#5d4037"></a-box>
+          <a-sphere position="0 0.3 0" radius="0.06" color="#d32f2f"></a-sphere>
+          <a-text value="!" position="0 0.3 0.07" color="#fff" align="center" width="1.5"></a-text>
+        </a-entity>
 
-      <!--
-        SAVE CONTAINER — shown when user saves leftovers
-        A simple box representing a food container
-      -->
-      <a-entity id="ar-save" visible="false" position="0.5 0.15 0">
-        <a-box width="0.25" height="0.15" depth="0.2" color="#1565c0"></a-box>
-        <a-box position="0 0.09 0" width="0.27" height="0.02" depth="0.22" color="#1976d2"></a-box>
-        <a-text value="SAVED" position="0 0.2 0.11" color="#1565c0" align="center" width="1.2"></a-text>
-      </a-entity>
+        <!--
+          SAVE CONTAINER — shown when user saves leftovers
+          A simple box representing a food container
+        -->
+        <a-entity id="ar-save" visible="false" position="0.5 0.15 0">
+          <a-box width="0.25" height="0.15" depth="0.2" color="#1565c0"></a-box>
+          <a-box position="0 0.09 0" width="0.27" height="0.02" depth="0.22" color="#1976d2"></a-box>
+          <a-text value="SAVED" position="0 0.2 0.11" color="#1565c0" align="center" width="1.2"></a-text>
+        </a-entity>
 
-      <!--
-        SHARE ICON — shown when user chooses to share food
-        Two small figures side by side representing sharing
-      -->
-      <a-entity id="ar-share" visible="false" position="-0.5 0.1 0">
-        <a-cylinder position="-0.08 0.05 0" radius="0.04" height="0.15" color="#7b1fa2"></a-cylinder>
-        <a-sphere position="-0.08 0.16 0" radius="0.05" color="#7b1fa2"></a-sphere>
-        <a-cylinder position="0.08 0.05 0" radius="0.04" height="0.15" color="#00838f"></a-cylinder>
-        <a-sphere position="0.08 0.16 0" radius="0.05" color="#00838f"></a-sphere>
-        <a-text value="SHARE" position="0 0.28 0" color="#7b1fa2" align="center" width="1.2"></a-text>
-      </a-entity>
+        <!--
+          SHARE ICON — shown when user chooses to share food
+          Two small figures side by side representing sharing
+        -->
+        <a-entity id="ar-share" visible="false" position="-0.5 0.1 0">
+          <a-cylinder position="-0.08 0.05 0" radius="0.04" height="0.15" color="#7b1fa2"></a-cylinder>
+          <a-sphere position="-0.08 0.16 0" radius="0.05" color="#7b1fa2"></a-sphere>
+          <a-cylinder position="0.08 0.05 0" radius="0.04" height="0.15" color="#00838f"></a-cylinder>
+          <a-sphere position="0.08 0.16 0" radius="0.05" color="#00838f"></a-sphere>
+          <a-text value="SHARE" position="0 0.28 0" color="#7b1fa2" align="center" width="1.2"></a-text>
+        </a-entity>
 
-      <!--
-        COMPOST — shown when user composts scraps
-        Brown base with a small green plant
-      -->
-      <a-entity id="ar-compost" visible="false" position="0 0.05 -0.5">
-        <a-cylinder position="0 0.03 0" radius="0.2" height="0.06" color="#4e342e"></a-cylinder>
-        <a-cone position="0 0.18 0" radius-bottom="0.06" radius-top="0" height="0.2" color="#388e3c"></a-cone>
-        <a-cylinder position="0 0.06 0" radius="0.015" height="0.1" color="#2e7d32"></a-cylinder>
-        <a-text value="COMPOST" position="0 0.35 0" color="#4e342e" align="center" width="1.2"></a-text>
-      </a-entity>
+        <!--
+          COMPOST — shown when user composts scraps
+          Brown base with a small green plant
+        -->
+        <a-entity id="ar-compost" visible="false" position="0 0.05 -0.5">
+          <a-cylinder position="0 0.03 0" radius="0.2" height="0.06" color="#4e342e"></a-cylinder>
+          <a-cone position="0 0.18 0" radius-bottom="0.06" radius-top="0" height="0.2" color="#388e3c"></a-cone>
+          <a-cylinder position="0 0.06 0" radius="0.015" height="0.1" color="#2e7d32"></a-cylinder>
+          <a-text value="COMPOST" position="0 0.35 0" color="#4e342e" align="center" width="1.2"></a-text>
+        </a-entity>
 
-      <!--
-        SDG 12 LABEL — always visible on the marker
-        Positioned above the plate
-      -->
-      <a-text
-        id="ar-sdg-label"
-        value="SDG 12: Responsible\nConsumption & Production"
-        position="0 0.6 0"
-        color="#2e7d32"
-        align="center"
-        width="1.8"
-        anchor="center"
-      ></a-text>
+        <!--
+          SDG 12 LABEL — always visible on the marker
+          Positioned above the plate
+        -->
+        <a-text
+          id="ar-sdg-label"
+          value="SDG 12: Responsible\nConsumption & Production"
+          position="0 0.6 0"
+          color="#2e7d32"
+          align="center"
+          width="1.8"
+          anchor="center"
+        ></a-text>
 
-      <!--
-        FACT TEXT — updates when user navigates facts
-        Shows current food-waste statistic in AR space
-      -->
-      <a-text
-        id="ar-fact-text"
-        value="Scan marker to begin"
-        position="0 0.45 0"
-        color="#424242"
-        align="center"
-        width="1.4"
-        anchor="center"
-        wrap-count="35"
-      ></a-text>
+        <!--
+          FACT TEXT — updates when user navigates facts
+          Shows current food-waste statistic in AR space
+        -->
+        <a-text
+          id="ar-fact-text"
+          value="Scan marker to begin"
+          position="0 0.45 0"
+          color="#424242"
+          align="center"
+          width="1.4"
+          anchor="center"
+          wrap-count="35"
+        ></a-text>
 
-      <!--
-        FEEDBACK TEXT — updates after each action
-      -->
-      <a-text
-        id="ar-feedback-text"
-        value=""
-        position="0 -0.3 0.5"
-        color="#1b5e20"
-        align="center"
-        width="1.2"
-        anchor="center"
-        wrap-count="40"
-        visible="false"
-      ></a-text>
+        <!--
+          FACT SOURCE — shows the citation for the current fact in AR space
+        -->
+        <a-text
+          id="ar-fact-source"
+          value=""
+          position="0 0.33 0"
+          color="#9e9e9e"
+          align="center"
+          width="1.1"
+          anchor="center"
+          wrap-count="48"
+        ></a-text>
 
-    </a-marker>
+        <!--
+          FEEDBACK TEXT — updates after each action
+        -->
+        <a-text
+          id="ar-feedback-text"
+          value=""
+          position="0 -0.3 0.5"
+          color="#1b5e20"
+          align="center"
+          width="1.2"
+          anchor="center"
+          wrap-count="40"
+          visible="false"
+        ></a-text>
 
-    <!-- Camera entity required by AR.js -->
-    <a-entity camera></a-entity>
-  </a-scene>
+      </a-marker>
+
+      <!-- Camera entity required by AR.js -->
+      <a-entity camera></a-entity>
+    </a-scene>
+  </template>
 
   <!--
     ==========================================================================
     DOM Overlay Panel
     ==========================================================================
     Positioned over the camera feed at the bottom of the screen.
-    Contains marker status, fact navigation, action buttons, and feedback.
+    Hidden until AR is ready. Contains the learning-flow progress indicator,
+    marker status, fact navigation + source, action buttons, and feedback.
   -->
-  <div class="ar-overlay" id="ar-overlay">
+  <div class="ar-overlay" id="ar-overlay" hidden>
     <!-- Drag handle to collapse/expand -->
-    <button class="ar-overlay__toggle" id="overlay-toggle" aria-label="Toggle panel"></button>
+    <button type="button" class="ar-overlay__toggle" id="overlay-toggle" aria-label="Toggle panel"></button>
+
+    <!-- Learning-flow progress indicator -->
+    <ol class="ar-progress" id="ar-progress" aria-label="Learning progress">
+      <li class="ar-progress__step is-active" data-step="1">
+        <span class="ar-progress__num">1</span><span class="ar-progress__label">Scan marker</span>
+      </li>
+      <li class="ar-progress__step" data-step="2">
+        <span class="ar-progress__num">2</span><span class="ar-progress__label">Read facts</span>
+      </li>
+      <li class="ar-progress__step" data-step="3">
+        <span class="ar-progress__num">3</span><span class="ar-progress__label">Choose action</span>
+      </li>
+      <li class="ar-progress__step" data-step="4">
+        <span class="ar-progress__num">4</span><span class="ar-progress__label">Complete quiz</span>
+      </li>
+    </ol>
 
     <!-- Header row: marker status + nav link -->
     <div class="ar-overlay__header">
@@ -197,18 +288,21 @@
     <!-- Current fact -->
     <div class="fact-display" id="fact-display">Point your camera at the Hiro marker.</div>
 
+    <!-- Fact source label (citation) -->
+    <p class="fact-source" id="fact-source"></p>
+
     <!-- Fact navigation -->
     <div style="display:flex; gap:0.5rem; margin-bottom:0.5rem;">
-      <button class="btn btn--small btn--secondary" id="btn-prev-fact" aria-label="Previous fact" style="flex:1;">← Previous</button>
-      <button class="btn btn--small btn--secondary" id="btn-next-fact" aria-label="Next fact" style="flex:1;">Next →</button>
+      <button type="button" class="btn btn--small btn--secondary" id="btn-prev-fact" aria-label="Previous fact" style="flex:1;">← Previous</button>
+      <button type="button" class="btn btn--small btn--secondary" id="btn-next-fact" aria-label="Next fact" style="flex:1;">Next →</button>
     </div>
 
     <!-- Action buttons -->
     <div class="action-grid">
-      <button class="btn btn--danger btn--small" id="btn-throw" aria-label="Throw food away">🗑️ Throw Away</button>
-      <button class="btn btn--small" id="btn-save" aria-label="Save leftovers" style="background:#1565c0;">📦 Save</button>
-      <button class="btn btn--small" id="btn-share" aria-label="Share surplus food" style="background:#7b1fa2;">🤝 Share</button>
-      <button class="btn btn--small btn--accent" id="btn-compost" aria-label="Compost scraps">🌱 Compost</button>
+      <button type="button" class="btn btn--danger btn--small" id="btn-throw" aria-label="Throw food away">🗑️ Throw Away</button>
+      <button type="button" class="btn btn--small" id="btn-save" aria-label="Save leftovers" style="background:#1565c0;">📦 Save</button>
+      <button type="button" class="btn btn--small" id="btn-share" aria-label="Share surplus food" style="background:#7b1fa2;">🤝 Share</button>
+      <button type="button" class="btn btn--small btn--accent" id="btn-compost" aria-label="Compost scraps">🌱 Compost</button>
     </div>
 
     <!-- Feedback message -->
@@ -217,7 +311,7 @@
     </div>
 
     <!-- Link to quiz -->
-    <a href="quiz.html" class="btn btn--secondary btn--small" style="margin-top:0.5rem;">📝 Go to Quiz / Reflection</a>
+    <a href="quiz.html" class="btn btn--secondary btn--small" id="quiz-link" style="margin-top:0.5rem;">📝 Go to Quiz / Reflection</a>
   </div>
 
   <!-- AR controller script (module) -->

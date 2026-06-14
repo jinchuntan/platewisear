@@ -2,6 +2,10 @@
 
 Use this checklist to ensure you have captured all required evidence for your academic report. Mark each item when the screenshot or evidence has been collected.
 
+> **Scope note for the report:** This is the hardened **core** marker-based WebAR version. AI
+> features (AI tips, image scanning, object recognition, backend/ML) are **future work** and are
+> not part of this version — state this clearly in the report.
+
 ## Screenshots to Capture
 
 ### App Pages
@@ -10,68 +14,81 @@ Use this checklist to ensure you have captured all required evidence for your ac
 |---|----------|-----------|-------|
 | 1 | Home page (full view on mobile) | ☐ | |
 | 2 | Home page (desktop view) | ☐ | |
-| 3 | Marker page (showing Hiro marker) | ☐ | |
-| 4 | Printed marker on paper | ☐ | |
+| 3 | Marker page showing the **real Hiro marker image** (`hiro-marker.jpg`) | ☐ | |
+| 4 | Marker page — Print and Download buttons + instructions | ☐ | |
+| 5 | Printed marker on paper (black border intact) | ☐ | |
 
-### AR Experience
-
-| # | Evidence | Captured? | Notes |
-|---|----------|-----------|-------|
-| 5 | AR page — camera permission dialog | ☐ | |
-| 6 | AR page — "Marker not detected" status | ☐ | |
-| 7 | AR page — "Marker detected" status with AR scene visible | ☐ | |
-| 8 | AR page — fact navigation (showing a statistic) | ☐ | |
-| 9 | AR page — "Throw Away" action and feedback | ☐ | |
-| 10 | AR page — "Save Leftovers" action and feedback | ☐ | |
-| 11 | AR page — "Share" action and feedback | ☐ | |
-| 12 | AR page — "Compost" action and feedback | ☐ | |
-
-### Demo Mode
+### AR Experience — camera & error states
 
 | # | Evidence | Captured? | Notes |
 |---|----------|-----------|-------|
-| 13 | Demo page — default state | ☐ | |
-| 14 | Demo page — after selecting an action | ☐ | |
+| 6 | AR page — "Starting camera… / permission needed" state | ☐ | |
+| 7 | AR page — camera permission dialog | ☐ | |
+| 8 | AR page — "AR ready" / live camera | ☐ | |
+| 9 | AR page — an error state (e.g. permission denied / HTTPS required / AR failed) with troubleshooting + Demo fallback | ☐ | |
+
+### AR Experience — scene, facts, actions
+
+| # | Evidence | Captured? | Notes |
+|---|----------|-----------|-------|
+| 10 | AR page — "Marker not detected" status | ☐ | |
+| 11 | AR page — "Marker detected" with AR scene visible (plate, food pile, SDG 12 label) | ☐ | |
+| 12 | AR page — fact navigation showing a statistic **and its source label** | ☐ | |
+| 13 | AR page — progress indicator advancing (Step 1 → 2 → 3 → 4) | ☐ | |
+| 14 | AR page — "Throw Away" action and feedback | ☐ | |
+| 15 | AR page — "Save Leftovers" action and feedback | ☐ | |
+| 16 | AR page — "Share" action and feedback | ☐ | |
+| 17 | AR page — "Compost" action and feedback | ☐ | |
+
+### Demo Mode (mirror of AR)
+
+| # | Evidence | Captured? | Notes |
+|---|----------|-----------|-------|
+| 18 | Demo page — default state | ☐ | |
+| 19 | Demo page — fact with **source label** visible | ☐ | |
+| 20 | Demo page — after selecting an action (visual change + feedback) | ☐ | |
 
 ### Quiz and Reflection
 
 | # | Evidence | Captured? | Notes |
 |---|----------|-----------|-------|
-| 15 | Quiz page — questions displayed | ☐ | |
-| 16 | Quiz page — answered question (correct/incorrect) | ☐ | |
-| 17 | Quiz page — final score displayed | ☐ | |
-| 18 | Quiz page — pledge saved confirmation | ☐ | |
+| 21 | Quiz page — questions displayed | ☐ | |
+| 22 | Quiz page — answered question (correct/incorrect) | ☐ | |
+| 23 | Quiz page — final score displayed | ☐ | |
+| 24 | Quiz page — pledge saved confirmation | ☐ | |
+| 25 | Quiz page — recalled last AR/Demo action shown at top | ☐ | |
 
 ### About Page
 
 | # | Evidence | Captured? | Notes |
 |---|----------|-----------|-------|
-| 19 | About page — SDG 12 section | ☐ | |
-| 20 | About page — assignment components | ☐ | |
-| 21 | About page — references section | ☐ | |
+| 26 | About page — SDG 12 section | ☐ | |
+| 27 | About page — assignment components | ☐ | |
+| 28 | About page — references section | ☐ | |
 
 ### Technical Evidence
 
 | # | Evidence | Captured? | Notes |
 |---|----------|-----------|-------|
-| 22 | Browser console — debug logs (marker found, action selected) | ☐ | |
-| 23 | Browser console — quiz score saved | ☐ | |
-| 24 | localStorage — stored data (DevTools → Application → Local Storage) | ☐ | |
-| 25 | Mobile device test — phone screenshot of AR working | ☐ | |
-| 26 | Terminal — `npm run build` success output | ☐ | |
-| 27 | Terminal — `npm run dev` server running | ☐ | |
+| 29 | Browser console — debug logs (status changes, marker found, action selected) | ☐ | |
+| 30 | Browser console — quiz score saved | ☐ | |
+| 31 | localStorage — stored data (DevTools → Application → Local Storage) | ☐ | |
+| 32 | Network tab — AR libraries load from local `/vendor/` (no CDN/master) | ☐ | |
+| 33 | Mobile device test — phone screenshot of AR working | ☐ | |
+| 34 | Terminal — `npm run build` success output | ☐ | |
+| 35 | Terminal — `npm run dev` / `npm run preview` server running | ☐ | |
 
 ### Debugging Evidence
 
 | # | Evidence | Captured? | Notes |
 |---|----------|-----------|-------|
-| 28 | At least 2 debugging log entries with before/after screenshots | ☐ | |
-| 29 | Console error encountered and resolved | ☐ | |
+| 36 | At least 2 debugging log entries with before/after screenshots | ☐ | |
+| 37 | Console error encountered and resolved | ☐ | |
 
 ### Evaluation Evidence (after user testing)
 
 | # | Evidence | Captured? | Notes |
 |---|----------|-----------|-------|
-| 30 | Completed pre-test questionnaires | ☐ | |
-| 31 | Completed post-test questionnaires | ☐ | |
-| 32 | Summary of evaluation results | ☐ | |
+| 38 | Completed pre-test questionnaires | ☐ | |
+| 39 | Completed post-test questionnaires | ☐ | |
+| 40 | Summary of evaluation results | ☐ | |
