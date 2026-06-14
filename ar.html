@@ -174,10 +174,30 @@
     </a-entity>
   </a-scene>
 
-  <!-- Persistent scan hint (shown while AR is ready but nothing detected) -->
-  <div class="scan-hint" id="scan-hint" hidden>
-    <span class="scan-hint__dot" aria-hidden="true"></span>
-    Point at a food-waste image
+  <!-- Top bar over the camera — Home + How-to (revealed once AR is ready) -->
+  <div class="ar-topbar" id="ar-topbar" hidden>
+    <a href="index.html" class="ar-pill" aria-label="Back to home">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+      Home
+    </a>
+    <button type="button" class="ar-pill" id="how-to-btn" aria-label="How to scan">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.2 2.4c-.6.2-1.2.7-1.2 1.6"/><path d="M12 17h.01"/></svg>
+      How to scan?
+    </button>
+  </div>
+
+  <!-- Scanner overlay (transparent) — animation + Step 1 guidance.
+       Shown while AR is ready but nothing is detected. -->
+  <div class="scan-overlay" id="scan-hint" hidden>
+    <div class="scan-frame" aria-hidden="true">
+      <span class="scan-frame__corner scan-frame__corner--tl"></span>
+      <span class="scan-frame__corner scan-frame__corner--tr"></span>
+      <span class="scan-frame__corner scan-frame__corner--bl"></span>
+      <span class="scan-frame__corner scan-frame__corner--br"></span>
+      <span class="scan-frame__line"></span>
+    </div>
+    <p class="scan-overlay__step">Step 1 · Point at a scan image</p>
+    <p class="scan-overlay__hint">Looking for a curated food-waste image…</p>
   </div>
 
   <!--
@@ -195,6 +215,8 @@
       </div>
       <span id="marker-status" class="status-badge status-badge--found">Detected</span>
     </div>
+
+    <p class="sheet__step" id="sheet-step">Step 2 · Choose what you’d do</p>
 
     <p class="fact" id="fact-display">—</p>
     <p class="fact-source" id="fact-source"></p>
@@ -223,6 +245,28 @@
     <div class="sheet__foot">
       <button type="button" class="btn btn--secondary btn--small" id="btn-askmore">Ask more</button>
       <a href="quiz.html" class="btn btn--secondary btn--small" id="quiz-link">Quick check →</a>
+    </div>
+    <a href="index.html" class="btn btn--ghost btn--small sheet__home">← Back to home</a>
+  </div>
+
+  <!--
+    ==========================================================================
+    "How to scan" guide — auto-shown once for first-time users (dismissal
+    remembered in localStorage), reopenable via the "How to scan?" button.
+    ==========================================================================
+  -->
+  <div class="guide" id="scan-guide" hidden role="dialog" aria-modal="true" aria-labelledby="scan-guide-title">
+    <div class="guide__backdrop" id="scan-guide-backdrop"></div>
+    <div class="guide__panel">
+      <h2 id="scan-guide-title">How to scan</h2>
+      <ol class="guide__steps">
+        <li>Open <strong>Scan images</strong> on another screen — or print/download them.</li>
+        <li>Point the camera at one curated food-waste image.</li>
+        <li>Fill most of the frame with the image.</li>
+        <li>Hold steady with good lighting.</li>
+        <li>Wait for the exhibit to appear.</li>
+      </ol>
+      <button type="button" class="btn" id="scan-guide-dismiss">Got it</button>
     </div>
   </div>
 

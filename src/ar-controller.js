@@ -17,7 +17,7 @@
  */
 
 import { TARGETS, getTargetByIndex, ACTION_LABELS } from './food-targets.js';
-import { saveLastAction } from './storage.js';
+import { saveLastAction, getScanGuideSeen, setScanGuideSeen } from './storage.js';
 import { initAskMore } from './askmore.js';
 import { debug, isSecureContext } from './utils.js';
 
@@ -47,11 +47,23 @@ const sheetEl = document.getElementById('ar-sheet');
 const sheetToggleEl = document.getElementById('sheet-toggle');
 const sheetTypeEl = document.getElementById('sheet-type');
 const sheetTitleEl = document.getElementById('sheet-title');
+const sheetStepEl = document.getElementById('sheet-step');
 const markerStatusEl = document.getElementById('marker-status');
 const factDisplayEl = document.getElementById('fact-display');
 const factSourceEl = document.getElementById('fact-source');
 const feedbackPanelEl = document.getElementById('feedback-panel');
 const scanHintEl = document.getElementById('scan-hint');
+
+// --- top bar + first-time guide refs ---
+const arTopbarEl = document.getElementById('ar-topbar');
+const howToBtn = document.getElementById('how-to-btn');
+const scanGuideEl = document.getElementById('scan-guide');
+const scanGuideBackdrop = document.getElementById('scan-guide-backdrop');
+const scanGuideDismiss = document.getElementById('scan-guide-dismiss');
+
+// Step copy shown in the bottom sheet as the user progresses
+const STEP_CHOOSE = 'Step 2 · Choose what you’d do';
+const STEP_LEARN = 'Step 3 · Learn more or take the quick check';
 
 const btnThrow = document.getElementById('btn-throw');
 const btnSave = document.getElementById('btn-save');
@@ -203,8 +215,12 @@ function onArReady() {
   if (loadTimeoutId) clearTimeout(loadTimeoutId);
   debug('EVENT: arReady');
   setDebug('ready — point at a target');
-  setStatus('ready');
-  setTimeout(() => { hideStatusScreen(); showScanHint(); }, 700);
+  // Reveal the live camera immediately — no lingering beige screen.
+  hideStatusScreen();
+  if (arTopbarEl) arTopbarEl.hidden = false;
+  showScanHint();
+  // First-time users see the short guide once.
+  if (!getScanGuideSeen()) setTimeout(openGuide, 500);
 }
 function onArError() {
   if (arReady) return;
@@ -307,6 +323,7 @@ function showSheet(target) {
   factSourceEl.textContent = `Source: ${target.source}`;
   feedbackPanelEl.textContent = target.defaultMessage;
   feedbackPanelEl.className = 'feedback-panel';
+  if (sheetStepEl) sheetStepEl.textContent = STEP_CHOOSE;
 
   highlightRecommended(target.recommendedAction);
 
@@ -343,6 +360,9 @@ function applyAction(actionId) {
   else if (actionId === currentTarget.recommendedAction) feedbackPanelEl.classList.add('feedback-panel--positive');
   else feedbackPanelEl.classList.add('feedback-panel--neutral');
 
+  // Step 3 — nudge toward Ask more / Quick check / Home.
+  if (sheetStepEl) sheetStepEl.textContent = STEP_LEARN;
+
   saveLastAction(actionId);
 }
 
@@ -353,6 +373,26 @@ btnCompost?.addEventListener('click', () => applyAction('compost'));
 btnAskMore?.addEventListener('click', () => askMore.open(currentTarget));
 
 sheetToggleEl?.addEventListener('click', () => sheetEl.classList.toggle('is-expanded'));
+
+// ===========================================================================
+// First-time "How to scan" guide
+// ===========================================================================
+function openGuide() {
+  if (!scanGuideEl) return;
+  scanGuideEl.hidden = false;
+  scanGuideDismiss?.focus();
+}
+function closeGuide() {
+  if (scanGuideEl) scanGuideEl.hidden = true;
+  setScanGuideSeen();
+}
+
+howToBtn?.addEventListener('click', openGuide);
+scanGuideDismiss?.addEventListener('click', closeGuide);
+scanGuideBackdrop?.addEventListener('click', closeGuide);
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && scanGuideEl && !scanGuideEl.hidden) closeGuide();
+});
 
 // ===========================================================================
 // Scene init

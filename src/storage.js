@@ -75,3 +75,17 @@ export function saveLastAction(actionId) {
   localStorage.setItem(PREFIX + 'lastAction', actionId);
   console.log('[PlateWise] Last action saved:', actionId);
 }
+
+// ---------------------------------------------------------------------------
+// "How to scan" guide — has the user dismissed it before?
+// ---------------------------------------------------------------------------
+
+/** @returns {boolean} true if the scan guide has already been dismissed. */
+export function getScanGuideSeen() {
+  return localStorage.getItem(PREFIX + 'scanGuideSeen') === '1';
+}
+
+/** Remember that the user dismissed the scan guide. */
+export function setScanGuideSeen() {
+  localStorage.setItem(PREFIX + 'scanGuideSeen', '1');
+}

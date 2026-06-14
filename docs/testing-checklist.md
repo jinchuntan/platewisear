@@ -26,6 +26,20 @@ Mark each test Pass / Fail with notes.
 | 10 | Every error offers "Try again" + "Open Demo Mode" | | |
 | 11 | "Point at a food-waste image" hint shows when ready & nothing detected | | |
 
+## Scan page — guided UX
+
+| # | Test | Result | Notes |
+|---|------|--------|-------|
+| G1 | After permission, the **live camera feed is visible** (no lingering beige screen) | | |
+| G2 | A **scanning animation** (corner frame, pulsing border, moving line) shows while nothing is detected | | |
+| G3 | Animation/overlays are transparent and do **not** block the camera | | |
+| G4 | **Home** button (top-left) returns to the main page — available before & after scanning | | |
+| G5 | First visit auto-shows the **"How to scan"** guide; "Got it" dismisses it (and it stays dismissed on reload) | | |
+| G6 | **"How to scan?"** button reopens the guide any time | | |
+| G7 | Step labels update: Step 1 (scan) → Step 2 (choose action) → Step 3 (learn / quick check) | | |
+| G8 | Bottom sheet opens **compact**; handle expands it; sheet has a **Back to home** button | | |
+| G9 | `prefers-reduced-motion` stops the scan animations | | |
+
 ## Scan page — detection, exhibit, sheet (needs compiled `.mind` + device)
 
 | # | Test | Result | Notes |
