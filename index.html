@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="PlateWise AR — Scan. Decide. Waste less. A WebAR learning experience for food waste and SDG 12." />
+  <meta name="description" content="PlateWise AR — scan your leftovers, learn what to do next. An AR food-waste learning experience for SDG 12." />
   <meta name="theme-color" content="#1f6e47" />
   <link rel="manifest" href="./manifest.webmanifest" />
   <title>PlateWise AR</title>
@@ -13,48 +13,29 @@
 
   <main class="page">
     <section class="hero">
-      <span class="brand">
-        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 20C6 20 4 15 4 11c5 0 7 3 7 7"/><path d="M12 20c0-7 4-12 8-13 0 8-3 13-8 13"/></svg>
-        PlateWise AR
-      </span>
+      <span class="chip">Food-waste museum, in AR</span>
 
-      <h1 class="hero__title">Scan.<br>Decide.<br>Waste less.</h1>
-      <p class="hero__sub">A WebAR learning experience for food waste and SDG&nbsp;12.</p>
+      <h1 class="hero__title">Scan your leftovers.<br><span class="accent">Learn what to do next.</span></h1>
+      <p class="hero__sub">An AR food-waste learning experience for SDG&nbsp;12.</p>
 
       <div class="hero__cta">
-        <a href="ar.html" class="btn">Start AR</a>
-        <a href="marker.html" class="btn btn--secondary">View Marker</a>
+        <a href="ar.html" class="btn">Start scan</a>
+        <a href="demo.html" class="btn btn--secondary">Try demo</a>
       </div>
 
       <p class="linkrow mt-4">
-        <a href="demo.html">Try Demo</a>
+        <a href="marker.html">View scan images</a>
         <span aria-hidden="true" class="muted">·</span>
         <a href="about.html">About</a>
       </p>
     </section>
 
-    <!-- 3-step at a glance -->
-    <ol class="steps" aria-label="How it works">
-      <li class="step">
-        <span class="step__ico"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8"/><path d="M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8"/><path d="M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16"/><path d="M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16"/><path d="M4 12h16"/></svg></span>
-        <span class="step__n">1</span>
-        <span class="step__label">Scan marker</span>
-      </li>
-      <li class="step">
-        <span class="step__ico"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5 11 15l4.5-5"/></svg></span>
-        <span class="step__n">2</span>
-        <span class="step__label">Choose action</span>
-      </li>
-      <li class="step">
-        <span class="step__ico"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 18h5"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.6 10.8c.5.4.9 1 1 1.7l.1.5h5l.1-.5c.1-.7.5-1.3 1-1.7A6 6 0 0 0 12 3z"/></svg></span>
-        <span class="step__n">3</span>
-        <span class="step__label">Learn what to do</span>
-      </li>
-    </ol>
-
-    <p class="center mt-5">
-      <span class="chip">SDG 12 · Responsible Consumption</span>
-    </p>
+    <!-- Stat ticker -->
+    <div class="ticker mt-6">
+      <span class="chip chip--muted">1.05B tonnes wasted</span>
+      <span class="chip chip--muted">60% from households</span>
+      <span class="chip chip--accent">SDG 12.3</span>
+    </div>
   </main>
 
   <script type="module" src="./src/app.js"></script>

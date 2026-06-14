@@ -13,57 +13,70 @@
   <main class="page stack">
     <header class="center">
       <span class="chip chip--muted">Demo Mode</span>
-      <h1 class="mt-3">Try it without a camera</h1>
-      <p class="lede">Same flow as AR — scan-free.</p>
+      <h1 class="mt-3">Pick an exhibit</h1>
+      <p class="lede">Tap a food-waste image — no camera needed.</p>
     </header>
 
-    <!-- Plate scene -->
-    <div class="scene">
-      <div class="demo-plate" id="demo-plate">
-        <span id="demo-food-icon">🍝</span>
-      </div>
-      <p class="demo-label" id="demo-visual-label">Leftovers on the plate</p>
-    </div>
+    <!-- Sample image targets (rendered by demo-controller.js) -->
+    <div class="target-grid" id="target-grid"></div>
 
-    <!-- Fact + actions card -->
-    <div class="card">
-      <p class="fact" id="fact-display">Loading…</p>
-      <p class="fact-source" id="fact-source"></p>
-
-      <div class="fact-nav">
-        <button type="button" class="icon-btn" id="btn-prev-fact" aria-label="Previous fact">
-          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
-        </button>
-        <span class="fact-nav__count muted text-sm">Facts</span>
-        <button type="button" class="icon-btn" id="btn-next-fact" aria-label="Next fact">
-          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
-        </button>
+    <!-- Selected exhibit -->
+    <section id="demo-stage" hidden class="stack">
+      <div class="exhibit-preview">
+        <img id="demo-image" alt="" />
+        <div class="exhibit-card">
+          <p class="sheet__eyebrow" id="demo-type">Exhibit</p>
+          <h2 class="exhibit-card__title" id="demo-title">—</h2>
+          <span class="chip">SDG 12</span>
+          <p class="exhibit-card__stat" id="demo-stat">—</p>
+          <span class="badge" id="demo-action">Best: —</span>
+        </div>
       </div>
 
-      <div class="actions">
-        <button type="button" class="action action--throw" id="btn-throw" aria-label="Throw food away">
-          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6.5 7l1 13a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1l1-13"/><path d="M10 11v6M14 11v6"/></svg>
-          <span>Throw</span>
-        </button>
-        <button type="button" class="action action--save" id="btn-save" aria-label="Save leftovers">
-          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8.5 12 4l9 4.5v7L12 20l-9-4.5z"/><path d="M3 8.5 12 13l9-4.5"/><path d="M12 13v7"/></svg>
-          <span>Save</span>
-        </button>
-        <button type="button" class="action action--share" id="btn-share" aria-label="Share surplus food">
-          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="12" r="2.4"/><circle cx="17.5" cy="6" r="2.4"/><circle cx="17.5" cy="18" r="2.4"/><path d="M8.2 10.9 15.3 7.1"/><path d="M8.2 13.1 15.3 16.9"/></svg>
-          <span>Share</span>
-        </button>
-        <button type="button" class="action action--compost" id="btn-compost" aria-label="Compost scraps">
-          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21v-8"/><path d="M12 13c0-3.3 2.4-5 6-5 0 3.3-2.4 5-6 5z"/><path d="M12 11C12 8 9.4 6 6 6c0 3 2.6 5 6 5z"/></svg>
-          <span>Compost</span>
-        </button>
+      <div class="card">
+        <p class="fact-source" id="fact-source"></p>
+
+        <div class="actions">
+          <button type="button" class="action action--throw" id="btn-throw" aria-label="Throw food away">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6.5 7l1 13a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1l1-13"/><path d="M10 11v6M14 11v6"/></svg>
+            <span>Throw</span>
+          </button>
+          <button type="button" class="action action--save" id="btn-save" aria-label="Save leftovers">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8.5 12 4l9 4.5v7L12 20l-9-4.5z"/><path d="M3 8.5 12 13l9-4.5"/><path d="M12 13v7"/></svg>
+            <span>Save</span>
+          </button>
+          <button type="button" class="action action--share" id="btn-share" aria-label="Share surplus food">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="12" r="2.4"/><circle cx="17.5" cy="6" r="2.4"/><circle cx="17.5" cy="18" r="2.4"/><path d="M8.2 10.9 15.3 7.1"/><path d="M8.2 13.1 15.3 16.9"/></svg>
+            <span>Share</span>
+          </button>
+          <button type="button" class="action action--compost" id="btn-compost" aria-label="Compost scraps">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21v-8"/><path d="M12 13c0-3.3 2.4-5 6-5 0 3.3-2.4 5-6 5z"/><path d="M12 11C12 8 9.4 6 6 6c0 3 2.6 5 6 5z"/></svg>
+            <span>Compost</span>
+          </button>
+        </div>
+
+        <div class="feedback-panel" id="feedback-panel">Choose what happens next.</div>
+
+        <div class="sheet__foot">
+          <button type="button" class="btn btn--secondary btn--small" id="btn-askmore">Ask more</button>
+          <a href="quiz.html" class="btn btn--secondary btn--small">Quick check →</a>
+        </div>
       </div>
-
-      <div class="feedback-panel" id="feedback-panel">Choose what happens next.</div>
-
-      <a href="quiz.html" class="btn btn--secondary">Quick check →</a>
-    </div>
+    </section>
   </main>
+
+  <!-- Ask-More drawer (shared markup; controlled by src/askmore.js) -->
+  <div class="drawer" id="askmore" hidden role="dialog" aria-modal="true" aria-labelledby="askmore-title">
+    <div class="drawer__backdrop" id="askmore-backdrop"></div>
+    <div class="drawer__panel">
+      <button type="button" class="drawer__close" id="askmore-close" aria-label="Close">✕</button>
+      <h2 class="drawer__title" id="askmore-title">Why this matters</h2>
+      <div class="drawer__section"><h3>What am I looking at?</h3><p id="askmore-look"></p></div>
+      <div class="drawer__section"><h3>Why it matters</h3><p id="askmore-why"></p></div>
+      <div class="drawer__section"><h3>What should I do?</h3><p id="askmore-do"></p></div>
+      <div class="drawer__section drawer__safety"><h3>Safety note</h3><p id="askmore-safety"></p></div>
+    </div>
+  </div>
 
   <script type="module" src="./src/app.js"></script>
   <script type="module" src="./src/demo-controller.js"></script>

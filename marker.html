@@ -3,58 +3,81 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="PlateWise AR — the Hiro marker to scan" />
+  <meta name="description" content="PlateWise AR — the food-waste images you can scan" />
   <meta name="theme-color" content="#1f6e47" />
-  <title>PlateWise AR — Marker</title>
+  <title>PlateWise AR — Scan images</title>
   <link rel="stylesheet" href="./src/styles.css" />
-  <style>
-    /* Print: show only the marker, sized ~10 cm so it scans well */
-    @media print {
-      .marker-image { width: 100mm; max-width: 100mm; height: 100mm; margin: 0 auto; }
-      .marker-caption { margin-top: 6mm; font-size: 11pt; }
-    }
-  </style>
 </head>
 <body>
 
   <main class="page stack">
     <header class="center">
-      <h1>Scan this marker</h1>
-      <p class="lede">Print it, or open it on another screen.</p>
+      <h1>Scan images</h1>
+      <p class="lede">Open one on another screen (or print it), then scan it from the Scan page.</p>
     </header>
 
-    <!-- Marker (the real, standard Hiro image) -->
-    <div class="marker-card">
-      <div class="marker-image-wrap">
-        <img
-          class="marker-image"
-          src="./assets/marker/hiro-marker.jpg"
-          alt="Standard Hiro AR marker — a black square border with the word Hiro in the centre"
-          width="280"
-          height="280"
-        />
+    <p class="missing-note no-print">
+      PlateWise recognises these <strong>curated images only</strong> — not arbitrary food photos (yet).
+    </p>
+
+    <div class="shot">
+      <img src="./assets/targets/source/leftover-rice.jpg" alt="A plate of leftover white rice" loading="lazy" />
+      <div class="shot__cap">
+        <h3>Leftover rice</h3>
+        <p class="muted text-sm mb-3">Edible leftovers — save these.</p>
+        <a class="btn btn--secondary btn--small no-print" href="./assets/targets/source/leftover-rice.jpg" download>Download</a>
       </div>
-      <p class="marker-caption muted text-sm">Standard Hiro marker · keep the black border intact</p>
     </div>
 
-    <!-- Actions -->
+    <div class="shot">
+      <img src="./assets/targets/source/fruit-peels.jpg" alt="Citrus fruit peels" loading="lazy" />
+      <div class="shot__cap">
+        <h3>Fruit peels</h3>
+        <p class="muted text-sm mb-3">Unavoidable scraps — compost.</p>
+        <a class="btn btn--secondary btn--small no-print" href="./assets/targets/source/fruit-peels.jpg" download>Download</a>
+      </div>
+    </div>
+
+    <div class="shot">
+      <img src="./assets/targets/source/bread-waste.jpg" alt="A large pile of discarded bread slices" loading="lazy" />
+      <div class="shot__cap">
+        <h3>Bread waste</h3>
+        <p class="muted text-sm mb-3">Edible surplus — share or freeze.</p>
+        <a class="btn btn--secondary btn--small no-print" href="./assets/targets/source/bread-waste.jpg" download>Download</a>
+      </div>
+    </div>
+
+    <div class="shot">
+      <img src="./assets/targets/source/mixed-leftovers.jpg" alt="Mixed vegetable leftovers and trimmings" loading="lazy" />
+      <div class="shot__cap">
+        <h3>Mixed leftovers</h3>
+        <p class="muted text-sm mb-3">Use edible parts; compost the rest.</p>
+        <a class="btn btn--secondary btn--small no-print" href="./assets/targets/source/mixed-leftovers.jpg" download>Download</a>
+      </div>
+    </div>
+
+    <div class="shot">
+      <img src="./assets/targets/source/drink-waste.jpg" alt="Discarded drinks and single-use cups" loading="lazy" />
+      <div class="shot__cap">
+        <h3>Drink waste</h3>
+        <p class="muted text-sm mb-3">Drinks &amp; cups — finish, keep, reuse.</p>
+        <a class="btn btn--secondary btn--small no-print" href="./assets/targets/source/drink-waste.jpg" download>Download</a>
+      </div>
+    </div>
+
     <div class="stack no-print">
-      <a href="ar.html" class="btn">Start AR</a>
-      <div class="btn-row">
-        <button type="button" class="btn btn--secondary" onclick="window.print()">Print</button>
-        <a class="btn btn--secondary" href="./assets/marker/hiro-marker.jpg" download="platewise-hiro-marker.jpg">Download</a>
-      </div>
+      <a href="ar.html" class="btn">Start scan</a>
+      <a href="demo.html" class="btn btn--secondary">Try demo instead</a>
     </div>
 
-    <!-- Tips tucked away -->
     <details class="acc no-print">
       <summary>Scanning tips</summary>
       <div class="acc__body">
         <ul>
-          <li>Print clearly in black &amp; white on white paper.</li>
-          <li>Keep the marker flat and well-lit — avoid glare.</li>
-          <li>Don't crop or cover the black border.</li>
-          <li>Hold the camera about 20–40 cm away.</li>
+          <li>Fill the camera frame with the image, held flat.</li>
+          <li>Use good, even lighting and avoid glare.</li>
+          <li>Hold steady about 20–40 cm away.</li>
+          <li>One image at a time works best.</li>
         </ul>
       </div>
     </details>

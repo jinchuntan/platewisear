@@ -1,146 +1,115 @@
 /**
- * demo-controller.js — Controls the non-AR demo page
+ * demo-controller.js — Camera-free mirror of the image-target experience.
  *
- * Mirrors the educational flow of the AR page without camera/marker.
- * Updates the stylised plate scene, fact display, and feedback panel
- * based on user interactions.
- *
- * This file is heavily commented for use in the technical report.
+ * Lets the user pick a sample food-waste image (the same curated targets used
+ * by AR), then shows the exhibit card, contextual actions, target-specific
+ * guidance, and the shared Ask-More drawer. No camera, no AI.
  */
 
-import { facts, actions } from './content.js';
+import { TARGETS, ACTION_LABELS } from './food-targets.js';
 import { saveLastAction } from './storage.js';
+import { initAskMore } from './askmore.js';
 import { debug } from './utils.js';
 
-// ---------------------------------------------------------------------------
-// State
-// ---------------------------------------------------------------------------
+let currentTarget = null;
+const askMore = initAskMore();
 
-/** Index of the currently displayed fact (0-based). */
-let currentFactIndex = 0;
-
-// ---------------------------------------------------------------------------
-// DOM references
-// ---------------------------------------------------------------------------
-
-const factDisplayEl = document.getElementById('fact-display');
+// --- refs ---
+const gridEl = document.getElementById('target-grid');
+const stageEl = document.getElementById('demo-stage');
+const imageEl = document.getElementById('demo-image');
+const typeEl = document.getElementById('demo-type');
+const titleEl = document.getElementById('demo-title');
+const statEl = document.getElementById('demo-stat');
+const actionBadgeEl = document.getElementById('demo-action');
 const factSourceEl = document.getElementById('fact-source');
 const feedbackPanelEl = document.getElementById('feedback-panel');
-const demoPlateEl = document.getElementById('demo-plate');
-const demoFoodIconEl = document.getElementById('demo-food-icon');
-const demoVisualLabelEl = document.getElementById('demo-visual-label');
 
-const btnPrev = document.getElementById('btn-prev-fact');
-const btnNext = document.getElementById('btn-next-fact');
 const btnThrow = document.getElementById('btn-throw');
 const btnSave = document.getElementById('btn-save');
 const btnShare = document.getElementById('btn-share');
 const btnCompost = document.getElementById('btn-compost');
+const btnAskMore = document.getElementById('btn-askmore');
+
+const actionButtons = { throwAway: btnThrow, saveLeftovers: btnSave, share: btnShare, compost: btnCompost };
 
 debug('demo-controller.js loaded');
 
 // ---------------------------------------------------------------------------
-// Fact navigation
+// Render the selectable sample image cards
 // ---------------------------------------------------------------------------
+function renderGrid() {
+  if (!gridEl) return;
+  gridEl.innerHTML = TARGETS.map(
+    (t) =>
+      `<button type="button" class="target-card" data-index="${t.targetIndex}">` +
+      `<img class="target-card__img" src="${t.image}" alt="${t.title}" loading="lazy" />` +
+      `<span class="target-card__label">${t.title}</span></button>`
+  ).join('');
 
-/**
- * Render the current fact in the DOM.
- */
-function updateFactDisplay() {
-  const fact = facts[currentFactIndex];
-  factDisplayEl.textContent = `${fact.short} (${currentFactIndex + 1}/${facts.length})`;
-  if (factSourceEl) factSourceEl.textContent = `Source: ${fact.source}`;
-  debug('Demo fact updated:', currentFactIndex + 1, '/', facts.length);
+  gridEl.querySelectorAll('.target-card').forEach((card) => {
+    card.addEventListener('click', () => selectTarget(Number(card.dataset.index)));
+  });
 }
 
-// Show the first fact immediately
-updateFactDisplay();
-
-btnPrev?.addEventListener('click', () => {
-  currentFactIndex = (currentFactIndex - 1 + facts.length) % facts.length;
-  updateFactDisplay();
-});
-
-btnNext?.addEventListener('click', () => {
-  currentFactIndex = (currentFactIndex + 1) % facts.length;
-  updateFactDisplay();
-});
-
 // ---------------------------------------------------------------------------
-// Action handlers
+// Select an exhibit
 // ---------------------------------------------------------------------------
+function selectTarget(index) {
+  const target = TARGETS.find((t) => t.targetIndex === index);
+  if (!target) return;
+  currentTarget = target;
+  debug('Demo selected:', target.id);
 
-/**
- * Reset the plate visual to its default state.
- */
-function resetDemoVisual() {
-  if (demoPlateEl) {
-    demoPlateEl.style.transform = '';
-    demoPlateEl.style.borderColor = '#bdbdbd';
-  }
-}
+  imageEl.src = target.image;
+  imageEl.alt = target.title;
+  typeEl.textContent = target.wasteType;
+  titleEl.textContent = target.title;
+  statEl.textContent = target.quickFact;
+  actionBadgeEl.textContent = `Best: ${ACTION_LABELS[target.recommendedAction]}`;
+  factSourceEl.textContent = `Source: ${target.source}`;
 
-/**
- * Apply a food-waste action in demo mode.
- *
- * Updates:
- *  - plate visual (icon, colour, size hint)
- *  - visual label below the plate
- *  - feedback panel text and style
- *  - localStorage
- *
- * @param {'throwAway'|'saveLeftovers'|'share'|'compost'} actionId
- */
-function applyAction(actionId) {
-  const action = actions[actionId];
-  if (!action) return;
-
-  debug('Demo ACTION selected:', actionId);
-  resetDemoVisual();
-
-  // Update plate visual per action
-  switch (actionId) {
-    case 'throwAway':
-      demoFoodIconEl.textContent = '🗑️';
-      demoPlateEl.style.borderColor = '#d32f2f';
-      demoPlateEl.style.transform = 'scale(1.1)';
-      demoVisualLabelEl.textContent = 'Food thrown away — waste grows';
-      break;
-
-    case 'saveLeftovers':
-      demoFoodIconEl.textContent = '📦';
-      demoPlateEl.style.borderColor = '#1565c0';
-      demoPlateEl.style.transform = 'scale(0.9)';
-      demoVisualLabelEl.textContent = 'Leftovers saved for later';
-      break;
-
-    case 'share':
-      demoFoodIconEl.textContent = '🤝';
-      demoPlateEl.style.borderColor = '#7b1fa2';
-      demoPlateEl.style.transform = 'scale(0.9)';
-      demoVisualLabelEl.textContent = 'Surplus shared with others';
-      break;
-
-    case 'compost':
-      demoFoodIconEl.textContent = '🌱';
-      demoPlateEl.style.borderColor = '#ff9800';
-      demoPlateEl.style.transform = 'scale(0.95)';
-      demoVisualLabelEl.textContent = 'Scraps composted — nutrients returned';
-      break;
-  }
-
-  // Update feedback panel
-  feedbackPanelEl.textContent = `${action.label}: ${action.feedback}`;
+  feedbackPanelEl.textContent = target.defaultMessage;
   feedbackPanelEl.className = 'feedback-panel';
-  if (action.impactLevel === 'negative') feedbackPanelEl.classList.add('feedback-panel--negative');
-  if (action.impactLevel === 'neutral') feedbackPanelEl.classList.add('feedback-panel--neutral');
 
-  // Persist
-  saveLastAction(actionId);
+  highlightRecommended(target.recommendedAction);
+  // mark the active card
+  gridEl.querySelectorAll('.target-card').forEach((c) =>
+    c.classList.toggle('is-active', Number(c.dataset.index) === index)
+  );
+
+  stageEl.hidden = false;
+  stageEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// Wire up buttons
+function highlightRecommended(actionId) {
+  Object.entries(actionButtons).forEach(([id, btn]) => {
+    btn?.classList.toggle('is-recommended', id === actionId);
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Actions (target-specific guidance)
+// ---------------------------------------------------------------------------
+function applyAction(actionId) {
+  if (!currentTarget) return;
+  const guidance = currentTarget.actionGuidance[actionId];
+  feedbackPanelEl.textContent = `${ACTION_LABELS[actionId]}: ${guidance}`;
+  feedbackPanelEl.className = 'feedback-panel';
+  if (actionId === 'throwAway') feedbackPanelEl.classList.add('feedback-panel--negative');
+  else if (actionId === currentTarget.recommendedAction) feedbackPanelEl.classList.add('feedback-panel--positive');
+  else feedbackPanelEl.classList.add('feedback-panel--neutral');
+  saveLastAction(actionId);
+  debug('Demo action:', actionId, 'on', currentTarget.id);
+}
+
 btnThrow?.addEventListener('click', () => applyAction('throwAway'));
 btnSave?.addEventListener('click', () => applyAction('saveLeftovers'));
 btnShare?.addEventListener('click', () => applyAction('share'));
 btnCompost?.addEventListener('click', () => applyAction('compost'));
+btnAskMore?.addEventListener('click', () => askMore.open(currentTarget));
+
+// ---------------------------------------------------------------------------
+// Init
+// ---------------------------------------------------------------------------
+renderGrid();

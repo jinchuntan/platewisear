@@ -2,7 +2,9 @@
 
 **A Mobile WebAR Application for Food Waste Awareness under SDG 12**
 
-PlateWise AR is an educational prototype that uses browser-based Augmented Reality to help users explore how everyday food-waste decisions connect to environmental impact, household responsibility, and sustainable behaviour.
+PlateWise AR turns **curated food-waste images into AR learning exhibits**. Scan a food-waste image and a short AR exhibit appears over it — explaining what the waste represents, why it matters under SDG 12, and what you can do next. Inspired by food-waste museum concepts.
+
+> **Recognition scope (honest):** the app recognises **only the curated image targets** included with it — not arbitrary food photos — and it does **not** confirm food safety. A future AI mode could analyse uploaded photos; that is **not** part of this version (no AI / OpenRouter / backend yet).
 
 ---
 
@@ -14,17 +16,16 @@ This project is aligned with **United Nations Sustainable Development Goal 12: R
 
 ## Features
 
-- **Marker-based AR experience** — scan the real, printed **Hiro** marker to see an interactive AR scene with a 3D plate, food pile, action visuals, an SDG 12 label, and floating statistics.
-- **Robust camera handling** — clear, user-facing states for *camera starting, permission needed, permission denied, browser unsupported, AR loading, AR ready, AR failed* — with a secure-context check, getUserMedia support check, an ~10 s start-up timeout, troubleshooting tips, and a one-tap **Demo Mode** fallback.
-- **Learning-flow progress indicator** — a 4-step guide (Scan marker → Read facts → Choose action → Complete quiz) that advances as the user progresses.
-- **Four food-waste actions** — Throw Away, Save Leftovers, Share, Compost — each updating both the AR scene **and** the DOM feedback panel with educational explanations.
-- **Fact navigation with sources** — browse food-waste statistics drawn from official sources (UNEP, UN SDG 12), each shown with its **source citation**.
-- **Non-AR demo mode** — a camera-free mirror of the AR flow for debugging, report screenshots, and presentations.
-- **Printable / downloadable marker page** — shows the exact Hiro marker image with Print and Download options and clear print/scan instructions.
-- **Quiz and reflection** — 5 multiple-choice questions with scoring and a personal action pledge (both saved to localStorage), plus a recall of the user's last AR/Demo action.
-- **About / Sources page** — project overview, SDG 12 alignment, assignment component explanations, empirical facts, and full references.
-- **Mobile-first responsive design** — large buttons, readable text, clean academic look.
-- **Accessibility basics** — semantic HTML, readable contrast, focus states, aria-labels, reduced-motion support.
+- **Image-target AR scanning** — point the camera at a curated food-waste image; MindAR detects it and anchors an AR **exhibit card** (title, SDG 12 tag, a statistic, recommended-action badge, highlight frame) over the image.
+- **Contextual bottom sheet** — appears **only after detection**, titled with the detected exhibit, with four actions (**Throw · Save · Share · Compost**) plus **Ask more**. When the image is lost it drops back to a “Point at a food-waste image” hint.
+- **Target-specific guidance** — each action gives advice tailored to the detected waste (e.g. compost is recommended for kitchen scraps, sharing for edible surplus).
+- **“Ask more” drawer** — a clean, non-AI explanation panel: *What am I looking at? · Why it matters · What should I do? · Safety note* (content from `src/food-targets.js`).
+- **Robust camera handling** — user-facing states for *permission needed/denied, unsupported browser, loading, ready, failed*, a secure-context + getUserMedia check, a start-up timeout, and a one-tap **Demo Mode** fallback.
+- **Graceful setup** — if the compiled `.mind` target file isn’t installed yet, the Scan page says so clearly and points to Demo Mode (which always works).
+- **Demo Mode (no camera)** — pick a sample food-waste image and get the same exhibit, actions, guidance, and Ask-More drawer.
+- **Quiz & reflection** — 5 questions with scoring and a pledge (saved to localStorage), plus a recall of the user’s last action.
+- **Premium, mobile-first UI** — warm cream + grain, charcoal ink, gold/green accents, top pill nav, soft cards; minimal copy.
+- **Accessibility basics** — semantic HTML, AA contrast, visible focus states, aria-labels, reduced-motion support, non-colour status cues.
 
 ---
 
@@ -32,31 +33,42 @@ This project is aligned with **United Nations Sustainable Development Goal 12: R
 
 | Layer | Technology |
 |-------|-----------|
-| AR Engine | [A-Frame](https://aframe.io/) 1.6.0 + [AR.js](https://ar-js-org.github.io/AR.js-Docs/) 3.4.8 (pinned, locally vendored) |
-| Marker | Standard **Hiro** marker (real image, `public/assets/marker/hiro-marker.jpg`) used via `<a-marker preset="hiro">` |
+| AR Engine | [A-Frame](https://aframe.io/) 1.3.0 + [MindAR](https://github.com/hiukim/mind-ar-js) 1.2.5 image tracking (pinned, locally vendored) |
+| Targets | Curated food-waste images compiled to a MindAR `.mind` file |
 | Frontend | Vanilla HTML, CSS, JavaScript (ES modules) |
 | Build Tool | [Vite](https://vitejs.dev/) 5.x |
 | Storage | Browser localStorage |
-| External runtime dependencies | None — A-Frame + AR.js are vendored under `public/vendor/`, so no CDN is required at runtime |
+| External runtime dependencies | None — A-Frame + MindAR are vendored under `public/vendor/`, so no CDN is required at runtime |
 
 No React, Next.js, Vue, TypeScript, Tailwind, databases, authentication, backend APIs, machine learning, or external sensors.
 
 ### AR Dependencies (pinned & vendored)
 
-AR depends on two libraries that are **pinned to specific stable versions and committed to the repository** under `public/vendor/`:
+Image tracking uses two libraries **pinned and committed** under `public/vendor/`:
 
 | File | Version | Upstream source |
 |------|---------|-----------------|
-| `public/vendor/aframe-1.6.0.min.js` | A-Frame **1.6.0** | `https://aframe.io/releases/1.6.0/aframe.min.js` |
-| `public/vendor/aframe-ar-3.4.8.js` | AR.js **3.4.8** | `https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.8/aframe/build/aframe-ar.js` |
+| `public/vendor/aframe-1.3.0.min.js` | A-Frame **1.3.0** | `https://aframe.io/releases/1.3.0/aframe.min.js` |
+| `public/vendor/mindar-image-aframe-1.2.5.prod.js` | MindAR **1.2.5** | `https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js` |
 
-**Why vendored instead of a CDN?** The previous version loaded AR.js from the `master` branch via `raw.githack` — a *moving target* that can change or break without notice and is explicitly not intended for production. Vendoring pinned copies means:
+A-Frame 1.3.0 + MindAR 1.2.5 is the **documented, stable pair**. Vendoring (rather than a CDN) keeps builds reproducible and works on networks that block CDNs or when offline. The previous Hiro/AR.js engine has been removed in favour of image targets.
 
-- the AR engine never changes unexpectedly between sessions (reproducible builds),
-- the app keeps working even on networks that block CDNs or when offline,
-- A-Frame 1.6.0 and AR.js 3.4.8 are a maintainer-tested, compatible pair.
+### Image-target scanning & generating the `.mind` file
 
-The choice favours **stability over latest version**. To update, download a newer pinned release into `public/vendor/` and update the two `<script>` tags in `ar.html`.
+The Scan page (`ar.html`) loads `public/assets/targets/food-waste-targets.mind`. That file is **generated from the source images** in `public/assets/targets/source/` and is created **once** (it is not produced by `npm run build`). Until it exists, the Scan page shows a friendly “Scan targets not installed” screen and **Demo Mode still works**.
+
+**Add / change targets**
+
+1. Put the image(s) in `public/assets/targets/source/`.
+2. Add a matching entry to `TARGETS` in `src/food-targets.js` (set `targetIndex` in order) and an `<a-entity mindar-image-target="targetIndex: N">` block in `ar.html`.
+3. Compile the `.mind` file (below) **in the same order** as `targetIndex`.
+
+**Compile the `.mind` file**
+
+- **Recommended (web):** open <https://hiukim.github.io/mind-ar-js-doc/tools/compile>, add the source images in `targetIndex` order (0,1,2…), Start, Download `targets.mind`, rename to `food-waste-targets.mind`, and place it in `public/assets/targets/`.
+- **Optional (Node):** `npm i -D mind-ar canvas && node scripts/compile-targets.mjs` (best-effort; falls back to the web tool if the native build fails).
+
+See `public/assets/targets/README.md` for the full table and order.
 
 ---
 
@@ -114,28 +126,18 @@ Build and deploy to any static hosting provider (GitHub Pages, Netlify, Vercel) 
 
 ---
 
-## How to Print / Use the Marker
+## How to Use the Scan Images
 
-The app uses the **standard Hiro marker** — the exact image AR.js recognises through
-`<a-marker preset="hiro">`. The real image lives at:
+The **Scan images** page (`marker.html`) shows the curated food-waste images the app recognises.
+To scan them you need something to point the camera *at*:
 
-```
-public/assets/marker/hiro-marker.jpg
-```
+1. Open the **Scan images** page on a computer/tablet, **or** download an image with the **Download** button.
+2. Display the image on another screen (or print it).
+3. On your phone, open **Start scan** and point the camera at the image (fill the frame, hold flat, good light, ~20–40 cm).
+4. The AR exhibit appears over the image and the bottom sheet slides up.
 
-It is displayed on the **Marker** page and offered as a **Download Marker** link.
-
-1. Open the **Marker** page in the app.
-2. Either tap **🖨️ Print This Page** (the print layout sizes the marker to ~10 cm) or tap
-   **⬇️ Download Marker** to save `hiro-marker.jpg` and print/share it yourself.
-3. **Print clearly in black and white** on plain white paper (at least 8 cm × 8 cm).
-4. **Do not crop the black border** — AR.js needs the full black frame to detect the marker.
-5. **Keep the marker flat and well-lit** — avoid bends, glare, and deep shadows.
-6. **Scan from around 20–40 cm away** with the camera roughly square to the marker.
-7. No printer? Display the Marker page on a laptop or tablet screen and scan that.
-
-> The marker is the standard **Hiro** pattern recognised by AR.js / ARToolKit. The marker page
-> shows this exact image so what you print always matches what the AR page expects.
+> The app recognises these **curated images only** — not arbitrary food photos. For a camera-free
+> walkthrough, use **Demo Mode**.
 
 ---
 
@@ -143,29 +145,36 @@ It is displayed on the **Marker** page and offered as a **Download Marker** link
 
 ```
 platewisear/
-├── index.html              Home page
-├── ar.html                 AR experience (A-Frame + AR.js)
-├── demo.html               Non-AR demo mode
-├── marker.html             Printable marker page
+├── index.html              Home (landing)
+├── ar.html                 Scan — MindAR image tracking + exhibit + bottom sheet
+├── demo.html               Demo Mode (no camera) — sample image exhibits
+├── marker.html             Scan images gallery (curated targets)
 ├── quiz.html               Quiz and reflection
 ├── about.html              About / sources
 ├── package.json
 ├── vite.config.js
 ├── README.md
+├── scripts/
+│   └── compile-targets.mjs     Optional MindAR .mind compiler
 ├── public/
 │   ├── manifest.webmanifest
-│   ├── vendor/                 Pinned, vendored AR libraries (A-Frame, AR.js)
+│   ├── vendor/                 Vendored A-Frame 1.3.0 + MindAR 1.2.5
 │   └── assets/
 │       ├── icons/
-│       ├── marker/             hiro-marker.jpg — the real Hiro marker image
-│       └── screenshots-placeholder/
+│       ├── targets/
+│       │   ├── source/         Curated food-waste images (+ README)
+│       │   ├── food-waste-targets.mind   (you compile this — see README)
+│       │   └── README.md       How to compile / add targets
+│       └── marker/             (legacy Hiro images — no longer used)
 ├── src/
-│   ├── styles.css          Global styles
-│   ├── app.js              Shared page initialisation
-│   ├── ar-controller.js    AR scene and overlay controller
-│   ├── demo-controller.js  Demo mode controller
+│   ├── styles.css          Design system
+│   ├── app.js              Shared init + top pill nav
+│   ├── food-targets.js     Curated targets + exhibit content (single source)
+│   ├── ar-controller.js    MindAR detection, exhibit, bottom sheet
+│   ├── demo-controller.js  Demo Mode controller
+│   ├── askmore.js          Shared "Ask more" drawer
 │   ├── quiz.js             Quiz and pledge logic
-│   ├── content.js          All educational data and content
+│   ├── content.js          Facts, quiz questions, pledges, sources
 │   ├── storage.js          localStorage helpers
 │   └── utils.js            Shared utilities
 └── docs/
@@ -180,25 +189,26 @@ platewisear/
 
 ## Known Limitations
 
-- **Marker-based AR, not real food recognition.** The app uses the standard Hiro marker; it does not detect or recognise real food items.
-- **No AI features (by design).** This is the hardened **core** version. There is **no** AI, OpenRouter, image scanning, object recognition, backend API, or machine learning — these are deliberately out of scope and planned as future work (see below).
-- **Educational prototype only.** The app does not measure actual household food-waste reduction unless user evaluation is later conducted.
-- **Simplified statistics.** Facts are presented in a concise learning-friendly format and should be cited properly in the academic report.
-- **HTTPS requirement.** Camera-based AR requires HTTPS or localhost. Plain HTTP blocks camera access on mobile browsers — the AR page detects this and shows a clear "HTTPS required" state with a Demo Mode fallback.
-- **Browser compatibility.** AR.js works best in Chrome and Firefox on Android. iOS Safari has limited/variable WebRTC support which may affect camera access; Demo Mode works everywhere.
+- **Curated image targets only.** The app recognises the included food-waste images (compiled into the `.mind` file) — **not** arbitrary food photos.
+- **No AI yet (by design).** No AI / OpenRouter / image analysis / object recognition / backend. These are planned future work (see below).
+- **No food-safety diagnosis.** The app cannot judge whether food is safe to eat or share — it only offers general guidance and a safety note.
+- **No exact weight or carbon estimates.** Figures shown are sourced statistics, not per-item measurements.
+- **`.mind` file must be generated once.** Until `public/assets/targets/food-waste-targets.mind` exists, the Scan page shows “targets not installed”; Demo Mode works regardless.
+- **HTTPS requirement.** Camera AR requires HTTPS or localhost; the Scan page detects this and offers Demo Mode.
+- **Browser compatibility.** MindAR works best in Chrome / Firefox on Android. iOS Safari WebRTC is variable; Demo Mode works everywhere.
 
 ---
 
 ## Future Work (NOT part of the current core version)
 
-The following are **planned future enhancements** and are intentionally **not implemented** in this core release:
+The following are **planned future enhancements** and are intentionally **not implemented** in this version:
 
-- **AI features** — e.g. AI-generated tips/explanations via an LLM (such as OpenRouter), real **image scanning / object recognition** of food, and any **machine-learning** or **backend API** integration. None of this exists yet; the current app is fully client-side and marker-based.
-- Animated AR elements (e.g. food pile shrinking, compost plant growing).
-- A richer 3D scene with GLTF models.
+- **AI image analysis** — let users scan *their own* food-waste photos and have an LLM/vision model (e.g. via OpenRouter) identify the waste and generate tailored guidance. This would replace the static "Ask more" content and the curated-targets-only limitation. The code marks the swap point with: *"Future AI mode: replace this static explanation with OpenRouter vision analysis."*
+- More curated image targets and richer AR exhibits.
 - More quiz questions and adaptive difficulty.
-- User evaluation studies and integration of findings.
-- Multilingual support and Progressive Web App (PWA) offline caching.
+- User evaluation studies; multilingual support; PWA offline caching.
+
+The current app is fully client-side: **no AI, no backend, no object recognition.**
 
 ---
 

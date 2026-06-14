@@ -3,24 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <meta name="description" content="PlateWise AR — Augmented Reality food-waste experience" />
+  <meta name="description" content="PlateWise AR — scan a food-waste image" />
   <meta name="theme-color" content="#1f6e47" />
-  <title>PlateWise AR — AR</title>
+  <title>PlateWise AR — Scan</title>
   <link rel="stylesheet" href="./src/styles.css" />
 
   <!--
     ==========================================================================
-    AR dependencies — PINNED & LOCALLY VENDORED for stability
+    AR dependencies — PINNED & LOCALLY VENDORED (no CDN, no "master")
     ==========================================================================
-    A-Frame 1.6.0 and AR.js 3.4.8 are committed to /public/vendor/ (no CDN /
-    "master" branch). These MUST be classic scripts in <head> so AFRAME is a
-    global before the scene is created. See README → "AR Dependencies".
+    Image tracking uses MindAR (image targets), the documented stable pair:
+      • A-Frame 1.3.0
+      • MindAR 1.2.5 (mindar-image-aframe)
+    Classic scripts in <head> so AFRAME + MindAR components register before the
+    scene is parsed. See README → "AR Dependencies".
   -->
-  <script src="./vendor/aframe-1.6.0.min.js"></script>
-  <script src="./vendor/aframe-ar-3.4.8.js"></script>
+  <script src="./vendor/aframe-1.3.0.min.js"></script>
+  <script src="./vendor/mindar-image-aframe-1.2.5.prod.js"></script>
 
   <style>
-    /* AR page only — camera fills the viewport */
     html, body { margin: 0; height: 100%; overflow: hidden; background: #000; }
     .a-enter-vr, .a-orientation-modal { display: none !important; }
   </style>
@@ -28,21 +29,17 @@
 <body data-tabbar="off">
 
   <!--
-    ==========================================================================
-    AR STATUS / LOADING SCREEN
-    ==========================================================================
-    Full-viewport layer shown while the camera/AR starts and for every error
-    state. Hidden once AR is ready. Text is driven by ar-controller.js.
+    AR STATUS / LOADING SCREEN — driven by ar-controller.js.
+    Also shows the graceful "targets not installed" state when the compiled
+    .mind file is missing.
   -->
   <div id="ar-status-screen" class="ar-status" role="status" aria-live="polite">
     <div class="ar-status__box">
       <div class="ar-status__icon" id="ar-status-icon">📷</div>
       <h1 class="ar-status__title" id="ar-status-title">Starting camera…</h1>
       <p class="ar-status__message" id="ar-status-message">Allow camera access when asked.</p>
-
       <div class="ar-status__spinner" id="ar-status-spinner" aria-hidden="true"></div>
 
-      <!-- Troubleshooting — collapsed accordion, revealed only on errors -->
       <details class="acc ar-status__troubleshoot" id="ar-status-troubleshoot" hidden>
         <summary>Troubleshooting</summary>
         <div class="acc__body">
@@ -55,7 +52,6 @@
         </div>
       </details>
 
-      <!-- Error actions — Demo Mode is always offered -->
       <div class="ar-status__actions" id="ar-status-actions" hidden>
         <button type="button" class="btn btn--small" id="ar-retry">Try again</button>
         <a href="demo.html" class="btn btn--accent btn--small" id="ar-demo-link">Open Demo Mode</a>
@@ -64,122 +60,117 @@
     </div>
   </div>
 
-  <!-- Mount point: the scene template is cloned here only after camera checks pass -->
-  <div id="ar-scene-mount"></div>
+  <!--
+    ==========================================================================
+    MindAR scene — image targets
+    ==========================================================================
+    imageTargetSrc points to the compiled targets file. autoStart:no so the
+    controller can run camera pre-checks first. The 3 target entities below
+    each hold a floating "museum label" exhibit; MindAR shows/hides them as the
+    matching food-waste image is found/lost. Exhibit text is filled from
+    src/food-targets.js (single source of truth). DO NOT rename the arx-* ids.
+  -->
+  <a-scene
+    id="mindar-scene"
+    mindar-image="imageTargetSrc: ./assets/targets/food-waste-targets.mind; autoStart: false; uiLoading: no; uiScanning: no; uiError: no; maxTrack: 1;"
+    color-space="sRGB"
+    renderer="colorManagement: true, physicallyCorrectLights"
+    vr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: false"
+  >
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+    <!-- Target 0 — Leftover rice -->
+    <a-entity class="exhibit" mindar-image-target="targetIndex: 0">
+      <a-plane class="exhibit-frame" position="0 0 -0.02" width="1.06" height="0.72" color="#c98a2b" opacity="0.85"></a-plane>
+      <a-entity position="0 0.66 0.02">
+        <a-plane width="1.18" height="0.5" color="#fbf7ef" opacity="0.97"></a-plane>
+        <a-text id="arx-title-0" value="" align="center" color="#22262f" width="2" position="0 0.16 0.01" wrap-count="22"></a-text>
+        <a-text value="SDG 12" align="center" color="#1f6e47" width="1.7" position="0 0.04 0.01"></a-text>
+        <a-text id="arx-stat-0" value="" align="center" color="#5e6660" width="1.5" position="0 -0.07 0.01" wrap-count="36"></a-text>
+        <a-plane position="0 -0.2 0.01" width="0.62" height="0.11" color="#1f6e47"></a-plane>
+        <a-text id="arx-action-0" value="" align="center" color="#ffffff" width="1.7" position="0 -0.2 0.02"></a-text>
+      </a-entity>
+    </a-entity>
+
+    <!-- Target 1 — Fruit peels -->
+    <a-entity class="exhibit" mindar-image-target="targetIndex: 1">
+      <a-plane class="exhibit-frame" position="0 0 -0.02" width="1.06" height="0.72" color="#c98a2b" opacity="0.85"></a-plane>
+      <a-entity position="0 0.66 0.02">
+        <a-plane width="1.18" height="0.5" color="#fbf7ef" opacity="0.97"></a-plane>
+        <a-text id="arx-title-1" value="" align="center" color="#22262f" width="2" position="0 0.16 0.01" wrap-count="22"></a-text>
+        <a-text value="SDG 12" align="center" color="#1f6e47" width="1.7" position="0 0.04 0.01"></a-text>
+        <a-text id="arx-stat-1" value="" align="center" color="#5e6660" width="1.5" position="0 -0.07 0.01" wrap-count="36"></a-text>
+        <a-plane position="0 -0.2 0.01" width="0.62" height="0.11" color="#1f6e47"></a-plane>
+        <a-text id="arx-action-1" value="" align="center" color="#ffffff" width="1.7" position="0 -0.2 0.02"></a-text>
+      </a-entity>
+    </a-entity>
+
+    <!-- Target 2 — Bread waste -->
+    <a-entity class="exhibit" mindar-image-target="targetIndex: 2">
+      <a-plane class="exhibit-frame" position="0 0 -0.02" width="1.06" height="0.72" color="#c98a2b" opacity="0.85"></a-plane>
+      <a-entity position="0 0.66 0.02">
+        <a-plane width="1.18" height="0.5" color="#fbf7ef" opacity="0.97"></a-plane>
+        <a-text id="arx-title-2" value="" align="center" color="#22262f" width="2" position="0 0.16 0.01" wrap-count="22"></a-text>
+        <a-text value="SDG 12" align="center" color="#1f6e47" width="1.7" position="0 0.04 0.01"></a-text>
+        <a-text id="arx-stat-2" value="" align="center" color="#5e6660" width="1.5" position="0 -0.07 0.01" wrap-count="36"></a-text>
+        <a-plane position="0 -0.2 0.01" width="0.62" height="0.11" color="#1f6e47"></a-plane>
+        <a-text id="arx-action-2" value="" align="center" color="#ffffff" width="1.7" position="0 -0.2 0.02"></a-text>
+      </a-entity>
+    </a-entity>
+
+    <!-- Target 3 — Mixed leftovers -->
+    <a-entity class="exhibit" mindar-image-target="targetIndex: 3">
+      <a-plane class="exhibit-frame" position="0 0 -0.02" width="1.06" height="0.72" color="#c98a2b" opacity="0.85"></a-plane>
+      <a-entity position="0 0.66 0.02">
+        <a-plane width="1.18" height="0.5" color="#fbf7ef" opacity="0.97"></a-plane>
+        <a-text id="arx-title-3" value="" align="center" color="#22262f" width="2" position="0 0.16 0.01" wrap-count="22"></a-text>
+        <a-text value="SDG 12" align="center" color="#1f6e47" width="1.7" position="0 0.04 0.01"></a-text>
+        <a-text id="arx-stat-3" value="" align="center" color="#5e6660" width="1.5" position="0 -0.07 0.01" wrap-count="36"></a-text>
+        <a-plane position="0 -0.2 0.01" width="0.62" height="0.11" color="#1f6e47"></a-plane>
+        <a-text id="arx-action-3" value="" align="center" color="#ffffff" width="1.7" position="0 -0.2 0.02"></a-text>
+      </a-entity>
+    </a-entity>
+
+    <!-- Target 4 — Drink waste -->
+    <a-entity class="exhibit" mindar-image-target="targetIndex: 4">
+      <a-plane class="exhibit-frame" position="0 0 -0.02" width="1.06" height="0.78" color="#c98a2b" opacity="0.85"></a-plane>
+      <a-entity position="0 0.7 0.02">
+        <a-plane width="1.18" height="0.5" color="#fbf7ef" opacity="0.97"></a-plane>
+        <a-text id="arx-title-4" value="" align="center" color="#22262f" width="2" position="0 0.16 0.01" wrap-count="22"></a-text>
+        <a-text value="SDG 12" align="center" color="#1f6e47" width="1.7" position="0 0.04 0.01"></a-text>
+        <a-text id="arx-stat-4" value="" align="center" color="#5e6660" width="1.5" position="0 -0.07 0.01" wrap-count="36"></a-text>
+        <a-plane position="0 -0.2 0.01" width="0.62" height="0.11" color="#1f6e47"></a-plane>
+        <a-text id="arx-action-4" value="" align="center" color="#ffffff" width="1.7" position="0 -0.2 0.02"></a-text>
+      </a-entity>
+    </a-entity>
+  </a-scene>
+
+  <!-- Persistent scan hint (shown while AR is ready but nothing detected) -->
+  <div class="scan-hint" id="scan-hint" hidden>
+    <span class="scan-hint__dot" aria-hidden="true"></span>
+    Point at a food-waste image
+  </div>
 
   <!--
     ==========================================================================
-    A-Frame AR Scene (inert template — cloned in by ar-controller.js)
-    ==========================================================================
-    preset="hiro" matches the printed marker (public/assets/marker/hiro-marker.jpg).
-    All 3D content is nested under the marker so it tracks the marker position.
-    DO NOT change entity IDs — ar-controller.js references them.
-  -->
-  <template id="ar-scene-template">
-    <a-scene
-      embedded
-      arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono_and_matrix; matrixCodeType: 3x3;"
-      renderer="logarithmicDepthBuffer: true; antialias: true"
-      vr-mode-ui="enabled: false"
-    >
-      <a-marker id="hiro-marker" preset="hiro" smooth="true" smoothCount="5" smoothTolerance="0.01" smoothThreshold="2">
-
-        <!-- PLATE -->
-        <a-cylinder id="ar-plate" position="0 0.02 0" radius="0.6" height="0.04" color="#f5f5f5" opacity="0.9" shadow></a-cylinder>
-        <a-torus position="0 0.045 0" radius="0.6" radius-tubular="0.015" color="#bdbdbd" rotation="90 0 0"></a-torus>
-
-        <!-- FOOD PILE -->
-        <a-entity id="ar-food-pile" position="0 0.1 0">
-          <a-sphere position="0 0 0" radius="0.08" color="#e65100"></a-sphere>
-          <a-sphere position="0.1 0 0.05" radius="0.06" color="#f9a825"></a-sphere>
-          <a-sphere position="-0.08 0 0.08" radius="0.07" color="#558b2f"></a-sphere>
-          <a-sphere position="0.05 0 -0.07" radius="0.055" color="#d84315"></a-sphere>
-          <a-sphere position="-0.05 0 -0.05" radius="0.065" color="#ff8f00"></a-sphere>
-        </a-entity>
-
-        <!-- WASTE (Throw Away) -->
-        <a-entity id="ar-waste" visible="false" position="0 0.1 0">
-          <a-box position="0 0.1 0" width="0.3" height="0.3" depth="0.25" color="#5d4037"></a-box>
-          <a-sphere position="0 0.3 0" radius="0.06" color="#d32f2f"></a-sphere>
-          <a-text value="!" position="0 0.3 0.07" color="#fff" align="center" width="1.5"></a-text>
-        </a-entity>
-
-        <!-- SAVE -->
-        <a-entity id="ar-save" visible="false" position="0.5 0.15 0">
-          <a-box width="0.25" height="0.15" depth="0.2" color="#1565c0"></a-box>
-          <a-box position="0 0.09 0" width="0.27" height="0.02" depth="0.22" color="#1976d2"></a-box>
-          <a-text value="SAVED" position="0 0.2 0.11" color="#1565c0" align="center" width="1.2"></a-text>
-        </a-entity>
-
-        <!-- SHARE -->
-        <a-entity id="ar-share" visible="false" position="-0.5 0.1 0">
-          <a-cylinder position="-0.08 0.05 0" radius="0.04" height="0.15" color="#7b1fa2"></a-cylinder>
-          <a-sphere position="-0.08 0.16 0" radius="0.05" color="#7b1fa2"></a-sphere>
-          <a-cylinder position="0.08 0.05 0" radius="0.04" height="0.15" color="#00838f"></a-cylinder>
-          <a-sphere position="0.08 0.16 0" radius="0.05" color="#00838f"></a-sphere>
-          <a-text value="SHARE" position="0 0.28 0" color="#7b1fa2" align="center" width="1.2"></a-text>
-        </a-entity>
-
-        <!-- COMPOST -->
-        <a-entity id="ar-compost" visible="false" position="0 0.05 -0.5">
-          <a-cylinder position="0 0.03 0" radius="0.2" height="0.06" color="#4e342e"></a-cylinder>
-          <a-cone position="0 0.18 0" radius-bottom="0.06" radius-top="0" height="0.2" color="#388e3c"></a-cone>
-          <a-cylinder position="0 0.06 0" radius="0.015" height="0.1" color="#2e7d32"></a-cylinder>
-          <a-text value="COMPOST" position="0 0.35 0" color="#4e342e" align="center" width="1.2"></a-text>
-        </a-entity>
-
-        <!-- SDG 12 LABEL -->
-        <a-text id="ar-sdg-label" value="SDG 12: Responsible\nConsumption & Production" position="0 0.6 0" color="#2e7d32" align="center" width="1.8" anchor="center"></a-text>
-
-        <!-- FACT TEXT + SOURCE -->
-        <a-text id="ar-fact-text" value="Scan marker to begin" position="0 0.45 0" color="#424242" align="center" width="1.4" anchor="center" wrap-count="35"></a-text>
-        <a-text id="ar-fact-source" value="" position="0 0.33 0" color="#9e9e9e" align="center" width="1.1" anchor="center" wrap-count="48"></a-text>
-
-        <!-- FEEDBACK TEXT -->
-        <a-text id="ar-feedback-text" value="" position="0 -0.3 0.5" color="#1b5e20" align="center" width="1.2" anchor="center" wrap-count="40" visible="false"></a-text>
-
-      </a-marker>
-
-      <a-entity camera></a-entity>
-    </a-scene>
-  </template>
-
-  <!--
-    ==========================================================================
-    DOM bottom sheet (hidden until AR is ready)
+    Contextual bottom sheet — hidden until a target is detected
     ==========================================================================
   -->
-  <div class="ar-overlay" id="ar-overlay" hidden>
-    <button type="button" class="ar-overlay__toggle" id="overlay-toggle" aria-label="Collapse or expand panel"></button>
+  <div class="sheet" id="ar-sheet" hidden>
+    <button type="button" class="sheet__handle" id="sheet-toggle" aria-label="Collapse or expand panel"></button>
 
-    <!-- Learning-flow progress (consumed by ar-controller.js) -->
-    <ol class="ar-progress" id="ar-progress" aria-label="Progress">
-      <li class="ar-progress__step is-active" data-step="1"><span class="ar-progress__num">1</span><span class="ar-progress__label">Scan</span></li>
-      <li class="ar-progress__step" data-step="2"><span class="ar-progress__num">2</span><span class="ar-progress__label">Facts</span></li>
-      <li class="ar-progress__step" data-step="3"><span class="ar-progress__num">3</span><span class="ar-progress__label">Action</span></li>
-      <li class="ar-progress__step" data-step="4"><span class="ar-progress__num">4</span><span class="ar-progress__label">Quiz</span></li>
-    </ol>
-
-    <div class="ar-overlay__header">
-      <span id="marker-status" class="status-badge status-badge--lost">Marker not detected</span>
-      <a href="index.html" class="btn btn--ghost btn--small">Home</a>
+    <div class="sheet__head">
+      <div>
+        <p class="sheet__eyebrow" id="sheet-type">Exhibit</p>
+        <h2 class="sheet__title" id="sheet-title">Food-waste exhibit</h2>
+      </div>
+      <span id="marker-status" class="status-badge status-badge--found">Detected</span>
     </div>
 
-    <!-- One fact at a time + small source -->
-    <p class="fact" id="fact-display">Point your phone at the marker.</p>
+    <p class="fact" id="fact-display">—</p>
     <p class="fact-source" id="fact-source"></p>
 
-    <div class="fact-nav">
-      <button type="button" class="icon-btn" id="btn-prev-fact" aria-label="Previous fact">
-        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
-      </button>
-      <span class="fact-nav__count muted text-sm">Facts</span>
-      <button type="button" class="icon-btn" id="btn-next-fact" aria-label="Next fact">
-        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
-      </button>
-    </div>
-
-    <!-- Four actions -->
     <div class="actions">
       <button type="button" class="action action--throw" id="btn-throw" aria-label="Throw food away">
         <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6.5 7l1 13a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1l1-13"/><path d="M10 11v6M14 11v6"/></svg>
@@ -199,10 +190,30 @@
       </button>
     </div>
 
-    <!-- Short feedback -->
     <div class="feedback-panel" id="feedback-panel">Choose what happens next.</div>
 
-    <a href="quiz.html" class="btn btn--secondary" id="quiz-link">Quick check →</a>
+    <div class="sheet__foot">
+      <button type="button" class="btn btn--secondary btn--small" id="btn-askmore">Ask more</button>
+      <a href="quiz.html" class="btn btn--secondary btn--small" id="quiz-link">Quick check →</a>
+    </div>
+  </div>
+
+  <!--
+    ==========================================================================
+    Ask-More drawer (shared markup; controlled by src/askmore.js)
+    Future AI mode: replace this static content with OpenRouter vision analysis.
+    ==========================================================================
+  -->
+  <div class="drawer" id="askmore" hidden role="dialog" aria-modal="true" aria-labelledby="askmore-title">
+    <div class="drawer__backdrop" id="askmore-backdrop"></div>
+    <div class="drawer__panel">
+      <button type="button" class="drawer__close" id="askmore-close" aria-label="Close">✕</button>
+      <h2 class="drawer__title" id="askmore-title">Why this matters</h2>
+      <div class="drawer__section"><h3>What am I looking at?</h3><p id="askmore-look"></p></div>
+      <div class="drawer__section"><h3>Why it matters</h3><p id="askmore-why"></p></div>
+      <div class="drawer__section"><h3>What should I do?</h3><p id="askmore-do"></p></div>
+      <div class="drawer__section drawer__safety"><h3>Safety note</h3><p id="askmore-safety"></p></div>
+    </div>
   </div>
 
   <script type="module" src="./src/ar-controller.js"></script>

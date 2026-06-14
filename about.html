@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="About PlateWise AR — purpose, SDG 12, and sources" />
+  <meta name="description" content="About PlateWise AR — food-waste images as AR learning exhibits, aligned with SDG 12." />
   <meta name="theme-color" content="#1f6e47" />
   <title>PlateWise AR — About</title>
   <link rel="stylesheet" href="./src/styles.css" />
@@ -14,19 +14,18 @@
     <header>
       <span class="eyebrow">About</span>
       <h1 class="mt-2">PlateWise AR</h1>
-      <p class="lede">See how small food choices connect to SDG&nbsp;12.</p>
+      <p class="lede">Food-waste images become AR learning exhibits.</p>
     </header>
 
-    <!-- Purpose -->
     <div class="card">
       <h2>Purpose</h2>
       <p class="muted text-sm mt-2">
-        A short WebAR experience for awareness and reflection on food waste — not real food
-        recognition or behaviour tracking.
+        Scan a curated food-waste image and a short AR exhibit explains what it represents, why it
+        matters for SDG&nbsp;12, and what you can do. Inspired by food-waste museum concepts that
+        turn discarded food into moments of reflection.
       </p>
     </div>
 
-    <!-- SDG 12 -->
     <div class="card">
       <span class="chip">SDG 12</span>
       <p class="muted text-sm mt-3">
@@ -35,70 +34,59 @@
       </p>
     </div>
 
-    <!-- Three assignment components, concise -->
     <h2 class="mt-4">What it shows</h2>
     <details class="acc">
       <summary>AR visualization</summary>
-      <div class="acc__body">A 3D plate, food, and action visuals overlaid on the Hiro marker, with spatial text and an SDG&nbsp;12 label.</div>
+      <div class="acc__body">A floating exhibit card anchored to the scanned image — title, SDG&nbsp;12 tag, a statistic, and a recommended-action badge, with a highlight frame.</div>
     </details>
     <details class="acc">
       <summary>Interaction</summary>
-      <div class="acc__body">Browse facts and choose what to do with leftovers — Throw, Save, Share, or Compost — and see the result.</div>
+      <div class="acc__body">A contextual bottom sheet appears on detection. Choose Throw, Save, Share, or Compost, and tap “Ask more” for a short explanation.</div>
     </details>
     <details class="acc">
       <summary>Educational content</summary>
-      <div class="acc__body">Food-waste statistics from official sources, plus a quick quiz and a personal pledge.</div>
+      <div class="acc__body">Food-waste statistics from official sources, target-specific guidance, plus a quick quiz and a personal pledge.</div>
     </details>
 
-    <!-- How it works -->
     <details class="acc">
       <summary>How it works</summary>
       <div class="acc__body">
         <ul>
-          <li>Scan the printed Hiro marker.</li>
-          <li>Read a fact, then choose an action.</li>
-          <li>See AR feedback on your choice.</li>
+          <li>Scan a curated food-waste image.</li>
+          <li>An AR exhibit appears over it.</li>
+          <li>Choose an action and read the guidance.</li>
           <li>Finish with a quick check and a pledge.</li>
         </ul>
       </div>
     </details>
 
-    <!-- Sources -->
     <details class="acc">
       <summary>Sources</summary>
       <div class="acc__body">
         <ul class="source-list">
-          <li>
-            <strong>UNEP Food Waste Index Report 2024</strong><br>
-            <a href="https://www.unep.org/resources/publication/food-waste-index-report-2024" target="_blank" rel="noopener">unep.org</a>
-          </li>
-          <li>
-            <strong>United Nations SDG 12</strong><br>
-            <a href="https://sdgs.un.org/goals/goal12" target="_blank" rel="noopener">sdgs.un.org/goals/goal12</a>
-          </li>
-          <li>
-            <strong>FAO — Food Loss &amp; Waste</strong><br>
-            <a href="https://www.fao.org/food-loss-and-food-waste/en/" target="_blank" rel="noopener">fao.org</a>
-          </li>
+          <li><strong>UNEP Food Waste Index Report 2024</strong><br><a href="https://www.unep.org/resources/publication/food-waste-index-report-2024" target="_blank" rel="noopener">unep.org</a></li>
+          <li><strong>United Nations SDG 12</strong><br><a href="https://sdgs.un.org/goals/goal12" target="_blank" rel="noopener">sdgs.un.org/goals/goal12</a></li>
+          <li><strong>FAO — Food Loss &amp; Waste</strong><br><a href="https://www.fao.org/food-loss-and-food-waste/en/" target="_blank" rel="noopener">fao.org</a></li>
         </ul>
       </div>
     </details>
 
-    <!-- Limitations -->
     <details class="acc">
       <summary>Limitations</summary>
       <div class="acc__body">
         <ul>
-          <li>Marker-based AR, not real food recognition.</li>
-          <li>No AI features in this version — planned as future work.</li>
-          <li>Statistics are simplified for learning.</li>
+          <li>Recognises <strong>curated image targets only</strong> — not arbitrary food photos.</li>
+          <li><strong>No AI yet</strong> — image analysis is planned future work.</li>
+          <li>Does <strong>not</strong> confirm food safety.</li>
+          <li>No exact weight or carbon estimates.</li>
           <li>Camera needs HTTPS or localhost.</li>
         </ul>
       </div>
     </details>
 
     <p class="muted text-sm center mt-4">
-      Inspired by food-waste museum concepts that turn discarded food into moments of reflection.
+      A future version may use AI to analyse your own food-waste photos. For now, PlateWise uses
+      curated image targets included in the app.
     </p>
   </main>
 

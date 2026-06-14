@@ -1,113 +1,79 @@
 # PlateWise AR — Testing Checklist
 
-Use this checklist for manual testing. Mark each test as Pass / Fail and add notes.
+Mark each test Pass / Fail with notes.
 
-> **Scope:** Core marker-based WebAR only. AI features (AI tips, image scanning, object
-> recognition, backend/ML) are future work and are **not** in this version, so they are not
-> tested here.
+> **Scope:** Core, non-AI version. Image-target scanning of **curated** food-waste images only.
+> No AI, no arbitrary-image recognition, no food-safety diagnosis.
 
-## Home Page
-
-| # | Test | Result | Notes |
-|---|------|--------|-------|
-| 1 | Home page loads without errors | | |
-| 2 | Title and subtitle display correctly | | |
-| 3 | All four navigation buttons work | | |
-| 4 | Nav bar links go to correct pages | | |
-| 5 | HTTPS warning appears on plain HTTP | | |
-
-## AR Page — Camera & error states
+## Home
 
 | # | Test | Result | Notes |
 |---|------|--------|-------|
-| 6 | AR page loads without errors | | |
-| 7 | Vendored A-Frame + AR.js load (no CDN/master request) | | |
-| 8 | "Camera permission needed / Starting camera…" state shows on start | | |
-| 9 | Camera permission request appears | | |
-| 10 | "AR ready" then live camera feed shows after permission granted | | |
-| 11 | Permission **denied** shows the "Camera permission denied" state | | |
-| 12 | On plain HTTP, "HTTPS required for the camera" state shows | | |
-| 13 | Unsupported browser shows "Camera not supported" state | | |
-| 14 | Start-up timeout (~10 s) shows "AR failed to load" state | | |
-| 15 | Every error state shows troubleshooting tips | | |
-| 16 | Every error state offers "Try Again" + "Open Demo Mode" | | |
+| 1 | Home loads; headline + subheading + CTAs visible | | |
+| 2 | "Start scan" → Scan page; "Try demo" → Demo | | |
+| 3 | Stat ticker chips visible (1.05B / 60% / SDG 12.3) | | |
+| 4 | Top pill nav present; current page highlighted | | |
 
-## AR Page — Scene, facts, actions, progress
+## Scan page — camera & setup states
 
 | # | Test | Result | Notes |
 |---|------|--------|-------|
-| 17 | Marker status shows "Marker not detected" initially | | |
-| 18 | Status changes to "Marker detected" when the real Hiro marker is scanned | | |
-| 19 | AR scene (plate, food pile, SDG 12 label, fact text) appears above the marker | | |
-| 20 | Marker lost status updates when the marker is removed | | |
-| 21 | Progress indicator starts at Step 1 (Scan marker) | | |
-| 22 | Marker detected advances progress to Step 2 (Read facts) | | |
-| 23 | Selecting an action advances progress to Step 3, then Step 4 (Quiz) | | |
-| 24 | Previous/Next fact buttons cycle through facts | | |
-| 25 | Fact text updates in DOM overlay and in AR | | |
-| 26 | Fact **source label** is visible (e.g. "Source: UNEP…") | | |
-| 27 | "Throw Away" updates AR visuals (waste pile) **and** negative feedback | | |
-| 28 | "Save Leftovers" shrinks pile, shows container **and** positive feedback | | |
-| 29 | "Share" shows sharing figures **and** positive feedback | | |
-| 30 | "Compost" shows compost visual **and** neutral feedback | | |
-| 31 | Feedback panel updates with correct text and colour | | |
-| 32 | Overlay panel can be collapsed and expanded | | |
-| 33 | "Go to Quiz" link works | | |
+| 5 | Vendored A-Frame 1.3.0 + MindAR load (no CDN) | | |
+| 6 | If `.mind` missing → "Scan targets not installed" + Demo link | | |
+| 7 | Permission prompt appears; "Starting camera" then "Ready to scan" | | |
+| 8 | Permission denied → "Camera permission denied" state | | |
+| 9 | Plain HTTP → "HTTPS required" state | | |
+| 10 | Every error offers "Try again" + "Open Demo Mode" | | |
+| 11 | "Point at a food-waste image" hint shows when ready & nothing detected | | |
 
-## Demo Page (mirror of AR, no camera)
+## Scan page — detection, exhibit, sheet (needs compiled `.mind` + device)
 
 | # | Test | Result | Notes |
 |---|------|--------|-------|
-| 34 | Demo page loads without errors | | |
-| 35 | "Demo Mode — No Camera" label is visible | | |
-| 36 | Plate visual displays correctly | | |
-| 37 | Fact navigation works and shows the **source label** | | |
-| 38 | Each action button updates the plate icon/visual and feedback | | |
-| 39 | Link to Quiz / Reflection works | | |
+| 12 | Scanning a curated image is detected | | |
+| 13 | AR exhibit card appears over the image (title, SDG 12, stat, action badge, frame) | | |
+| 14 | Exhibit is readable and does not cover the whole screen | | |
+| 15 | Bottom sheet appears on detection, titled with the exhibit | | |
+| 16 | Recommended action marked with ★ | | |
+| 17 | Throw / Save / Share / Compost give target-specific feedback | | |
+| 18 | "Ask more" opens drawer with the 4 sections | | |
+| 19 | Losing the image hides the sheet and returns the scan hint | | |
+| 20 | All 5 targets work (rice / peels / bread / mixed / drink) | | |
 
-## Marker Page
-
-| # | Test | Result | Notes |
-|---|------|--------|-------|
-| 40 | Marker page loads without errors | | |
-| 41 | The **real Hiro marker image** (`hiro-marker.jpg`) is displayed (not a canvas drawing) | | |
-| 42 | "Print This Page" opens the print dialog with the marker sized large enough | | |
-| 43 | "Download Marker" downloads `hiro-marker.jpg` | | |
-| 44 | Print/scan instructions (B&W, don't crop border, flat, 20–40 cm) are shown | | |
-| 45 | The displayed marker is detected by the AR page | | |
-
-## Quiz Page
+## Demo Mode (no camera)
 
 | # | Test | Result | Notes |
 |---|------|--------|-------|
-| 46 | Quiz page loads with 5 questions | | |
-| 47 | Clicking an option highlights correct/incorrect | | |
-| 48 | Explanation appears after answering | | |
-| 49 | Score displays after all questions answered | | |
-| 50 | Score saves to localStorage | | |
-| 51 | "Retry Quiz" resets all questions | | |
-| 52 | Pledge radio buttons display correctly | | |
-| 53 | "Save My Pledge" saves to localStorage | | |
-| 54 | Saved results section shows stored score and pledge | | |
-| 55 | Last AR/Demo action is recalled at the top (if one was chosen) | | |
+| 21 | Five sample image cards render | | |
+| 22 | Selecting a card shows image preview + exhibit card | | |
+| 23 | Source label visible | | |
+| 24 | Actions update feedback; recommended marked ★ | | |
+| 25 | "Ask more" drawer works | | |
 
-## About Page
+## Scan images gallery (marker.html)
 
 | # | Test | Result | Notes |
 |---|------|--------|-------|
-| 56 | About page loads without errors | | |
-| 57 | SDG 12 section displays correctly | | |
-| 58 | Three assignment components are listed | | |
-| 59 | References section shows sources with links | | |
+| 26 | Five curated images shown with Download buttons | | |
+| 27 | "Curated images only" note shown | | |
+| 28 | "Start scan" / "Try demo" links work | | |
 
-## Cross-Cutting
+## Quiz
 
 | # | Test | Result | Notes |
 |---|------|--------|-------|
-| 60 | Mobile layout is usable (phone screen) | | |
-| 61 | Buttons are large enough to tap on mobile | | |
-| 62 | Nav bar is accessible on all pages | | |
-| 63 | localStorage persists across page reloads | | |
-| 64 | `npm run build` succeeds without errors | | |
-| 65 | Built `dist/` folder serves correctly with `npm run preview` | | |
-| 66 | No app-code errors in the browser console | | |
+| 29 | 5 questions render; correct/incorrect styling + explanations | | |
+| 30 | Score shows and saves; Retry resets | | |
+| 31 | Pledge saves; saved results persist | | |
+| 32 | Last action recalled at top (after an AR/Demo action) | | |
+
+## About + cross-cutting
+
+| # | Test | Result | Notes |
+|---|------|--------|-------|
+| 33 | About explains exhibits, curated-only, no-AI, no food-safety | | |
+| 34 | Sources/SDG 12 accessible | | |
+| 35 | Mobile layout usable; tap targets large; focus visible | | |
+| 36 | `npm run build` succeeds | | |
+| 37 | `npm run preview` serves all pages | | |
+| 38 | No app-code console errors | | |

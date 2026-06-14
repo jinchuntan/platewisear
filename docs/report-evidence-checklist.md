@@ -2,9 +2,12 @@
 
 Use this checklist to ensure you have captured all required evidence for your academic report. Mark each item when the screenshot or evidence has been collected.
 
-> **Scope note for the report:** This is the hardened **core** marker-based WebAR version. AI
-> features (AI tips, image scanning, object recognition, backend/ML) are **future work** and are
-> not part of this version — state this clearly in the report.
+> **Scope note for the report:** This version uses **image-target scanning** of curated
+> food-waste images (MindAR) — the Hiro marker has been replaced. It recognises curated targets
+> only, does not analyse arbitrary photos, and does not judge food safety. AI image analysis is
+> **future work** — state this clearly in the report. Capture evidence of: the AR exhibit card
+> over a scanned image, the contextual bottom sheet, an action's guidance, the Ask-More drawer,
+> Demo Mode, and the quiz/pledge.
 
 ## Screenshots to Capture
 
