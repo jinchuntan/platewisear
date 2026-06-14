@@ -20,7 +20,7 @@
 import { TARGETS, getTargetByIndex, localizedTarget, actionLabel } from './food-targets.js';
 import { saveLastAction, getScanGuideSeen, setScanGuideSeen } from './storage.js';
 import { initAskMore } from './askmore.js';
-import { debug, isSecureContext } from './utils.js';
+import { debug, isSecureContext, prefersReducedMotion } from './utils.js';
 import { t, initI18n, mountLanguageSwitcher } from './i18n.js';
 
 const MIND_FILE = './assets/targets/food-waste-targets.mind';
@@ -57,6 +57,8 @@ const factDisplayEl = document.getElementById('fact-display');
 const factSourceEl = document.getElementById('fact-source');
 const feedbackPanelEl = document.getElementById('feedback-panel');
 const scanHintEl = document.getElementById('scan-hint');
+const tapCueEl = document.getElementById('ar-tap-cue');     // "Tap for actions" cue
+const actionsEl = document.querySelector('#ar-sheet .actions');
 
 // --- top bar + first-time guide refs ---
 const arTopbarEl = document.getElementById('ar-topbar');
@@ -79,6 +81,9 @@ debug('ar-controller.js (MindAR) loaded.');
 // Translate the static page chrome + set <html lang>, then mount the switcher.
 initI18n();
 if (langMountEl) mountLanguageSwitcher(langMountEl);
+
+// ar.html doesn't load app.js, so set the reduced-motion class here too.
+if (prefersReducedMotion()) document.body.classList.add('reduced-motion');
 
 // ===========================================================================
 // Lightweight debug indicator — only when the URL has ?debug (e.g. ?debug=1).
@@ -295,6 +300,10 @@ function onTargetLost(index) {
 function showScanHint() { if (scanHintEl) scanHintEl.hidden = false; }
 function hideScanHint() { if (scanHintEl) scanHintEl.hidden = true; }
 
+// "Tap for actions" cue — only meaningful before the user has chosen an action.
+function showTapCue() { if (tapCueEl && !lastActionId) tapCueEl.hidden = false; }
+function hideTapCue() { if (tapCueEl) tapCueEl.hidden = true; }
+
 const actionButtons = { throwAway: btnThrow, saveLeftovers: btnSave, share: btnShare, compost: btnCompost };
 
 function highlightRecommended(actionId) {
@@ -341,11 +350,63 @@ function showSheet(target) {
   sheetEl.hidden = false;
   sheetEl.classList.remove('is-expanded');
   requestAnimationFrame(() => sheetEl.classList.add('is-open'));
+  showTapCue();
 }
 
 function hideSheet() {
   sheetEl.classList.remove('is-open', 'is-expanded');
   sheetEl.hidden = true;
+  hideTapCue();
+}
+
+// ===========================================================================
+// AR-layer interaction — tapping the exhibit card focuses the action choices.
+// The real Throw/Save/Share/Compost buttons stay in the sheet (reliable path);
+// if a browser drops the 3D tap, nothing breaks — the sheet still works.
+// ===========================================================================
+function onArCardTap(index) {
+  const target = getTargetByIndex(index);
+  debug('AR card tapped index:', index, target ? `→ ${target.id} (${target.title})` : '→ (no content mapped)');
+  if (!target) return;
+
+  // Make sure the sheet reflects the tapped card.
+  if (!currentTarget || currentTarget.targetIndex !== target.targetIndex) {
+    showSheet(target);
+  }
+
+  // Bring attention to the action choices.
+  sheetEl.hidden = false;
+  sheetEl.classList.add('is-open', 'is-expanded');
+  if (sheetStepEl) sheetStepEl.textContent = t('scan.step2');
+  if (!lastActionId) {
+    feedbackPanelEl.textContent = t('scan.chooseActionBelow') || 'Choose an action below';
+    feedbackPanelEl.className = 'feedback-panel feedback-panel--neutral';
+  }
+  hideTapCue();
+
+  if (actionsEl) {
+    actionsEl.classList.remove('is-attn');
+    void actionsEl.offsetWidth;          // restart the one-shot attention pulse
+    actionsEl.classList.add('is-attn');
+    setTimeout(() => actionsEl.classList.remove('is-attn'), 1300);
+  }
+}
+
+function attachCardTapHandlers() {
+  const hits = document.querySelectorAll('#mindar-scene .ar-card-hit');
+  hits.forEach((el) => {
+    const anchor = el.closest('[mindar-image-target]');
+    const index = anchor ? readTargetIndex(anchor, 0) : 0;
+    el.addEventListener('click', () => onArCardTap(index));
+  });
+  debug('AR card tap handlers attached:', hits.length);
+}
+
+// A-Frame animations don't honour prefers-reduced-motion automatically.
+function applyReducedMotionToCues() {
+  if (!prefersReducedMotion()) return;
+  document.querySelectorAll('#mindar-scene .ar-cue [animation__pulse]')
+    .forEach((el) => el.removeAttribute('animation__pulse'));
 }
 
 // ===========================================================================
@@ -354,6 +415,7 @@ function hideSheet() {
 function applyAction(actionId) {
   if (!currentTarget) return;
   lastActionId = actionId;
+  hideTapCue();
   debug('ACTION', actionId, 'on', currentTarget.id);
   renderSheetText();
   saveLastAction(actionId);
@@ -365,7 +427,10 @@ btnShare?.addEventListener('click', () => applyAction('share'));
 btnCompost?.addEventListener('click', () => applyAction('compost'));
 btnAskMore?.addEventListener('click', () => askMore.open(currentTarget));
 
-sheetToggleEl?.addEventListener('click', () => sheetEl.classList.toggle('is-expanded'));
+sheetToggleEl?.addEventListener('click', () => {
+  const expanded = sheetEl.classList.toggle('is-expanded');
+  if (expanded) hideTapCue();
+});
 
 // ===========================================================================
 // First-time "How to scan" guide
@@ -400,7 +465,12 @@ window.addEventListener('platewise:localechange', () => {
 // Scene init
 // ===========================================================================
 if (sceneEl) {
-  const onLoaded = () => { populateExhibits(); attachTargetHandlers(); };
+  const onLoaded = () => {
+    populateExhibits();
+    attachTargetHandlers();
+    attachCardTapHandlers();
+    applyReducedMotionToCues();
+  };
   if (sceneEl.hasLoaded) onLoaded();
   else sceneEl.addEventListener('loaded', onLoaded, { once: true });
 }

@@ -54,6 +54,36 @@ Mark each test Pass / Fail with notes.
 | G8 | Bottom sheet opens **compact**; handle expands it; sheet has a **Back to home** button | | |
 | G9 | `prefers-reduced-motion` stops the scan animations | | |
 
+## Scan page — AR-layer tap interaction (Task 1)
+
+| # | Test | Result | Notes |
+|---|------|--------|-------|
+| T1 | On detection, the AR card shows a pulsing tap dot + a "Tap for actions" cue | | |
+| T2 | Tapping the AR exhibit card expands the bottom sheet & highlights the actions | | |
+| T3 | Step guidance / hint makes clear the next step is to choose an action | | |
+| T4 | Cue text translates (BM "Ketik untuk tindakan" / 中文 "点击查看操作") | | |
+| T5 | If the 3D tap fails on a browser, the bottom-sheet buttons still work (fallback) | | |
+| T6 | Console logs `AR card tapped index: N` with the target id/title | | |
+| T7 | `prefers-reduced-motion` stops the cue pulse | | |
+
+## Device-agnostic (Task 2)
+
+| # | Test | Result | Notes |
+|---|------|--------|-------|
+| D1 | No horizontal scroll at 320 / 360 / 390 / 430 px, tablet, desktop | | |
+| D2 | Top bar + language switcher never overflow in EN / BM / 中文 | | |
+| D3 | AR top bar fits small phones (Home/How-to go icon-only ≤380px) | | |
+| D4 | Bottom sheet usable on iPhone Safari + Android Chrome (notch/bars; uses dvh) | | |
+| D5 | Demo, Scan-images, Quiz, About stay responsive; BM/中文 don't break layout | | |
+
+## Favicon & manifest (Task 3)
+
+| # | Test | Result | Notes |
+|---|------|--------|-------|
+| F1 | Browser tab shows the PlateWise favicon on every page | | |
+| F2 | `favicon.svg`, `icon-192/512.svg`, `manifest.webmanifest` all return 200 (no broken icon requests) | | |
+| F3 | Manifest theme/background match the design (#1f6e47 / #faf7ef) | | |
+
 ## Scan page — detection, exhibit, sheet (needs compiled `.mind` + device)
 
 | # | Test | Result | Notes |

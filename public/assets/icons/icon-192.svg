@@ -1,7 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
-  <rect width="192" height="192" rx="24" fill="#2e7d32"/>
-  <circle cx="96" cy="100" r="50" fill="#f5f5f5" stroke="#bdbdbd" stroke-width="3"/>
-  <circle cx="96" cy="100" r="38" fill="none" stroke="#e0e0e0" stroke-width="1.5"/>
-  <text x="96" y="60" text-anchor="middle" font-family="sans-serif" font-size="22" font-weight="bold" fill="#fff">PlateWise</text>
-  <text x="96" y="170" text-anchor="middle" font-family="sans-serif" font-size="14" fill="#c8e6c9">SDG 12</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192" role="img" aria-label="PlateWise AR">
+  <rect width="192" height="192" rx="40" fill="#1f6e47"/>
+  <!-- AR corner brackets -->
+  <g fill="none" stroke="#c98a2b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M34 58V40h18"/>
+    <path d="M140 40h18v18"/>
+    <path d="M158 134v18h-18"/>
+    <path d="M52 152H34v-18"/>
+  </g>
+  <!-- plate -->
+  <circle cx="96" cy="100" r="50" fill="#faf7ef"/>
+  <circle cx="96" cy="100" r="38" fill="none" stroke="#e2d9c5" stroke-width="2"/>
+  <!-- leaf (matches the app's brand mark) -->
+  <g transform="translate(60,58) scale(3)" fill="none" stroke="#1f6e47" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 20C6 20 4 15 4 11c5 0 7 3 7 7"/>
+    <path d="M12 20c0-7 4-12 8-13 0 8-3 13-8 13"/>
+  </g>
+  <text x="96" y="178" text-anchor="middle" font-family="system-ui, sans-serif" font-size="15" font-weight="700" fill="#cfe3d6">SDG 12</text>
 </svg>

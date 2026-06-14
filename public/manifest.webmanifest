@@ -4,8 +4,8 @@
   "description": "A Mobile WebAR Application for Food Waste Awareness under SDG 12",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#f5f0e8",
-  "theme_color": "#2e7d32",
+  "background_color": "#faf7ef",
+  "theme_color": "#1f6e47",
   "icons": [
     {
       "src": "./assets/icons/icon-192.svg",

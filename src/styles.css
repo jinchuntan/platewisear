@@ -605,3 +605,66 @@ body.reduced-motion .stat-card { transform: none; }
 .impact__cta { margin-top: var(--space-7); display: flex; flex-direction: column; align-items: center; gap: var(--space-3); }
 .impact__cta .btn { width: auto; min-width: 220px; }
 .impact__note { color: rgba(243, 238, 227, 0.66); font-size: var(--text-sm); max-width: 32rem; }
+
+/* -------------------------------------------------------------------------
+   24. AR-layer tap interaction — cue + action attention pulse
+   ------------------------------------------------------------------------- */
+.ar-tap-cue {
+  position: fixed; left: 50%; top: 30%; transform: translateX(-50%); z-index: 940;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 16px; border-radius: var(--radius-pill);
+  background: rgba(34, 38, 47, 0.86); color: #fff; font-size: var(--text-sm); font-weight: 700;
+  box-shadow: var(--shadow); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  pointer-events: none; white-space: nowrap;
+  animation: tapCueBob 1.6s ease-in-out infinite;
+}
+.ar-tap-cue[hidden] { display: none; }
+.ar-tap-cue .ico { width: 18px; height: 18px; color: var(--accent); }
+@keyframes tapCueBob { 0%, 100% { transform: translateX(-50%) translateY(0); } 50% { transform: translateX(-50%) translateY(-4px); } }
+body.reduced-motion .ar-tap-cue { animation: none; }
+
+.actions.is-attn { border-radius: var(--radius); animation: actionsAttn 1.3s ease; }
+@keyframes actionsAttn {
+  0% { box-shadow: 0 0 0 0 rgba(201, 138, 43, 0); }
+  25% { box-shadow: 0 0 0 5px rgba(201, 138, 43, 0.32); }
+  100% { box-shadow: 0 0 0 0 rgba(201, 138, 43, 0); }
+}
+body.reduced-motion .actions.is-attn { animation: none; }
+
+/* -------------------------------------------------------------------------
+   25. Device-agnostic hardening (small phones, BM / 中文, notches, viewport)
+   ------------------------------------------------------------------------- */
+/* No accidental horizontal scroll from rotated cards / wide sections. */
+html { overflow-x: hidden; }
+.journey, .impact { overflow-x: clip; }
+
+/* Prefer the dynamic viewport height where supported (mobile browser chrome). */
+@supports (height: 100dvh) {
+  body { min-height: 100dvh; }
+  .sheet { max-height: 46dvh; }
+  .sheet.is-expanded { max-height: 84dvh; }
+  .drawer__panel { max-height: 86dvh; }
+}
+
+/* Comfortable touch targets on the glass pills. */
+.ar-pill, .lang__btn { min-height: 40px; }
+
+/* Top bar stays on one line through BM / 中文 and down to ~320px. */
+.topbar__brand { min-width: 0; }
+@media (max-width: 420px) {
+  .navpill { padding: 7px 10px; }
+  .topbar__right { gap: 6px; }
+}
+@media (max-width: 360px) {
+  .navpills { padding: 3px; gap: 2px; }
+  .navpill { padding: 6px 8px; font-size: var(--text-xs); }
+  .lang__btn { padding: 6px 8px; }
+}
+
+/* AR top bar: icon-only Home + How-to on small phones so it never overflows
+   (aria-labels remain, so the controls stay accessible). */
+@media (max-width: 380px) {
+  .ar-topbar { padding: 0 var(--space-3); }
+  .ar-topbar .ar-pill span { display: none; }
+  .ar-topbar__right { gap: 6px; }
+}
