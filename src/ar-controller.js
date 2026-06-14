@@ -12,14 +12,16 @@
  *   4. Actions (Throw / Save / Share / Compost) give target-specific guidance;
  *      "Ask more" opens a static educational drawer.
  *
+ * All user-facing copy is localised via src/i18n.js (EN / BM / 中文); see t().
  * Recognises ONLY the curated targets in src/food-targets.js — no AI, no
  * arbitrary-image recognition, no food-safety claims.
  */
 
-import { TARGETS, getTargetByIndex, ACTION_LABELS } from './food-targets.js';
+import { TARGETS, getTargetByIndex, localizedTarget, actionLabel } from './food-targets.js';
 import { saveLastAction, getScanGuideSeen, setScanGuideSeen } from './storage.js';
 import { initAskMore } from './askmore.js';
 import { debug, isSecureContext } from './utils.js';
+import { t, initI18n, mountLanguageSwitcher } from './i18n.js';
 
 const MIND_FILE = './assets/targets/food-waste-targets.mind';
 const AR_LOAD_TIMEOUT_MS = 12000;
@@ -27,7 +29,9 @@ const AR_LOAD_TIMEOUT_MS = 12000;
 // --- state ---
 let arReady = false;
 let started = false;
-let currentTarget = null;
+let currentTarget = null;     // raw target (re-localised at render time)
+let lastActionId = null;      // chosen action this detection, or null
+let currentStatusKey = null;  // last status shown (for re-localising on lang change)
 let loadTimeoutId = null;
 let lostTimerId = null;
 
@@ -60,10 +64,7 @@ const howToBtn = document.getElementById('how-to-btn');
 const scanGuideEl = document.getElementById('scan-guide');
 const scanGuideBackdrop = document.getElementById('scan-guide-backdrop');
 const scanGuideDismiss = document.getElementById('scan-guide-dismiss');
-
-// Step copy shown in the bottom sheet as the user progresses
-const STEP_CHOOSE = 'Step 2 · Choose what you’d do';
-const STEP_LEARN = 'Step 3 · Learn more or take the quick check';
+const langMountEl = document.getElementById('ar-lang-mount');
 
 const btnThrow = document.getElementById('btn-throw');
 const btnSave = document.getElementById('btn-save');
@@ -75,10 +76,12 @@ const askMore = initAskMore();
 
 debug('ar-controller.js (MindAR) loaded.');
 
+// Translate the static page chrome + set <html lang>, then mount the switcher.
+initI18n();
+if (langMountEl) mountLanguageSwitcher(langMountEl);
+
 // ===========================================================================
 // Lightweight debug indicator — only when the URL has ?debug (e.g. ?debug=1).
-// Logs always go to the console; the on-screen pill is opt-in so the demo
-// stays clean by default.
 // ===========================================================================
 const DEBUG_ON = new URLSearchParams(location.search).has('debug');
 let debugEl = null;
@@ -94,35 +97,33 @@ function setDebug(msg) {
 
 // ===========================================================================
 // Status-screen state machine
+// Flags live here; the title/message come from i18n (scan.status.<key>).
 // ===========================================================================
-const STATUS = {
-  permission: { icon: '📷', title: 'Camera permission needed', message: 'Tap “Allow” when your browser asks to use the camera.', spinner: true },
-  starting: { icon: '📷', title: 'Starting camera…', message: 'Getting the camera ready — a few seconds.', spinner: true },
-  loading: { icon: '🧩', title: 'Loading AR…', message: 'Preparing image tracking.', spinner: true },
-  ready: { icon: '✅', title: 'Ready to scan', message: 'Point your phone at a food-waste image.', spinner: false },
-  notargets: {
-    icon: '🖼️', title: 'Scan targets not installed',
-    message: 'The compiled image-target file isn’t set up yet. Add public/assets/targets/food-waste-targets.mind (see README) — or use Demo Mode, which works now.',
-    spinner: false, troubleshoot: false, actions: true,
-  },
-  insecure: { icon: '🔒', title: 'HTTPS required for the camera', message: 'Open this page over HTTPS or on localhost, then try again. Demo Mode works without a camera.', spinner: false, troubleshoot: true, actions: true },
-  unsupported: { icon: '🚫', title: 'Camera not supported', message: 'This browser can’t access the camera. Try Chrome / Firefox on Android, or use Demo Mode.', spinner: false, troubleshoot: true, actions: true },
-  denied: { icon: '⛔', title: 'Camera permission denied', message: 'Allow camera access for this site, then tap “Try again”.', spinner: false, troubleshoot: true, actions: true },
-  nocamera: { icon: '🎥', title: 'No camera found', message: 'No camera was found on this device. Use Demo Mode instead.', spinner: false, troubleshoot: true, actions: true },
-  inuse: { icon: '🎥', title: 'Camera unavailable', message: 'Another app or tab is using the camera. Close it, then tap “Try again”.', spinner: false, troubleshoot: true, actions: true },
-  failed: { icon: '⚠️', title: 'AR failed to load', message: 'Image tracking could not start in time. Try again, or use Demo Mode.', spinner: false, troubleshoot: true, actions: true },
+const STATUS_META = {
+  permission: { icon: '📷', spinner: true },
+  starting: { icon: '📷', spinner: true },
+  loading: { icon: '🧩', spinner: true },
+  ready: { icon: '✅', spinner: false },
+  notargets: { icon: '🖼️', spinner: false, troubleshoot: false, actions: true },
+  insecure: { icon: '🔒', spinner: false, troubleshoot: true, actions: true },
+  unsupported: { icon: '🚫', spinner: false, troubleshoot: true, actions: true },
+  denied: { icon: '⛔', spinner: false, troubleshoot: true, actions: true },
+  nocamera: { icon: '🎥', spinner: false, troubleshoot: true, actions: true },
+  inuse: { icon: '🎥', spinner: false, troubleshoot: true, actions: true },
+  failed: { icon: '⚠️', spinner: false, troubleshoot: true, actions: true },
 };
 
 function setStatus(key) {
-  const s = STATUS[key];
-  if (!s || !statusScreenEl) return;
+  const meta = STATUS_META[key];
+  if (!meta || !statusScreenEl) return;
+  currentStatusKey = key;
   statusScreenEl.hidden = false;
-  statusIconEl.textContent = s.icon;
-  statusTitleEl.textContent = s.title;
-  statusMessageEl.textContent = s.message;
-  statusSpinnerEl.hidden = !s.spinner;
-  statusTroubleshootEl.hidden = !s.troubleshoot;
-  statusActionsEl.hidden = !s.actions;
+  statusIconEl.textContent = meta.icon;
+  statusTitleEl.textContent = t(`scan.status.${key}.title`) || '';
+  statusMessageEl.textContent = t(`scan.status.${key}.message`) || '';
+  statusSpinnerEl.hidden = !meta.spinner;
+  statusTroubleshootEl.hidden = !meta.troubleshoot;
+  statusActionsEl.hidden = !meta.actions;
   debug('AR status →', key);
 }
 function hideStatusScreen() { if (statusScreenEl) statusScreenEl.hidden = true; }
@@ -145,17 +146,15 @@ function classifyCameraError(err) {
 
 /**
  * Does the compiled .mind file actually exist? (graceful degradation)
- *
- * Dev servers / static hosts often answer a missing file with an HTML fallback
- * (200 text/html). A real .mind is binary, so we reject HTML responses — only
- * a genuine, non-HTML 200 counts as "installed".
+ * Dev servers often answer a missing file with an HTML fallback (200 text/html);
+ * a real .mind is binary, so we reject HTML — only a non-HTML 200 counts.
  */
 async function targetsInstalled() {
   try {
     const res = await fetch(MIND_FILE, { cache: 'no-store' });
     if (!res.ok) return false;
     const ct = (res.headers.get('content-type') || '').toLowerCase();
-    if (ct.includes('text/html')) return false; // SPA/dev fallback, not a real target file
+    if (ct.includes('text/html')) return false;
     return true;
   } catch {
     return false;
@@ -163,16 +162,10 @@ async function targetsInstalled() {
 }
 
 async function startFlow() {
-  // 0. targets present?
   if (!(await targetsInstalled())) { setStatus('notargets'); return; }
-
-  // 1. secure context
   if (!isSecureContext()) { setStatus('insecure'); return; }
-
-  // 2. API support
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) { setStatus('unsupported'); return; }
 
-  // 3. permission probe (precise states), then release for MindAR
   setStatus('permission');
   let probe;
   try {
@@ -181,9 +174,8 @@ async function startFlow() {
     setStatus(classifyCameraError(err));
     return;
   }
-  probe.getTracks().forEach((t) => t.stop());
+  probe.getTracks().forEach((tr) => tr.stop());
 
-  // 4. start MindAR
   setStatus('starting');
   await wait(300);
   startMindAR();
@@ -215,11 +207,9 @@ function onArReady() {
   if (loadTimeoutId) clearTimeout(loadTimeoutId);
   debug('EVENT: arReady');
   setDebug('ready — point at a target');
-  // Reveal the live camera immediately — no lingering beige screen.
   hideStatusScreen();
   if (arTopbarEl) arTopbarEl.hidden = false;
   showScanHint();
-  // First-time users see the short guide once.
   if (!getScanGuideSeen()) setTimeout(openGuide, 500);
 }
 function onArError() {
@@ -228,13 +218,11 @@ function onArError() {
   debug('EVENT: arError'); setStatus('failed');
 }
 
-// MindAR fires these on the scene
 sceneEl?.addEventListener('arReady', onArReady);
 sceneEl?.addEventListener('arError', onArError);
 
 retryBtn?.addEventListener('click', () => location.reload());
 
-// Release the camera when leaving the page
 window.addEventListener('pagehide', () => {
   try { sceneEl?.systems?.['mindar-image-system']?.stop(); } catch { /* noop */ }
 });
@@ -243,23 +231,21 @@ window.addEventListener('pagehide', () => {
 // Exhibit population + target detection
 // ===========================================================================
 function populateExhibits() {
-  // The AR card stays minimal: title + (static SDG 12 pill) + best-action badge.
-  // The long statistic/source lives in the bottom sheet, not the 3D overlay.
-  TARGETS.forEach((t, i) => {
-    const title = document.getElementById(`arx-title-${i}`);
-    const action = document.getElementById(`arx-action-${i}`);
-    title?.setAttribute('value', t.title);
-    action?.setAttribute('value', `Best: ${ACTION_LABELS[t.recommendedAction]}`);
+  // Minimal 3D card: localised title + (static SDG 12 pill) + best-action badge.
+  // NOTE: A-Frame's default MSDF font renders Latin glyphs (EN/BM). Chinese
+  // glyphs need a custom MSDF font (future work); the bottom sheet always shows
+  // the full localised content as HTML, so no information is lost.
+  TARGETS.forEach((tg, i) => {
+    const lt = localizedTarget(tg);
+    const titleEl = document.getElementById(`arx-title-${i}`);
+    const actionEl = document.getElementById(`arx-action-${i}`);
+    titleEl?.setAttribute('value', lt.title);
+    actionEl?.setAttribute('value', `${t('common.bestPrefix') || 'Best: '}${actionLabel(tg.recommendedAction)}`);
   });
   debug('Exhibits populated.');
 }
 
-/**
- * Read the real targetIndex from the `mindar-image-target` attribute rather
- * than relying on DOM order. After A-Frame initialises the component,
- * getAttribute returns the parsed object; before that it's the raw string —
- * handle both, and fall back to DOM order only if parsing fails.
- */
+/** Read the real targetIndex from the component (not DOM order). */
 function readTargetIndex(el, fallback) {
   const parsed = el.getAttribute('mindar-image-target');
   if (parsed && typeof parsed === 'object' && parsed.targetIndex != null) {
@@ -292,12 +278,12 @@ function onTargetFound(index) {
 
 function onTargetLost(index) {
   debug('targetLost index:', index);
-  // debounce flicker — only drop the sheet if not re-found shortly
   if (lostTimerId) clearTimeout(lostTimerId);
   lostTimerId = setTimeout(() => {
     debug('targetLost (settled) index:', index);
     setDebug(`lost #${index}\nscanning…`);
     currentTarget = null;
+    lastActionId = null;
     hideSheet();
     showScanHint();
   }, 800);
@@ -306,26 +292,50 @@ function onTargetLost(index) {
 // ===========================================================================
 // Bottom sheet
 // ===========================================================================
-function showScanHint() {
-  if (scanHintEl) scanHintEl.hidden = false;
+function showScanHint() { if (scanHintEl) scanHintEl.hidden = false; }
+function hideScanHint() { if (scanHintEl) scanHintEl.hidden = true; }
+
+const actionButtons = { throwAway: btnThrow, saveLeftovers: btnSave, share: btnShare, compost: btnCompost };
+
+function highlightRecommended(actionId) {
+  Object.entries(actionButtons).forEach(([id, btn]) => {
+    btn?.classList.toggle('is-recommended', id === actionId);
+  });
 }
-function hideScanHint() {
-  if (scanHintEl) scanHintEl.hidden = true;
+
+/** Fill the sheet's text from the current target + chosen action (localised). */
+function renderSheetText() {
+  if (!currentTarget) return;
+  const lt = localizedTarget(currentTarget);
+  sheetTypeEl.textContent = lt.wasteType;
+  sheetTitleEl.textContent = lt.title;
+  markerStatusEl.textContent = t('scan.detected') || 'Detected';
+  markerStatusEl.className = 'status-badge status-badge--found';
+  factDisplayEl.textContent = lt.quickFact;
+  factSourceEl.textContent = `${t('common.sourcePrefix') || 'Source: '}${lt.source}`;
+
+  if (lastActionId) {
+    const guidance = lt.actionGuidance[lastActionId];
+    feedbackPanelEl.textContent = `${actionLabel(lastActionId)}: ${guidance}`;
+    feedbackPanelEl.className = 'feedback-panel';
+    if (lastActionId === 'throwAway') feedbackPanelEl.classList.add('feedback-panel--negative');
+    else if (lastActionId === currentTarget.recommendedAction) feedbackPanelEl.classList.add('feedback-panel--positive');
+    else feedbackPanelEl.classList.add('feedback-panel--neutral');
+    if (sheetStepEl) sheetStepEl.textContent = t('scan.step3');
+  } else {
+    feedbackPanelEl.textContent = lt.defaultMessage;
+    feedbackPanelEl.className = 'feedback-panel';
+    if (sheetStepEl) sheetStepEl.textContent = t('scan.step2');
+  }
+
+  highlightRecommended(currentTarget.recommendedAction);
 }
 
 function showSheet(target) {
   hideScanHint();
-  sheetTypeEl.textContent = target.wasteType;
-  sheetTitleEl.textContent = target.title;
-  markerStatusEl.textContent = 'Detected';
-  markerStatusEl.className = 'status-badge status-badge--found';
-  factDisplayEl.textContent = target.quickFact;
-  factSourceEl.textContent = `Source: ${target.source}`;
-  feedbackPanelEl.textContent = target.defaultMessage;
-  feedbackPanelEl.className = 'feedback-panel';
-  if (sheetStepEl) sheetStepEl.textContent = STEP_CHOOSE;
-
-  highlightRecommended(target.recommendedAction);
+  currentTarget = target;
+  lastActionId = null;
+  renderSheetText();
 
   // Open compact first (keeps the AR exhibit visible); user expands via handle.
   sheetEl.hidden = false;
@@ -338,31 +348,14 @@ function hideSheet() {
   sheetEl.hidden = true;
 }
 
-const actionButtons = { throwAway: btnThrow, saveLeftovers: btnSave, share: btnShare, compost: btnCompost };
-
-function highlightRecommended(actionId) {
-  Object.entries(actionButtons).forEach(([id, btn]) => {
-    btn?.classList.toggle('is-recommended', id === actionId);
-  });
-}
-
 // ===========================================================================
 // Actions (target-specific guidance)
 // ===========================================================================
 function applyAction(actionId) {
   if (!currentTarget) return;
-  const guidance = currentTarget.actionGuidance[actionId];
+  lastActionId = actionId;
   debug('ACTION', actionId, 'on', currentTarget.id);
-
-  feedbackPanelEl.textContent = `${ACTION_LABELS[actionId]}: ${guidance}`;
-  feedbackPanelEl.className = 'feedback-panel';
-  if (actionId === 'throwAway') feedbackPanelEl.classList.add('feedback-panel--negative');
-  else if (actionId === currentTarget.recommendedAction) feedbackPanelEl.classList.add('feedback-panel--positive');
-  else feedbackPanelEl.classList.add('feedback-panel--neutral');
-
-  // Step 3 — nudge toward Ask more / Quick check / Home.
-  if (sheetStepEl) sheetStepEl.textContent = STEP_LEARN;
-
+  renderSheetText();
   saveLastAction(actionId);
 }
 
@@ -392,6 +385,15 @@ scanGuideDismiss?.addEventListener('click', closeGuide);
 scanGuideBackdrop?.addEventListener('click', closeGuide);
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && scanGuideEl && !scanGuideEl.hidden) closeGuide();
+});
+
+// ===========================================================================
+// Language change — re-render dynamic content (static DOM is handled by i18n)
+// ===========================================================================
+window.addEventListener('platewise:localechange', () => {
+  if (currentStatusKey && statusScreenEl && !statusScreenEl.hidden) setStatus(currentStatusKey);
+  populateExhibits();
+  if (currentTarget && !sheetEl.hidden) renderSheetText();
 });
 
 // ===========================================================================

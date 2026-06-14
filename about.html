@@ -5,21 +5,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="About PlateWise AR — food-waste images as AR learning exhibits, aligned with SDG 12." />
   <meta name="theme-color" content="#1f6e47" />
-  <title>PlateWise AR — About</title>
+  <title data-i18n="meta.titleAbout">PlateWise AR — About</title>
   <link rel="stylesheet" href="./src/styles.css" />
 </head>
 <body>
 
   <main class="page stack">
     <header>
-      <span class="eyebrow">About</span>
+      <span class="eyebrow" data-i18n="about.eyebrow">About</span>
       <h1 class="mt-2">PlateWise AR</h1>
-      <p class="lede">Food-waste images become AR learning exhibits.</p>
+      <p class="lede" data-i18n="about.lede">Food-waste images become AR learning exhibits.</p>
     </header>
 
     <div class="card">
-      <h2>Purpose</h2>
-      <p class="muted text-sm mt-2">
+      <h2 data-i18n="about.purposeH">Purpose</h2>
+      <p class="muted text-sm mt-2" data-i18n="about.purposeB">
         Scan a curated food-waste image and a short AR exhibit explains what it represents, why it
         matters for SDG&nbsp;12, and what you can do. Inspired by food-waste museum concepts that
         turn discarded food into moments of reflection.
@@ -28,40 +28,40 @@
 
     <div class="card">
       <span class="chip">SDG 12</span>
-      <p class="muted text-sm mt-3">
+      <p class="muted text-sm mt-3" data-i18n="about.sdgB">
         Responsible Consumption &amp; Production. Target&nbsp;12.3 aims to halve per-person food
         waste at retail and consumer levels by&nbsp;2030.
       </p>
     </div>
 
-    <h2 class="mt-4">What it shows</h2>
+    <h2 class="mt-4" data-i18n="about.whatShows">What it shows</h2>
     <details class="acc">
-      <summary>AR visualization</summary>
-      <div class="acc__body">A floating exhibit card anchored to the scanned image — title, SDG&nbsp;12 tag, a statistic, and a recommended-action badge, with a highlight frame.</div>
+      <summary data-i18n="about.arVizH">AR visualization</summary>
+      <div class="acc__body" data-i18n="about.arVizB">A floating exhibit card anchored to the scanned image — title, SDG&nbsp;12 tag, a statistic, and a recommended-action badge, with a highlight frame.</div>
     </details>
     <details class="acc">
-      <summary>Interaction</summary>
-      <div class="acc__body">A contextual bottom sheet appears on detection. Choose Throw, Save, Share, or Compost, and tap “Ask more” for a short explanation.</div>
+      <summary data-i18n="about.interactionH">Interaction</summary>
+      <div class="acc__body" data-i18n="about.interactionB">A contextual bottom sheet appears on detection. Choose Throw, Save, Share, or Compost, and tap “Ask more” for a short explanation.</div>
     </details>
     <details class="acc">
-      <summary>Educational content</summary>
-      <div class="acc__body">Food-waste statistics from official sources, target-specific guidance, plus a quick quiz and a personal pledge.</div>
+      <summary data-i18n="about.eduH">Educational content</summary>
+      <div class="acc__body" data-i18n="about.eduB">Food-waste statistics from official sources, target-specific guidance, plus a quick quiz and a personal pledge.</div>
     </details>
 
     <details class="acc">
-      <summary>How it works</summary>
+      <summary data-i18n="about.howH">How it works</summary>
       <div class="acc__body">
         <ul>
-          <li>Scan a curated food-waste image.</li>
-          <li>An AR exhibit appears over it.</li>
-          <li>Choose an action and read the guidance.</li>
-          <li>Finish with a quick check and a pledge.</li>
+          <li data-i18n="about.how1">Scan a curated food-waste image.</li>
+          <li data-i18n="about.how2">An AR exhibit appears over it.</li>
+          <li data-i18n="about.how3">Choose an action and read the guidance.</li>
+          <li data-i18n="about.how4">Finish with a quick check and a pledge.</li>
         </ul>
       </div>
     </details>
 
     <details class="acc">
-      <summary>Sources</summary>
+      <summary data-i18n="about.sourcesH">Sources</summary>
       <div class="acc__body">
         <ul class="source-list">
           <li><strong>UNEP Food Waste Index Report 2024</strong><br><a href="https://www.unep.org/resources/publication/food-waste-index-report-2024" target="_blank" rel="noopener">unep.org</a></li>
@@ -72,19 +72,19 @@
     </details>
 
     <details class="acc">
-      <summary>Limitations</summary>
+      <summary data-i18n="about.limitsH">Limitations</summary>
       <div class="acc__body">
         <ul>
-          <li>Recognises <strong>curated image targets only</strong> — not arbitrary food photos.</li>
-          <li><strong>No AI yet</strong> — image analysis is planned future work.</li>
-          <li>Does <strong>not</strong> confirm food safety.</li>
-          <li>No exact weight or carbon estimates.</li>
-          <li>Camera needs HTTPS or localhost.</li>
+          <li data-i18n-html="about.limit1">Recognises <strong>curated image targets only</strong> — not arbitrary food photos.</li>
+          <li data-i18n-html="about.limit2"><strong>No AI yet</strong> — image analysis is planned future work.</li>
+          <li data-i18n-html="about.limit3">Does <strong>not</strong> confirm food safety.</li>
+          <li data-i18n="about.limit4">No exact weight or carbon estimates.</li>
+          <li data-i18n="about.limit5">Camera needs HTTPS or localhost.</li>
         </ul>
       </div>
     </details>
 
-    <p class="muted text-sm center mt-4">
+    <p class="muted text-sm center mt-4" data-i18n="about.footerNote">
       A future version may use AI to analyse your own food-waste photos. For now, PlateWise uses
       curated image targets included in the app.
     </p>

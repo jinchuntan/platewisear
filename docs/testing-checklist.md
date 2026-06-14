@@ -14,6 +14,20 @@ Mark each test Pass / Fail with notes.
 | 3 | Stat ticker chips visible (1.05B / 60% / SDG 12.3) | | |
 | 4 | Top pill nav present; current page highlighted | | |
 
+## Home — new sections & language
+
+| # | Test | Result | Notes |
+|---|------|--------|-------|
+| H1 | Section A "Built for everyday food decisions." shows 3 fan-cards | | |
+| H2 | Section B (dark) shows 4 stat cards (1.05B / 60% / 19% / SDG 12.3) + "Start scanning" CTA | | |
+| H3 | Hero CTAs still work (Start scan / Try demo / View scan images / About) | | |
+| L1 | Language switcher (globe · EN / BM / 中文) appears in the top nav | | |
+| L2 | Switching EN → BM → 中文 translates **every** visible string on the page | | |
+| L3 | Choice persists after refresh; `<html lang>` updates (en / ms / zh-CN) | | |
+| L4 | AR, Demo, Scan-images, Quiz, About all translate fully (incl. dynamic content) | | |
+| L5 | AR: switcher near Home/How-to does not cover the camera; scanning still works | | |
+| L6 | Demo actions, AR bottom sheet, Ask-More drawer, quiz feedback all translate | | |
+
 ## Scan page — camera & setup states
 
 | # | Test | Result | Notes |

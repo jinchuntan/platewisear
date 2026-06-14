@@ -1,22 +1,19 @@
 /**
  * quiz.js — Quiz and pledge logic for PlateWise AR
  *
- * Renders quiz questions from content.js, tracks answers,
- * calculates the score, and persists results to localStorage.
- *
- * Also handles the "My Action Pledge" section.
- *
- * Heavily commented for the technical report.
+ * Renders quiz questions and the pledge from content.js (locale-aware), tracks
+ * answers, calculates the score, and persists results to localStorage.
+ * All copy is localised (EN / BM / 中文) and re-renders on language change.
  */
 
-import { quizQuestions, pledgeOptions, actions } from './content.js';
+import { getQuizQuestions, getPledgeOptions, getActionInfo } from './content.js';
 import { getQuizScore, saveQuizScore, getPledge, savePledge, getLastAction } from './storage.js';
 import { debug } from './utils.js';
+import { t } from './i18n.js';
 
 // ---------------------------------------------------------------------------
 // DOM references
 // ---------------------------------------------------------------------------
-
 const quizContainer = document.getElementById('quiz-container');
 const quizResultEl = document.getElementById('quiz-result');
 const scoreDisplayEl = document.getElementById('score-display');
@@ -32,11 +29,8 @@ const lastActionNoteEl = document.getElementById('last-action-note');
 // ---------------------------------------------------------------------------
 // State
 // ---------------------------------------------------------------------------
-
-/** Track how many questions have been answered so far. */
+let questions = getQuizQuestions();
 let answeredCount = 0;
-
-/** Track the number of correct answers. */
 let correctCount = 0;
 
 debug('quiz.js loaded');
@@ -44,124 +38,81 @@ debug('quiz.js loaded');
 // ---------------------------------------------------------------------------
 // Render quiz questions
 // ---------------------------------------------------------------------------
-
-/**
- * Build the quiz UI from the quizQuestions array in content.js.
- * Each question gets a card with clickable option buttons.
- */
 function renderQuiz() {
+  questions = getQuizQuestions();
   answeredCount = 0;
   correctCount = 0;
   quizContainer.innerHTML = '';
   quizResultEl.style.display = 'none';
 
-  quizQuestions.forEach((q, qIndex) => {
-    // Card wrapper
+  const qLabel = t('quiz.qLabel') || 'Q{n}.';
+  const optAria = t('quiz.optionAriaPrefix') || 'Option: ';
+
+  questions.forEach((q, qIndex) => {
     const card = document.createElement('div');
     card.className = 'card';
     card.id = `question-${qIndex}`;
 
-    // Question text
     const questionP = document.createElement('p');
-    questionP.innerHTML = `<strong>Q${qIndex + 1}.</strong> ${q.question}`;
+    questionP.innerHTML = `<strong>${qLabel.replace('{n}', qIndex + 1)}</strong> ${q.question}`;
     card.appendChild(questionP);
 
-    // Option buttons
     q.options.forEach((opt, optIndex) => {
       const btn = document.createElement('button');
       btn.className = 'quiz-option';
       btn.textContent = opt;
-      btn.setAttribute('aria-label', `Option: ${opt}`);
-
-      btn.addEventListener('click', () => {
-        handleAnswer(qIndex, optIndex, card);
-      });
-
+      btn.setAttribute('aria-label', `${optAria}${opt}`);
+      btn.addEventListener('click', () => handleAnswer(qIndex, optIndex, card));
       card.appendChild(btn);
     });
 
     quizContainer.appendChild(card);
   });
 
-  debug('Quiz rendered —', quizQuestions.length, 'questions');
+  debug('Quiz rendered —', questions.length, 'questions');
 }
 
-/**
- * Handle a quiz answer selection.
- *
- * - Highlights correct / incorrect options.
- * - Shows the explanation.
- * - Disables further interaction on the question.
- * - Checks whether all questions have been answered.
- *
- * @param {number} qIndex — question index
- * @param {number} selectedIndex — chosen option index
- * @param {HTMLElement} card — question card element
- */
 function handleAnswer(qIndex, selectedIndex, card) {
-  const q = quizQuestions[qIndex];
+  const q = questions[qIndex];
   const buttons = card.querySelectorAll('.quiz-option');
-
-  // Prevent re-answering
   if (buttons[0].disabled) return;
 
-  // Disable all option buttons for this question
   buttons.forEach((btn, i) => {
     btn.disabled = true;
-    if (i === q.correctIndex) {
-      btn.classList.add('correct');
-    }
-    if (i === selectedIndex && selectedIndex !== q.correctIndex) {
-      btn.classList.add('incorrect');
-    }
+    if (i === q.correctIndex) btn.classList.add('correct');
+    if (i === selectedIndex && selectedIndex !== q.correctIndex) btn.classList.add('incorrect');
   });
 
-  // Show explanation
   const explanation = document.createElement('p');
   explanation.className = 'quiz-explanation';
   explanation.textContent = q.explanation;
   card.appendChild(explanation);
 
-  // Update tallies
-  if (selectedIndex === q.correctIndex) {
-    correctCount++;
-  }
+  if (selectedIndex === q.correctIndex) correctCount++;
   answeredCount++;
 
   debug(`Q${qIndex + 1} answered — correct: ${selectedIndex === q.correctIndex}`);
 
-  // Check if quiz is complete
-  if (answeredCount === quizQuestions.length) {
-    showResult();
-  }
+  if (answeredCount === questions.length) showResult();
 }
 
-/**
- * Display the final score and persist it to localStorage.
- */
 function showResult() {
-  const total = quizQuestions.length;
+  const total = questions.length;
   scoreDisplayEl.textContent = `${correctCount} / ${total}`;
 
-  // Contextual message — short and encouraging
   if (correctCount === total) {
-    scoreMessageEl.textContent = 'Perfect — you know your food-waste facts.';
+    scoreMessageEl.textContent = t('quiz.scorePerfect');
   } else if (correctCount >= total * 0.6) {
-    scoreMessageEl.textContent = 'Nice work. Check the answers to learn more.';
+    scoreMessageEl.textContent = t('quiz.scoreNice');
   } else {
-    scoreMessageEl.textContent = 'Keep exploring — revisit the facts and try again.';
+    scoreMessageEl.textContent = t('quiz.scoreKeep');
   }
 
   quizResultEl.style.display = 'block';
   saveQuizScore(correctCount);
   updateSavedDisplay();
-
   debug('Quiz completed — score:', correctCount, '/', total);
 }
-
-// ---------------------------------------------------------------------------
-// Retry
-// ---------------------------------------------------------------------------
 
 btnRetry?.addEventListener('click', () => {
   renderQuiz();
@@ -171,14 +122,10 @@ btnRetry?.addEventListener('click', () => {
 // ---------------------------------------------------------------------------
 // Pledge section
 // ---------------------------------------------------------------------------
-
-/**
- * Render the pledge radio buttons from the pledgeOptions array.
- */
 function renderPledgeOptions() {
   pledgeOptionsEl.innerHTML = '';
 
-  pledgeOptions.forEach((text, i) => {
+  getPledgeOptions().forEach((text, i) => {
     const label = document.createElement('label');
     label.className = 'pledge-option';
 
@@ -193,11 +140,9 @@ function renderPledgeOptions() {
     pledgeOptionsEl.appendChild(label);
   });
 
-  // Pre-select saved pledge if one exists
   const saved = getPledge();
   if (saved) {
-    const radios = pledgeOptionsEl.querySelectorAll('input[type="radio"]');
-    radios.forEach((r) => {
+    pledgeOptionsEl.querySelectorAll('input[type="radio"]').forEach((r) => {
       if (r.value === saved) r.checked = true;
     });
   }
@@ -206,50 +151,43 @@ function renderPledgeOptions() {
 btnSavePledge?.addEventListener('click', () => {
   const selected = pledgeOptionsEl.querySelector('input[name="pledge"]:checked');
   if (!selected) {
-    pledgeConfirmEl.textContent = 'Please select a pledge first.';
-    pledgeConfirmEl.style.color = 'var(--clr-danger)';
+    pledgeConfirmEl.textContent = t('quiz.selectFirst');
+    pledgeConfirmEl.style.color = 'var(--danger)';
     pledgeConfirmEl.style.display = 'block';
     return;
   }
 
   savePledge(selected.value);
-  pledgeConfirmEl.textContent = `Pledge saved: "${selected.value}"`;
-  pledgeConfirmEl.style.color = 'var(--clr-primary)';
+  pledgeConfirmEl.textContent = `${t('quiz.pledgeSavedPrefix') || 'Pledge saved: '}"${selected.value}"`;
+  pledgeConfirmEl.style.color = 'var(--primary)';
   pledgeConfirmEl.style.display = 'block';
   updateSavedDisplay();
-
   debug('Pledge saved:', selected.value);
 });
 
 // ---------------------------------------------------------------------------
 // Display saved results from localStorage
 // ---------------------------------------------------------------------------
-
 function updateSavedDisplay() {
   const score = getQuizScore();
   const pledge = getPledge();
 
   savedScoreEl.textContent = score !== null
-    ? `Quiz score: ${score} / ${quizQuestions.length}`
-    : 'No quiz score saved yet.';
+    ? `${t('quiz.savedScorePrefix') || 'Quiz score: '}${score} / ${questions.length}`
+    : (t('quiz.noScore') || 'No quiz score saved yet.');
 
   savedPledgeEl.textContent = pledge
-    ? `Pledge: "${pledge}"`
-    : 'No pledge saved yet.';
+    ? `${t('quiz.savedPledgePrefix') || 'Pledge: '}"${pledge}"`
+    : (t('quiz.noPledge') || 'No pledge saved yet.');
 }
 
 // ---------------------------------------------------------------------------
 // Recall the last AR / Demo action (carried over via localStorage)
 // ---------------------------------------------------------------------------
-
-/**
- * If the user chose a food-waste action in AR or Demo mode, surface it here so
- * the reflection connects back to what they just did.
- */
 function showLastAction() {
   if (!lastActionNoteEl) return;
   const lastId = getLastAction();
-  const action = lastId ? actions[lastId] : null;
+  const action = lastId ? getActionInfo(lastId) : null;
 
   if (!action) {
     lastActionNoteEl.hidden = true;
@@ -257,15 +195,24 @@ function showLastAction() {
   }
 
   lastActionNoteEl.innerHTML =
-    `<strong>Your last choice: ${action.label}</strong><br>${action.feedback}`;
+    `<strong>${t('quiz.lastChoicePrefix') || 'Your last choice: '}${action.label}</strong><br>${action.feedback}`;
   lastActionNoteEl.hidden = false;
   debug('Last action recalled:', lastId);
 }
 
 // ---------------------------------------------------------------------------
+// Language change — re-render everything from the active locale
+// ---------------------------------------------------------------------------
+window.addEventListener('platewise:localechange', () => {
+  renderQuiz();
+  renderPledgeOptions();
+  updateSavedDisplay();
+  showLastAction();
+});
+
+// ---------------------------------------------------------------------------
 // Initialise
 // ---------------------------------------------------------------------------
-
 renderQuiz();
 renderPledgeOptions();
 updateSavedDisplay();

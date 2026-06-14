@@ -4,14 +4,17 @@
  * Lets the user pick a sample food-waste image (the same curated targets used
  * by AR), then shows the exhibit card, contextual actions, target-specific
  * guidance, and the shared Ask-More drawer. No camera, no AI.
+ * Fully localised (EN / BM / 中文) and re-renders on language change.
  */
 
-import { TARGETS, ACTION_LABELS } from './food-targets.js';
+import { TARGETS, localizedTarget, actionLabel } from './food-targets.js';
 import { saveLastAction } from './storage.js';
 import { initAskMore } from './askmore.js';
 import { debug } from './utils.js';
+import { t } from './i18n.js';
 
-let currentTarget = null;
+let currentTarget = null;   // raw target (re-localised at render time)
+let lastActionId = null;
 const askMore = initAskMore();
 
 // --- refs ---
@@ -36,50 +39,29 @@ const actionButtons = { throwAway: btnThrow, saveLeftovers: btnSave, share: btnS
 debug('demo-controller.js loaded');
 
 // ---------------------------------------------------------------------------
-// Render the selectable sample image cards
+// Render the selectable sample image cards (labels localised)
 // ---------------------------------------------------------------------------
 function renderGrid() {
   if (!gridEl) return;
-  gridEl.innerHTML = TARGETS.map(
-    (t) =>
-      `<button type="button" class="target-card" data-index="${t.targetIndex}">` +
-      `<img class="target-card__img" src="${t.image}" alt="${t.title}" loading="lazy" />` +
-      `<span class="target-card__label">${t.title}</span></button>`
-  ).join('');
+  gridEl.innerHTML = TARGETS.map((tg) => {
+    const lt = localizedTarget(tg);
+    return (
+      `<button type="button" class="target-card" data-index="${tg.targetIndex}">` +
+      `<img class="target-card__img" src="${tg.image}" alt="${lt.title}" loading="lazy" />` +
+      `<span class="target-card__label">${lt.title}</span></button>`
+    );
+  }).join('');
 
   gridEl.querySelectorAll('.target-card').forEach((card) => {
     card.addEventListener('click', () => selectTarget(Number(card.dataset.index)));
   });
-}
 
-// ---------------------------------------------------------------------------
-// Select an exhibit
-// ---------------------------------------------------------------------------
-function selectTarget(index) {
-  const target = TARGETS.find((t) => t.targetIndex === index);
-  if (!target) return;
-  currentTarget = target;
-  debug('Demo selected:', target.id);
-
-  imageEl.src = target.image;
-  imageEl.alt = target.title;
-  typeEl.textContent = target.wasteType;
-  titleEl.textContent = target.title;
-  statEl.textContent = target.quickFact;
-  actionBadgeEl.textContent = `Best: ${ACTION_LABELS[target.recommendedAction]}`;
-  factSourceEl.textContent = `Source: ${target.source}`;
-
-  feedbackPanelEl.textContent = target.defaultMessage;
-  feedbackPanelEl.className = 'feedback-panel';
-
-  highlightRecommended(target.recommendedAction);
-  // mark the active card
-  gridEl.querySelectorAll('.target-card').forEach((c) =>
-    c.classList.toggle('is-active', Number(c.dataset.index) === index)
-  );
-
-  stageEl.hidden = false;
-  stageEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // Keep the active card highlighted after a re-render.
+  if (currentTarget) {
+    gridEl.querySelectorAll('.target-card').forEach((c) =>
+      c.classList.toggle('is-active', Number(c.dataset.index) === currentTarget.targetIndex)
+    );
+  }
 }
 
 function highlightRecommended(actionId) {
@@ -88,17 +70,60 @@ function highlightRecommended(actionId) {
   });
 }
 
+/** Fill the exhibit card + feedback for the current target/action (localised). */
+function renderStage() {
+  if (!currentTarget) return;
+  const lt = localizedTarget(currentTarget);
+
+  imageEl.src = currentTarget.image;
+  imageEl.alt = lt.title;
+  typeEl.textContent = lt.wasteType;
+  titleEl.textContent = lt.title;
+  statEl.textContent = lt.quickFact;
+  actionBadgeEl.textContent = `${t('common.bestPrefix') || 'Best: '}${actionLabel(currentTarget.recommendedAction)}`;
+  factSourceEl.textContent = `${t('common.sourcePrefix') || 'Source: '}${lt.source}`;
+
+  if (lastActionId) {
+    const guidance = lt.actionGuidance[lastActionId];
+    feedbackPanelEl.textContent = `${actionLabel(lastActionId)}: ${guidance}`;
+    feedbackPanelEl.className = 'feedback-panel';
+    if (lastActionId === 'throwAway') feedbackPanelEl.classList.add('feedback-panel--negative');
+    else if (lastActionId === currentTarget.recommendedAction) feedbackPanelEl.classList.add('feedback-panel--positive');
+    else feedbackPanelEl.classList.add('feedback-panel--neutral');
+  } else {
+    feedbackPanelEl.textContent = lt.defaultMessage;
+    feedbackPanelEl.className = 'feedback-panel';
+  }
+
+  highlightRecommended(currentTarget.recommendedAction);
+}
+
+// ---------------------------------------------------------------------------
+// Select an exhibit
+// ---------------------------------------------------------------------------
+function selectTarget(index) {
+  const target = TARGETS.find((tg) => tg.targetIndex === index);
+  if (!target) return;
+  currentTarget = target;
+  lastActionId = null;
+  debug('Demo selected:', target.id);
+
+  renderStage();
+  gridEl.querySelectorAll('.target-card').forEach((c) =>
+    c.classList.toggle('is-active', Number(c.dataset.index) === index)
+  );
+
+  stageEl.hidden = false;
+  stageEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 // ---------------------------------------------------------------------------
 // Actions (target-specific guidance)
 // ---------------------------------------------------------------------------
 function applyAction(actionId) {
   if (!currentTarget) return;
-  const guidance = currentTarget.actionGuidance[actionId];
-  feedbackPanelEl.textContent = `${ACTION_LABELS[actionId]}: ${guidance}`;
-  feedbackPanelEl.className = 'feedback-panel';
-  if (actionId === 'throwAway') feedbackPanelEl.classList.add('feedback-panel--negative');
-  else if (actionId === currentTarget.recommendedAction) feedbackPanelEl.classList.add('feedback-panel--positive');
-  else feedbackPanelEl.classList.add('feedback-panel--neutral');
+  lastActionId = actionId;
+  renderStage();
   saveLastAction(actionId);
   debug('Demo action:', actionId, 'on', currentTarget.id);
 }
@@ -108,6 +133,14 @@ btnSave?.addEventListener('click', () => applyAction('saveLeftovers'));
 btnShare?.addEventListener('click', () => applyAction('share'));
 btnCompost?.addEventListener('click', () => applyAction('compost'));
 btnAskMore?.addEventListener('click', () => askMore.open(currentTarget));
+
+// ---------------------------------------------------------------------------
+// Language change — re-render the grid + any selected exhibit
+// ---------------------------------------------------------------------------
+window.addEventListener('platewise:localechange', () => {
+  renderGrid();
+  if (currentTarget) renderStage();
+});
 
 // ---------------------------------------------------------------------------
 // Init

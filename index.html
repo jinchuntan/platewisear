@@ -6,37 +6,131 @@
   <meta name="description" content="PlateWise AR — scan your leftovers, learn what to do next. An AR food-waste learning experience for SDG 12." />
   <meta name="theme-color" content="#1f6e47" />
   <link rel="manifest" href="./manifest.webmanifest" />
-  <title>PlateWise AR</title>
+  <title data-i18n="meta.titleHome">PlateWise AR</title>
   <link rel="stylesheet" href="./src/styles.css" />
 </head>
 <body>
 
   <main class="page">
     <section class="hero">
-      <span class="chip">Food-waste museum, in AR</span>
+      <span class="chip" data-i18n="hero.chip">Food-waste museum, in AR</span>
 
-      <h1 class="hero__title">Scan your leftovers.<br><span class="accent">Learn what to do next.</span></h1>
-      <p class="hero__sub">An AR food-waste learning experience for SDG&nbsp;12.</p>
+      <h1 class="hero__title">
+        <span data-i18n="hero.title1">Scan your leftovers.</span><br>
+        <span class="accent" data-i18n="hero.title2">Learn what to do next.</span>
+      </h1>
+      <p class="hero__sub" data-i18n="hero.sub">An AR food-waste learning experience for SDG&nbsp;12.</p>
 
       <div class="hero__cta">
-        <a href="ar.html" class="btn">Start scan</a>
-        <a href="demo.html" class="btn btn--secondary">Try demo</a>
+        <a href="ar.html" class="btn" data-i18n="hero.startScan">Start scan</a>
+        <a href="demo.html" class="btn btn--secondary" data-i18n="hero.tryDemo">Try demo</a>
       </div>
 
       <p class="linkrow mt-4">
-        <a href="marker.html">View scan images</a>
+        <a href="marker.html" data-i18n="hero.viewImages">View scan images</a>
         <span aria-hidden="true" class="muted">·</span>
-        <a href="about.html">About</a>
+        <a href="about.html" data-i18n="hero.about">About</a>
       </p>
     </section>
 
     <!-- Stat ticker -->
     <div class="ticker mt-6">
-      <span class="chip chip--muted">1.05B tonnes wasted</span>
-      <span class="chip chip--muted">60% from households</span>
-      <span class="chip chip--accent">SDG 12.3</span>
+      <span class="chip chip--muted" data-i18n="ticker.wasted">1.05B tonnes wasted</span>
+      <span class="chip chip--muted" data-i18n="ticker.households">60% from households</span>
+      <span class="chip chip--accent" data-i18n="ticker.sdg">SDG 12.3</span>
     </div>
   </main>
+
+  <!--
+    ==========================================================================
+    Section A — Learning journey / feature fan-cards
+    (Tenun "Built for people who've already started" feel, adapted to learning.)
+    Card images in public/assets/illustrations/ are TEMPORARY placeholders
+    (copied from the food-target images) — replace with bespoke artwork later.
+    ==========================================================================
+  -->
+  <section class="journey">
+    <div class="journey__wrap">
+      <div class="journey__intro">
+        <span class="eyebrow" data-i18n="journey.eyebrow">For learners.</span>
+        <h2 class="section__title" data-i18n="journey.title">Built for everyday food decisions.</h2>
+        <p class="section__sub" data-i18n="journey.subtitle">You do not need to be a sustainability expert. PlateWise turns food-waste images into short AR exhibits that help you see the issue, choose an action, and reflect on what happens next.</p>
+      </div>
+
+      <div class="fan" aria-label="What PlateWise helps you do">
+        <article class="fan__card fan__card--1">
+          <div class="fan__media"><img src="./assets/illustrations/learn-see.jpg" alt="" data-i18n-alt="journey.card1Alt" loading="lazy" /></div>
+          <div class="fan__text">
+            <span class="fan__num">01</span>
+            <h3 class="fan__title" data-i18n="journey.card1Title">Visualise, not just read.</h3>
+            <p class="fan__body" data-i18n="journey.card1Body">Food waste often feels invisible after it leaves the plate. PlateWise uses AR to place the impact back in front of the learner.</p>
+          </div>
+        </article>
+
+        <article class="fan__card fan__card--2">
+          <div class="fan__media"><img src="./assets/illustrations/learn-act.jpg" alt="" data-i18n-alt="journey.card2Alt" loading="lazy" /></div>
+          <div class="fan__text">
+            <span class="fan__num">02</span>
+            <h3 class="fan__title" data-i18n="journey.card2Title">Action, not guilt.</h3>
+            <p class="fan__body" data-i18n="journey.card2Body">The app does not just say “waste less”. It asks users to choose what they would do: throw, save, share, or compost.</p>
+          </div>
+        </article>
+
+        <article class="fan__card fan__card--3">
+          <div class="fan__media"><img src="./assets/illustrations/learn-reflect.jpg" alt="" data-i18n-alt="journey.card3Alt" loading="lazy" /></div>
+          <div class="fan__text">
+            <span class="fan__num">03</span>
+            <h3 class="fan__title" data-i18n="journey.card3Title">Reflection, not a lecture.</h3>
+            <p class="fan__body" data-i18n="journey.card3Body">After each scan, users get a short fact, target-specific guidance, and a quick check to connect SDG 12 with everyday behaviour.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!--
+    ==========================================================================
+    Section B — Impact / statistics (Tenun dark "Don't stress" feel)
+    Educational stat cards. Figures sourced from UNEP / UN SDG 12 (see About).
+    ==========================================================================
+  -->
+  <section class="impact">
+    <div class="impact__wrap">
+      <h2 class="impact__title" data-i18n="impact.title">Small choices add up.</h2>
+      <p class="impact__sub" data-i18n="impact.subtitle">PlateWise connects food-waste facts to simple decisions. Each scan turns a curated image into an AR learning moment: awareness, visualisation, decision, feedback, and reflection.</p>
+
+      <div class="stat-grid">
+        <article class="stat-card stat-card--a">
+          <div class="stat-card__num" data-i18n="impact.stat1Num">1.05B</div>
+          <div class="stat-card__label" data-i18n="impact.stat1Label">tonnes of food wasted globally</div>
+          <p class="stat-card__body" data-i18n="impact.stat1Body">Food waste is not just a bin problem. It represents wasted water, energy, labour, land, transport, and packaging.</p>
+        </article>
+
+        <article class="stat-card stat-card--b">
+          <div class="stat-card__num" data-i18n="impact.stat2Num">60%</div>
+          <div class="stat-card__label" data-i18n="impact.stat2Label">comes from households</div>
+          <p class="stat-card__body" data-i18n="impact.stat2Body">Household decisions matter. PlateWise focuses on everyday situations learners can recognise and act on.</p>
+        </article>
+
+        <article class="stat-card stat-card--c">
+          <div class="stat-card__num" data-i18n="impact.stat3Num">19%</div>
+          <div class="stat-card__label" data-i18n="impact.stat3Label">of food available to consumers is wasted</div>
+          <p class="stat-card__body" data-i18n="impact.stat3Body">The app uses short facts and source labels so users can connect what they scan with real sustainability data.</p>
+        </article>
+
+        <article class="stat-card stat-card--d">
+          <div class="stat-card__num" data-i18n="impact.stat4Num">SDG 12.3</div>
+          <div class="stat-card__label" data-i18n="impact.stat4Label">halve food waste by 2030</div>
+          <p class="stat-card__body" data-i18n="impact.stat4Body">PlateWise supports awareness of responsible consumption and encourages users to prevent waste before disposal.</p>
+        </article>
+      </div>
+
+      <div class="impact__cta">
+        <a href="ar.html" class="btn btn--accent" data-i18n="impact.cta">Start scanning</a>
+        <p class="impact__note" data-i18n="impact.ctaNote">Scan a curated food-waste image, choose an action, then take the quick check.</p>
+      </div>
+    </div>
+  </section>
 
   <script type="module" src="./src/app.js"></script>
 </body>

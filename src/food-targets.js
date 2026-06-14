@@ -17,13 +17,45 @@
  * and for Demo Mode previews). No fabricated carbon values or food weights.
  */
 
-/** Short labels for the four action choices. */
+import { t } from './i18n.js';
+
+/** Short labels for the four action choices (English fallback). */
 export const ACTION_LABELS = {
   throwAway: 'Throw',
   saveLeftovers: 'Save',
   share: 'Share',
   compost: 'Compost',
 };
+
+/** Localised short action label (falls back to the English ACTION_LABELS). */
+export function actionLabel(id) {
+  return t(`actions.${id}.short`) || ACTION_LABELS[id] || id;
+}
+
+/**
+ * Return a copy of a target with its text fields swapped for the active locale.
+ * English requests return the base target unchanged (t() yields undefined and
+ * we fall back to the source values defined below).
+ * @param {FoodTarget} target
+ * @returns {FoodTarget}
+ */
+export function localizedTarget(target) {
+  if (!target) return target;
+  const tr = t(`targets.${target.id}`);
+  if (!tr || typeof tr !== 'object') return target;
+  return {
+    ...target,
+    title: tr.title ?? target.title,
+    shortLabel: tr.shortLabel ?? target.shortLabel,
+    wasteType: tr.wasteType ?? target.wasteType,
+    quickFact: tr.quickFact ?? target.quickFact,
+    defaultMessage: tr.defaultMessage ?? target.defaultMessage,
+    askMoreTitle: tr.askMoreTitle ?? target.askMoreTitle,
+    askMoreExplanation: tr.askMoreExplanation ?? target.askMoreExplanation,
+    safetyNote: tr.safetyNote ?? target.safetyNote,
+    actionGuidance: { ...target.actionGuidance, ...(tr.actionGuidance || {}) },
+  };
+}
 
 /**
  * @typedef {Object} FoodTarget

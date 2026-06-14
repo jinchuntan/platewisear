@@ -9,6 +9,8 @@
  *  - United Nations SDG 12 targets
  */
 
+import { t } from './i18n.js';
+
 // ---------------------------------------------------------------------------
 // Food-waste facts displayed in the AR scene and demo mode
 // ---------------------------------------------------------------------------
@@ -205,3 +207,37 @@ export const sources = [
     url: 'https://www.fao.org/food-loss-and-food-waste/en/',
   },
 ];
+
+// ---------------------------------------------------------------------------
+// Locale-aware accessors — English falls back to the source arrays above;
+// Malay / Chinese come from src/i18n.js. correctIndex stays language-neutral.
+// ---------------------------------------------------------------------------
+
+/** Quiz questions for the active locale (preserves each question's correctIndex). */
+export function getQuizQuestions() {
+  const tr = t('quizQuestions');
+  if (!Array.isArray(tr)) return quizQuestions;
+  return quizQuestions.map((q, i) => ({
+    ...q,
+    question: tr[i]?.question ?? q.question,
+    options: tr[i]?.options ?? q.options,
+    explanation: tr[i]?.explanation ?? q.explanation,
+  }));
+}
+
+/** Pledge option strings for the active locale. */
+export function getPledgeOptions() {
+  const tr = t('pledgeOptions');
+  return Array.isArray(tr) ? tr : pledgeOptions;
+}
+
+/** Localised label + feedback for an action id (used by the quiz recall note). */
+export function getActionInfo(id) {
+  const base = actions[id];
+  if (!base) return null;
+  return {
+    ...base,
+    label: t(`actions.${id}.label`) || base.label,
+    feedback: t(`actions.${id}.feedback`) || base.feedback,
+  };
+}

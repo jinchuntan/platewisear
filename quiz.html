@@ -5,16 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="PlateWise AR — quick check and pledge" />
   <meta name="theme-color" content="#1f6e47" />
-  <title>PlateWise AR — Quick check</title>
+  <title data-i18n="meta.titleQuiz">PlateWise AR — Quick check</title>
   <link rel="stylesheet" href="./src/styles.css" />
 </head>
 <body>
 
   <main class="page stack">
     <header>
-      <span class="eyebrow">Reflection</span>
-      <h1 class="mt-2">Quick check</h1>
-      <p class="lede">Five short questions.</p>
+      <span class="eyebrow" data-i18n="quiz.eyebrow">Reflection</span>
+      <h1 class="mt-2" data-i18n="quiz.title">Quick check</h1>
+      <p class="lede" data-i18n="quiz.lede">Five short questions.</p>
     </header>
 
     <!-- Recall of the last AR / Demo action (shown via JS if one is saved) -->
@@ -28,27 +28,27 @@
       <div id="quiz-result" class="card center" style="display:none;">
         <div class="score-display" id="score-display"></div>
         <p id="score-message" class="muted"></p>
-        <button type="button" class="btn btn--secondary btn--small mt-3" id="btn-retry">Retry</button>
+        <button type="button" class="btn btn--secondary btn--small mt-3" id="btn-retry" data-i18n="quiz.retry">Retry</button>
       </div>
     </section>
 
     <!-- Pledge -->
     <section class="card" aria-label="Action pledge">
-      <h2>Make a pledge</h2>
-      <p class="muted text-sm mb-3">Pick one change you'll try.</p>
+      <h2 data-i18n="quiz.makePledge">Make a pledge</h2>
+      <p class="muted text-sm mb-3" data-i18n="quiz.pledgePick">Pick one change you'll try.</p>
 
       <div id="pledge-options"></div>
 
-      <button type="button" class="btn mt-3" id="btn-save-pledge">Save pledge</button>
+      <button type="button" class="btn mt-3" id="btn-save-pledge" data-i18n="quiz.savePledge">Save pledge</button>
       <p id="pledge-confirmation" class="center mt-3" style="display:none; font-weight:600;"></p>
     </section>
 
     <!-- Saved results -->
     <details class="acc">
-      <summary>Your saved results</summary>
+      <summary data-i18n="quiz.savedResults">Your saved results</summary>
       <div class="acc__body">
-        <p id="saved-score">No quiz score saved yet.</p>
-        <p id="saved-pledge">No pledge saved yet.</p>
+        <p id="saved-score" data-i18n="quiz.noScore">No quiz score saved yet.</p>
+        <p id="saved-pledge" data-i18n="quiz.noPledge">No pledge saved yet.</p>
       </div>
     </details>
   </main>
