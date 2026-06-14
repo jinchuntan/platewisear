@@ -243,12 +243,12 @@ window.addEventListener('pagehide', () => {
 // Exhibit population + target detection
 // ===========================================================================
 function populateExhibits() {
+  // The AR card stays minimal: title + (static SDG 12 pill) + best-action badge.
+  // The long statistic/source lives in the bottom sheet, not the 3D overlay.
   TARGETS.forEach((t, i) => {
     const title = document.getElementById(`arx-title-${i}`);
-    const stat = document.getElementById(`arx-stat-${i}`);
     const action = document.getElementById(`arx-action-${i}`);
     title?.setAttribute('value', t.title);
-    stat?.setAttribute('value', t.quickFact);
     action?.setAttribute('value', `Best: ${ACTION_LABELS[t.recommendedAction]}`);
   });
   debug('Exhibits populated.');

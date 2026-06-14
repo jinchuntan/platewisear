@@ -22,7 +22,11 @@
   <script src="./vendor/mindar-image-aframe-1.2.5.prod.js"></script>
 
   <style>
-    html, body { margin: 0; height: 100%; overflow: hidden; background: #000; }
+    /* html is the black backdrop; the BODY must stay transparent so MindAR's
+       camera <video> (injected at z-index:-2) shows through. An opaque body
+       would hide the live feed. !important guards against the bundled CSS. */
+    html { margin: 0; height: 100%; background: #000; }
+    body { margin: 0; height: 100%; overflow: hidden; background: transparent !important; }
     .a-enter-vr, .a-orientation-modal { display: none !important; }
   </style>
 </head>
@@ -92,12 +96,12 @@
         <a-plane position="0.52 0 0.01" width="0.035" height="0.563" color="#c98a2b"></a-plane>
       </a-entity>
       <a-entity position="0 0.08 0.06">
-        <a-plane width="1.15" height="0.42" color="#fbf7ef" opacity="0.96"></a-plane>
-        <a-text id="arx-title-0" value="" align="center" color="#22262f" width="1.45" wrap-count="12" position="0 0.12 0.01"></a-text>
-        <a-text value="SDG 12" align="center" color="#855613" width="1.2" position="0 0 0.01"></a-text>
-        <a-text id="arx-stat-0" value="" align="center" color="#5e6660" width="1.25" wrap-count="30" position="0 -0.09 0.01"></a-text>
-        <a-plane position="0 -0.165 0.005" width="0.72" height="0.11" color="#1f6e47"></a-plane>
-        <a-text id="arx-action-0" value="" align="center" color="#ffffff" width="1.5" position="0 -0.165 0.015"></a-text>
+        <a-plane width="0.96" height="0.4" color="#fbf7ef" opacity="0.96"></a-plane>
+        <a-text id="arx-title-0" value="" align="center" color="#22262f" width="0.86" wrap-count="16" position="0 0.11 0.01"></a-text>
+        <a-plane position="0 0 0.005" width="0.4" height="0.1" color="#1f6e47"></a-plane>
+        <a-text value="SDG 12" align="center" color="#ffffff" width="0.5" wrap-count="8" position="0 0 0.015"></a-text>
+        <a-plane position="0 -0.14 0.005" width="0.74" height="0.1" color="#855613"></a-plane>
+        <a-text id="arx-action-0" value="" align="center" color="#ffffff" width="0.74" wrap-count="14" position="0 -0.14 0.015"></a-text>
       </a-entity>
     </a-entity>
 
@@ -110,12 +114,12 @@
         <a-plane position="0.52 0 0.01" width="0.035" height="0.75" color="#c98a2b"></a-plane>
       </a-entity>
       <a-entity position="0 0.08 0.06">
-        <a-plane width="1.15" height="0.42" color="#fbf7ef" opacity="0.96"></a-plane>
-        <a-text id="arx-title-1" value="" align="center" color="#22262f" width="1.45" wrap-count="12" position="0 0.12 0.01"></a-text>
-        <a-text value="SDG 12" align="center" color="#855613" width="1.2" position="0 0 0.01"></a-text>
-        <a-text id="arx-stat-1" value="" align="center" color="#5e6660" width="1.25" wrap-count="30" position="0 -0.09 0.01"></a-text>
-        <a-plane position="0 -0.165 0.005" width="0.72" height="0.11" color="#1f6e47"></a-plane>
-        <a-text id="arx-action-1" value="" align="center" color="#ffffff" width="1.5" position="0 -0.165 0.015"></a-text>
+        <a-plane width="0.96" height="0.4" color="#fbf7ef" opacity="0.96"></a-plane>
+        <a-text id="arx-title-1" value="" align="center" color="#22262f" width="0.86" wrap-count="16" position="0 0.11 0.01"></a-text>
+        <a-plane position="0 0 0.005" width="0.4" height="0.1" color="#1f6e47"></a-plane>
+        <a-text value="SDG 12" align="center" color="#ffffff" width="0.5" wrap-count="8" position="0 0 0.015"></a-text>
+        <a-plane position="0 -0.14 0.005" width="0.74" height="0.1" color="#855613"></a-plane>
+        <a-text id="arx-action-1" value="" align="center" color="#ffffff" width="0.74" wrap-count="14" position="0 -0.14 0.015"></a-text>
       </a-entity>
     </a-entity>
 
@@ -128,12 +132,12 @@
         <a-plane position="0.52 0 0.01" width="0.035" height="0.667" color="#c98a2b"></a-plane>
       </a-entity>
       <a-entity position="0 0.08 0.06">
-        <a-plane width="1.15" height="0.42" color="#fbf7ef" opacity="0.96"></a-plane>
-        <a-text id="arx-title-2" value="" align="center" color="#22262f" width="1.45" wrap-count="12" position="0 0.12 0.01"></a-text>
-        <a-text value="SDG 12" align="center" color="#855613" width="1.2" position="0 0 0.01"></a-text>
-        <a-text id="arx-stat-2" value="" align="center" color="#5e6660" width="1.25" wrap-count="30" position="0 -0.09 0.01"></a-text>
-        <a-plane position="0 -0.165 0.005" width="0.72" height="0.11" color="#1f6e47"></a-plane>
-        <a-text id="arx-action-2" value="" align="center" color="#ffffff" width="1.5" position="0 -0.165 0.015"></a-text>
+        <a-plane width="0.96" height="0.4" color="#fbf7ef" opacity="0.96"></a-plane>
+        <a-text id="arx-title-2" value="" align="center" color="#22262f" width="0.86" wrap-count="16" position="0 0.11 0.01"></a-text>
+        <a-plane position="0 0 0.005" width="0.4" height="0.1" color="#1f6e47"></a-plane>
+        <a-text value="SDG 12" align="center" color="#ffffff" width="0.5" wrap-count="8" position="0 0 0.015"></a-text>
+        <a-plane position="0 -0.14 0.005" width="0.74" height="0.1" color="#855613"></a-plane>
+        <a-text id="arx-action-2" value="" align="center" color="#ffffff" width="0.74" wrap-count="14" position="0 -0.14 0.015"></a-text>
       </a-entity>
     </a-entity>
 
@@ -146,12 +150,12 @@
         <a-plane position="0.52 0 0.01" width="0.035" height="0.667" color="#c98a2b"></a-plane>
       </a-entity>
       <a-entity position="0 0.08 0.06">
-        <a-plane width="1.15" height="0.42" color="#fbf7ef" opacity="0.96"></a-plane>
-        <a-text id="arx-title-3" value="" align="center" color="#22262f" width="1.45" wrap-count="12" position="0 0.12 0.01"></a-text>
-        <a-text value="SDG 12" align="center" color="#855613" width="1.2" position="0 0 0.01"></a-text>
-        <a-text id="arx-stat-3" value="" align="center" color="#5e6660" width="1.25" wrap-count="30" position="0 -0.09 0.01"></a-text>
-        <a-plane position="0 -0.165 0.005" width="0.72" height="0.11" color="#1f6e47"></a-plane>
-        <a-text id="arx-action-3" value="" align="center" color="#ffffff" width="1.5" position="0 -0.165 0.015"></a-text>
+        <a-plane width="0.96" height="0.4" color="#fbf7ef" opacity="0.96"></a-plane>
+        <a-text id="arx-title-3" value="" align="center" color="#22262f" width="0.86" wrap-count="16" position="0 0.11 0.01"></a-text>
+        <a-plane position="0 0 0.005" width="0.4" height="0.1" color="#1f6e47"></a-plane>
+        <a-text value="SDG 12" align="center" color="#ffffff" width="0.5" wrap-count="8" position="0 0 0.015"></a-text>
+        <a-plane position="0 -0.14 0.005" width="0.74" height="0.1" color="#855613"></a-plane>
+        <a-text id="arx-action-3" value="" align="center" color="#ffffff" width="0.74" wrap-count="14" position="0 -0.14 0.015"></a-text>
       </a-entity>
     </a-entity>
 
@@ -164,12 +168,12 @@
         <a-plane position="0.52 0 0.01" width="0.035" height="0.784" color="#c98a2b"></a-plane>
       </a-entity>
       <a-entity position="0 0.08 0.06">
-        <a-plane width="1.15" height="0.42" color="#fbf7ef" opacity="0.96"></a-plane>
-        <a-text id="arx-title-4" value="" align="center" color="#22262f" width="1.45" wrap-count="12" position="0 0.12 0.01"></a-text>
-        <a-text value="SDG 12" align="center" color="#855613" width="1.2" position="0 0 0.01"></a-text>
-        <a-text id="arx-stat-4" value="" align="center" color="#5e6660" width="1.25" wrap-count="30" position="0 -0.09 0.01"></a-text>
-        <a-plane position="0 -0.165 0.005" width="0.72" height="0.11" color="#1f6e47"></a-plane>
-        <a-text id="arx-action-4" value="" align="center" color="#ffffff" width="1.5" position="0 -0.165 0.015"></a-text>
+        <a-plane width="0.96" height="0.4" color="#fbf7ef" opacity="0.96"></a-plane>
+        <a-text id="arx-title-4" value="" align="center" color="#22262f" width="0.86" wrap-count="16" position="0 0.11 0.01"></a-text>
+        <a-plane position="0 0 0.005" width="0.4" height="0.1" color="#1f6e47"></a-plane>
+        <a-text value="SDG 12" align="center" color="#ffffff" width="0.5" wrap-count="8" position="0 0 0.015"></a-text>
+        <a-plane position="0 -0.14 0.005" width="0.74" height="0.1" color="#855613"></a-plane>
+        <a-text id="arx-action-4" value="" align="center" color="#ffffff" width="0.74" wrap-count="14" position="0 -0.14 0.015"></a-text>
       </a-entity>
     </a-entity>
   </a-scene>

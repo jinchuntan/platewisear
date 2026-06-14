@@ -215,10 +215,16 @@ body.reduced-motion .ar-status__spinner { animation: none; }
 .ar-status__actions[hidden] { display: none; }
 
 /* -------------------------------------------------------------------------
-   11a. AR camera feed = base layer (must sit behind all overlays)
+   11a. AR camera feed = base layer
+   MindAR injects a <video> (z-index:-2) into <body> and A-Frame draws a
+   transparent canvas above it. For the live feed to show, the Scan page body
+   must be TRANSPARENT — an opaque (cream) body hides the z-index:-2 video.
+   This scoped rule beats the generic cream `body` background (the bundled CSS
+   loads after the page's inline <style>). Overlays use positive z-index.
    ------------------------------------------------------------------------- */
-#mindar-scene { position: fixed; inset: 0; z-index: 0; }
-#mindar-scene .a-canvas, #mindar-scene canvas, #mindar-scene video { z-index: 0; }
+body[data-tabbar="off"] { background: transparent !important; background-image: none !important; }
+body[data-tabbar="off"] a-scene,
+body[data-tabbar="off"] .a-canvas { background-color: transparent !important; }
 
 /* -------------------------------------------------------------------------
    11b. Scan top bar — Home + How-to (over the camera, before & after scan)
