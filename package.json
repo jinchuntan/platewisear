@@ -6,7 +6,16 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "qa:d2": "node scripts/qa-evidence/d2-mind-file-check.mjs",
+    "qa:d3": "node scripts/qa-evidence/d3-target-order-check.mjs",
+    "qa:d4": "node scripts/qa-evidence/d4-ar-overlay-audit.mjs",
+    "qa:d5": "node scripts/qa-evidence/d5-tap-cue-check.mjs",
+    "qa:d6": "node scripts/qa-evidence/d6-camera-state-check.mjs",
+    "qa:d7": "node scripts/qa-evidence/d7-ai-provider-check.mjs",
+    "qa:d8": "node scripts/qa-evidence/d8-ai-safety-check.mjs",
+    "qa:d9": "node scripts/qa-evidence/d9-copy-audit.mjs",
+    "qa:d10": "node scripts/qa-evidence/d10-i18n-check.mjs"
   },
   "devDependencies": {
     "vite": "^5.4.0"

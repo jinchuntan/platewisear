@@ -765,9 +765,15 @@ html { overflow-x: hidden; }
 .ai-retry-card p { font-size: var(--text-sm); color: rgba(255, 255, 255, 0.9); margin-bottom: var(--space-4); }
 .ai-retry-card .btn + .btn { margin-top: var(--space-2); }
 
-/* Result screen — scrolls over the (now stopped) camera */
-.ai-result-screen { position: fixed; inset: 0; z-index: 980; overflow-y: auto; background: var(--bg); }
+/* Result screen — scrolls over the (now stopped) camera.
+   The page's html backdrop is black (it's the camera layer) and the body is
+   transparent, so on desktop the result must paint the app background across
+   the WHOLE viewport — otherwise the .page max-width turns it into a phone-width
+   strip floating on black. We drop the .page cap here (max-width: none) and
+   re-centre the content as a reading column on the children below. */
+.ai-result-screen { position: fixed; inset: 0; z-index: 980; overflow-y: auto; background: var(--bg); max-width: none; }
 .ai-result-screen[hidden] { display: none; }
+.ai-result-screen > * { max-width: var(--max); margin-left: auto; margin-right: auto; }
 .ai-result-head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
 
 /* Exhibit card extras on the result snapshot */
