@@ -11,6 +11,13 @@
  *   platewise_lastTarget  — string (target id, or "ai-scan")
  */
 
+// Demo note. localStorage is how the app "remembers" things between pages
+// without any backend or login. Four small values flow through here: the quiz
+// score, the saved pledge, the last action chosen, and the last learning context
+// (target id). For example, AR and Demo save the target, then the Quick Check
+// page reads it to lead with relevant questions. Two extra keys remember whether
+// each "how to" guide has been dismissed. Only short text and ids are stored,
+// never a photo.
 const PREFIX = 'platewise_';
 
 // ---------------------------------------------------------------------------

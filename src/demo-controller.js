@@ -101,6 +101,10 @@ function renderStage() {
 // ---------------------------------------------------------------------------
 // Select an exhibit
 // ---------------------------------------------------------------------------
+// Demo note. selectTarget is Demo Mode's stand-in for "MindAR found a target".
+// A tap supplies the index directly (no camera), then everything downstream
+// (renderStage, the actions, the feedback colours, saveLastTarget for Quick
+// Check) is identical to the AR controller. Same content, same teaching flow.
 function selectTarget(index) {
   const target = TARGETS.find((tg) => tg.targetIndex === index);
   if (!target) return;

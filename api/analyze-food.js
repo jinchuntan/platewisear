@@ -40,10 +40,17 @@ function normLocale(loc) {
   return ['en', 'ms', 'zh-CN'].includes(loc) ? loc : 'en';
 }
 
+// Demo note. This is the serverless function that powers AI Scan. It runs on
+// Vercel, not in the browser, which is the whole point. The API keys live in
+// server-side env vars and never ship to the client bundle. The handler does
+// four things: validate input, call the AI provider (with fallback), normalize
+// the answer, and return a small JSON envelope { ok, result } | { ok:false,
+// error }.
 export default async function handler(req, res) {
   if (req.method !== 'POST') return send(res, 405, { ok: false, error: 'method_not_allowed' });
 
-  // No keys configured → graceful, non-crashing state.
+  // If no keys are configured, return a graceful 503 'not_configured' instead of
+  // a crash, so the rest of the app (curated AR, Demo) keeps working.
   if (!hasOpenRouter() && !hasGroq()) return send(res, 503, { ok: false, error: 'not_configured' });
 
   const body = await readBody(req);
@@ -53,6 +60,9 @@ export default async function handler(req, res) {
   // itself does not change based on where the image came from.
   const source = body?.source === 'camera' ? 'camera' : 'upload';
 
+  // Request validation. Only accept a real base64 image data URL (png/jpeg/webp)
+  // under the size cap. Reject anything else before spending an API call, so the
+  // endpoint can't be misused as an open proxy.
   const match = typeof image === 'string' && IMAGE_RE.exec(image);
   if (!match) return send(res, 400, { ok: false, error: 'bad_image' });
   const approxBytes = Math.floor((match[2].replace(/\s/g, '').length * 3) / 4);
@@ -66,6 +76,9 @@ export default async function handler(req, res) {
   let result = null;
   let provider = null;
 
+  // Provider chain. Try OpenRouter (primary) first. If it throws or is not
+  // configured, fall through to Groq (backup). normalizeResult() sanitises
+  // whichever model answered into our canonical, safety-checked shape.
   if (hasOpenRouter()) {
     try {
       const content = await openrouterChat(messages, { json: true });
@@ -86,6 +99,8 @@ export default async function handler(req, res) {
     }
   }
 
+  // When both providers fail we return 'unavailable'. The frontend points the
+  // user back to curated AR Scan / Demo Mode rather than showing an error dead-end.
   if (!result) return send(res, 502, { ok: false, error: 'unavailable' });
 
   result.provider = provider;

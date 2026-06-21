@@ -6,15 +6,37 @@
  * shown in the AR exhibit card, the contextual bottom sheet, and the Ask-More
  * drawer.
  *
- * IMPORTANT (honesty about scope):
+ * Being honest about scope.
  *  - The app recognises ONLY these curated images, in this exact order. The
  *    `targetIndex` MUST match the order the images were given to the MindAR
  *    compiler when producing public/assets/targets/food-waste-targets.mind.
- *  - It does NOT recognise arbitrary food-waste photos, and it does NOT confirm
+ *  - It does NOT recognise arbitrary food-waste photos and does NOT confirm
  *    food safety. (A future AI mode could analyse uploaded images — not now.)
  *
  * Source images live in public/assets/targets/source/ (used for the compiler
  * and for Demo Mode previews). No fabricated carbon values or food weights.
+ *
+ * Demo note. This file is the single source of truth for the curated
+ * experience. The AR page, Demo Mode, the Ask-More drawer and the Quick Check
+ * all read from the TARGETS array below, so changing a fact here updates it
+ * everywhere at once. The array order has to match the compiled .mind file, so
+ * keep it exact.
+ *
+ *   targetIndex 0  leftover-rice    (cooked food, recommend Save)
+ *   targetIndex 1  fruit-peels      (scraps, recommend Compost)
+ *   targetIndex 2  bread-waste      (surplus, recommend Share)
+ *   targetIndex 3  mixed-leftovers  (mixed, recommend Save)
+ *   targetIndex 4  drink-waste      (beverages, recommend Save or reuse)
+ *
+ * Each target object stores everything the UI needs.
+ *   title, shortLabel, wasteType       headings on the card and sheet
+ *   quickFact and source               a one-line statistic with its citation
+ *   recommendedAction                  the "Best" badge, one of the four actions
+ *   defaultMessage                     shown before the user chooses an action
+ *   actionGuidance                     what to say for each of the four actions
+ *   askMoreTitle and askMoreExplanation  the deeper Ask More drawer content
+ *   safetyNote                         the fixed safety disclaimer
+ *   arVariant                          small AR card colour and marker theming
  */
 
 import { t } from './i18n.js';
@@ -77,6 +99,9 @@ export function localizedTarget(target) {
  *           Small AR-card theming: accent colour + a simple primitive marker.
  */
 
+// Every entry's safetyNote makes the same honest point. PlateNudge cannot
+// confirm food safety. It shows word for word in the Ask-More drawer so a
+// recommendation like "Save leftovers" is never read as "this food is safe".
 /** @type {FoodTarget[]} */
 export const TARGETS = [
   {
@@ -196,6 +221,9 @@ export const TARGETS = [
   },
 ];
 
+// getTargetByIndex is the bridge between AR and content. ar-controller.js calls
+// it with the MindAR target number to fetch the matching exhibit. getTargetById
+// does the same by string id, used by Demo Mode and the Quick Check.
 /** Look up a target by its compiled index. */
 export function getTargetByIndex(index) {
   return TARGETS.find((t) => t.targetIndex === index) || null;

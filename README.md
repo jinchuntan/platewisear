@@ -20,7 +20,7 @@ This project is aligned with **United Nations Sustainable Development Goal 12: R
 - **Contextual bottom sheet** — appears **only after detection**, titled with the detected exhibit, with four actions (**Throw · Save · Share · Compost**) plus **Ask more**. When the image is lost it drops back to a “Point at a food-waste image” hint.
 - **Target-specific guidance** — each action gives advice tailored to the detected waste (e.g. compost is recommended for kitchen scraps, sharing for edible surplus).
 - **“Ask more” drawer** — a clean, non-AI explanation panel: *What am I looking at? · Why it matters · What should I do? · Safety note* (content from `src/food-targets.js`).
-- **Robust camera handling** — user-facing states for *permission needed/denied, unsupported browser, loading, ready, failed*, a secure-context + getUserMedia check, a start-up timeout, and a one-tap **Demo Mode** fallback.
+- **Careful camera handling** — user-facing states for *permission needed/denied, unsupported browser, loading, ready, failed*, a secure-context + getUserMedia check, a start-up timeout, and a one-tap **Demo Mode** fallback.
 - **Graceful setup** — if the compiled `.mind` target file isn’t installed yet, the Scan page says so clearly and points to Demo Mode (which always works).
 - **Demo Mode (no camera)** — pick a sample food-waste image and get the same exhibit, actions, guidance, and Ask-More drawer.
 - **Quiz & reflection** — 5 questions with scoring and a pledge (saved to localStorage), plus a recall of the user’s last action.

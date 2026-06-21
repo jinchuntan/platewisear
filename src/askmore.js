@@ -16,6 +16,11 @@
 import { localizedTarget, actionLabel } from './food-targets.js';
 import { t } from './i18n.js';
 
+// Demo note. One shared drawer, reused by both AR and Demo Mode. initAskMore()
+// returns an { open, close } pair; calling open(target) fills the four sections
+// ("What am I looking at?", "Why it matters", "What should I do?", and the safety
+// note) straight from that target's curated content. No network and no AI. It is
+// the deeper, source-backed explanation behind the one-line fact on the sheet.
 export function initAskMore() {
   const drawer = document.getElementById('askmore');
   const backdrop = document.getElementById('askmore-backdrop');

@@ -32,7 +32,13 @@ const contextNoteEl = document.getElementById('quiz-context-note');
 // ---------------------------------------------------------------------------
 // State
 // ---------------------------------------------------------------------------
-// The last scanned / selected / AI-Scan context decides which questions lead.
+// Demo note. The Quick Check is the "reflect" step that closes the loop after a
+// scan. It is contextual. getLastTarget() reads which exhibit the user just
+// explored (saved in localStorage by AR / Demo / AI Scan), and getBlendedQuiz()
+// leads with 2 questions about that target before 3 general SDG 12 questions.
+// Answering scores the quiz; the pledge section below turns the lesson into a
+// personal commitment. The last scanned, selected or AI-Scan context decides
+// which questions lead.
 const lastTargetId = getLastTarget();
 let questions = getBlendedQuiz(lastTargetId);
 let answeredCount = 0;
@@ -132,6 +138,9 @@ function handleAnswer(qIndex, selectedIndex, card) {
   if (answeredCount === questions.length) showResult();
 }
 
+// Scoring. Count correct answers, show "X / total", and pick an encouraging
+// message by band (perfect / ≥60% / keep going). The score is saved to
+// localStorage so it persists across visits and shows under "Your saved results".
 function showResult() {
   const total = questions.length;
   scoreDisplayEl.textContent = `${correctCount} / ${total}`;

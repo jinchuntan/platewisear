@@ -21,6 +21,15 @@
 </head>
 <body data-tabbar="off">
 
+  <!--
+    Demo note. AI Scan is the optional, camera-based AI path. Its layers stack
+    like this: live <video> feed → grab ONE frame to the hidden <canvas> → freeze
+    it as an <img> while /api/analyze-food runs → show the result screen below.
+    The flow is a state machine in src/ai-controller.js: intro → scanning →
+    analysing → result (or retry). The page never streams frames. It analyses a
+    single snapshot and does not store the photo.
+  -->
+
   <!-- Live camera feed (base layer) + hidden canvas used to grab one frame -->
   <video id="ai-video" class="ai-video" playsinline autoplay muted hidden></video>
   <canvas id="ai-canvas" hidden></canvas>
@@ -105,7 +114,10 @@
     <p class="ai-analysing__hint" data-i18n="ai.creatingExhibit">Creating your learning exhibit</p>
   </div>
 
-  <!-- Retry overlay — when the frame does not clearly show food waste -->
+  <!-- Retry overlay, shown when the frame does not clearly show food waste.
+       If the AI replies that the snapshot is blurry / empty / not food, we do NOT
+       invent a result. We show this friendly "scan again" card (after one
+       automatic retry) and offer the upload path instead. -->
   <div class="ai-retry-overlay" id="ai-retry-overlay" hidden>
     <div class="ai-retry-card">
       <div class="ai-retry-card__icon" aria-hidden="true">🔍</div>
@@ -194,7 +206,11 @@
 
       <div class="feedback-panel" id="ai-feedback" data-i18n="scan.chooseNext">Choose what happens next.</div>
 
-      <!-- Prominent safety note (not hidden in small text) -->
+      <!-- The AI's safety note is shown prominently (not buried in fine print).
+           The wording is OUR canonical disclaimer from ai-schema.js, not whatever
+           the model wrote, so it always says the app cannot confirm food safety.
+           A fixed "AI assisted guidance only" disclaimer also appears in the
+           Ask-More drawer. -->
       <div class="ai-safety">
         <h3 data-i18n="scan.askSafety">Safety note</h3>
         <p id="ai-safety"></p>

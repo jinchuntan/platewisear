@@ -1,10 +1,10 @@
 /**
  * content.js — Central data store for PlateNudge
  *
- * All educational content, statistics, quiz questions, and source references
- * are maintained here so every page draws from a single source of truth.
+ * All educational content, statistics, quiz questions and source references live
+ * here, so every page reads from one source of truth.
  *
- * DATA SOURCES (full citations on the About page and in README):
+ * Data sources (full citations on the About page and in README):
  *  - UNEP Food Waste Index Report 2024
  *  - United Nations SDG 12 targets
  */
@@ -342,9 +342,11 @@ export function getTargetQuizQuestions(targetId) {
 }
 
 /**
- * Build the Quick Check for a learning context: 2 target-specific questions
- * followed by 3 general SDG 12 questions. Falls back to the full general quiz
- * when there is no known target. Stays at ~5 questions so the quiz stays short.
+ * Demo note. This is what makes the Quick Check feel personalised. It builds a
+ * blended quiz of 2 target-specific questions (about whatever the user just
+ * scanned) followed by 3 general SDG 12 questions. With no known target it
+ * returns the full general quiz, so the page always has questions. Kept to about
+ * 5 questions so reflection stays short.
  * @param {string|null} targetId
  */
 export function getBlendedQuiz(targetId) {

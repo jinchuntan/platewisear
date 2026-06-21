@@ -21,6 +21,9 @@ const TIMEOUT_MS = 25000;
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
 const GROQ_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
+// Keys are read from process.env at call time and only ever sent in the
+// Authorization header of the server to provider request. They are never logged,
+// since we log the model name and never the key, and never returned to the browser.
 export function hasOpenRouter() {
   return !!process.env.OPENROUTER_API_KEY;
 }

@@ -36,9 +36,20 @@
 <body data-tabbar="off">
 
   <!--
-    AR STATUS / LOADING SCREEN — driven by ar-controller.js.
-    Also shows the graceful "targets not installed" state when the compiled
-    .mind file is missing.
+    Demo note. This is the curated AR scan page, the core of the project. Read it
+    top to bottom in the video: (1) the status screen, (2) the MindAR <a-scene>
+    with its 5 target entities, (3) the top bar, (4) the scan overlay, (5) the
+    contextual bottom sheet, (6) the Ask-More drawer. All the logic that drives
+    this markup lives in src/ar-controller.js, and all exhibit text comes from
+    src/food-targets.js.
+  -->
+
+  <!--
+    AR status / loading screen, driven by ar-controller.js.
+    This same box shows every "can't scan" state: camera denied, no HTTPS, camera
+    in use, and the graceful "targets not installed" state when the compiled
+    .mind file is missing. In each case it offers a "Try again" button and a link
+    to Demo Mode so the user is never stuck.
   -->
   <div id="ar-status-screen" class="ar-status" role="status" aria-live="polite">
     <div class="ar-status__box">
@@ -94,6 +105,15 @@
          events (not every frame), so it adds no per-frame cost to the camera feed.
          Limited to .ar-card-hit so only the exhibit cards are tappable. -->
     <a-entity id="ar-cursor" cursor="rayOrigin: mouse; fuse: false" raycaster="objects: .ar-card-hit; far: 1000"></a-entity>
+
+    <!--
+      Demo note. The 5 entities below are the "museum exhibits". Each
+      targetIndex (0–4) is bound to one curated image inside the compiled .mind
+      file, in the SAME order as src/food-targets.js. targetIndex 0 = leftover
+      rice, 1 = fruit peels, 2 = bread waste, 3 = mixed leftovers, 4 = drink
+      waste. MindAR auto-shows the matching entity when it recognises that image;
+      ar-controller.js fills the empty arx-title-N / arx-action-N text at runtime.
+    -->
 
     <!-- Target 0 — Leftover rice (image 1200x675 → h≈0.563) -->
     <a-entity class="exhibit" mindar-image-target="targetIndex: 0">
@@ -259,6 +279,11 @@
     ==========================================================================
     Contextual bottom sheet — hidden until a target is detected
     ==========================================================================
+    Demo note. This panel is the heart of the interaction. On detection,
+    ar-controller.js unhides it and fills in the title, the source-backed fact,
+    and the four action buttons (Throw / Save / Share / Compost). Choosing an
+    action swaps #feedback-panel for target-specific guidance: green when it
+    matches the recommended action, red for "Throw", neutral otherwise.
   -->
   <div class="sheet" id="ar-sheet" hidden>
     <button type="button" class="sheet__handle" id="sheet-toggle" data-i18n-aria-label="scan.sheetToggle" aria-label="Collapse or expand panel"></button>
@@ -339,6 +364,9 @@
       <div class="drawer__section"><h3 data-i18n="scan.askLook">What am I looking at?</h3><p id="askmore-look"></p></div>
       <div class="drawer__section"><h3 data-i18n="scan.askWhy">Why it matters</h3><p id="askmore-why"></p></div>
       <div class="drawer__section"><h3 data-i18n="scan.askDo">What should I do?</h3><p id="askmore-do"></p></div>
+      <!-- Every exhibit carries a fixed safety note ("the app cannot confirm food
+           safety"). It is always shown so guidance is never mistaken for a
+           food-safety guarantee. The text comes from food-targets.js. -->
       <div class="drawer__section drawer__safety"><h3 data-i18n="scan.askSafety">Safety note</h3><p id="askmore-safety"></p></div>
     </div>
   </div>

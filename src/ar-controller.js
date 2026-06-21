@@ -166,6 +166,15 @@ async function targetsInstalled() {
   }
 }
 
+// Demo note. startFlow() is the AR boot sequence. It runs a chain of pre-checks
+// before MindAR ever touches the camera, and each check has its own friendly
+// fallback screen.
+//   1. Is the compiled .mind target file present? If not, show "notargets".
+//   2. Camera APIs need HTTPS or localhost, otherwise show "insecure".
+//   3. Does this browser support getUserMedia? If not, show "unsupported".
+//   4. Probe the camera permission, then release the test stream straight away.
+// MindAR only starts once all four pass, so the app degrades gracefully instead
+// of crashing.
 async function startFlow() {
   if (!(await targetsInstalled())) { setStatus('notargets'); return; }
   if (!isSecureContext()) { setStatus('insecure'); return; }
@@ -176,6 +185,9 @@ async function startFlow() {
   try {
     probe = await navigator.mediaDevices.getUserMedia({ video: true });
   } catch (err) {
+    // If the probe throws, classifyCameraError maps the browser error to a
+    // precise state (denied, nocamera, inuse or failed) so the user sees a
+    // message they can act on.
     setStatus(classifyCameraError(err));
     return;
   }
@@ -236,10 +248,10 @@ window.addEventListener('pagehide', () => {
 // Exhibit population + target detection
 // ===========================================================================
 function populateExhibits() {
-  // Minimal 3D card: localised title + (static SDG 12 pill) + best-action badge.
-  // NOTE: A-Frame's default MSDF font renders Latin glyphs (EN/BM). Chinese
-  // glyphs need a custom MSDF font (future work); the bottom sheet always shows
-  // the full localised content as HTML, so no information is lost.
+  // Minimal 3D card with a localised title, a static SDG 12 pill and a
+  // best-action badge. A-Frame's default MSDF font renders Latin glyphs (EN/BM).
+  // Chinese glyphs need a custom MSDF font (future work); the bottom sheet always
+  // shows the full localised content as HTML, so no information is lost.
   TARGETS.forEach((tg, i) => {
     const lt = localizedTarget(tg);
     const titleEl = document.getElementById(`arx-title-${i}`);
@@ -324,6 +336,9 @@ function buildVariantMarker(variant) {
   return el;
 }
 
+// readTargetIndex reads the targetIndex straight off the MindAR component
+// instead of trusting DOM order, so the link between image N in the .mind file
+// and content N in food-targets.js stays correct even if the markup is reordered.
 /** Read the real targetIndex from the component (not DOM order). */
 function readTargetIndex(el, fallback) {
   const parsed = el.getAttribute('mindar-image-target');
@@ -345,6 +360,12 @@ function attachTargetHandlers() {
   debug('Target handlers attached:', entities.length);
 }
 
+// Demo note. This is where target detection happens. MindAR fires targetFound
+// and targetLost on each <a-entity> as its image enters or leaves the camera,
+// and attachTargetHandlers() below wires those events to these two functions.
+// The important line is getTargetByIndex(index). It maps the MindAR index back
+// to the curated content in food-targets.js, which is what makes the right
+// exhibit appear.
 function onTargetFound(index) {
   if (lostTimerId) { clearTimeout(lostTimerId); lostTimerId = null; }
   const target = getTargetByIndex(index);
@@ -356,6 +377,10 @@ function onTargetFound(index) {
   showSheet(target);
 }
 
+// When a target is lost we don't hide the sheet straight away. An 800 ms
+// debounce absorbs brief flickers, like a hand passing or a small wobble, so the
+// exhibit doesn't flash away. The scan hint only returns once the image is
+// really gone.
 function onTargetLost(index) {
   debug('targetLost index:', index);
   if (lostTimerId) clearTimeout(lostTimerId);
@@ -387,7 +412,7 @@ function highlightRecommended(actionId) {
   });
 }
 
-/** Fill the sheet's text from the current target + chosen action (localised). */
+/** Fill the sheet's text from the current target and chosen action (localised). */
 function renderSheetText() {
   if (!currentTarget) return;
   const lt = localizedTarget(currentTarget);
@@ -399,6 +424,11 @@ function renderSheetText() {
   factSourceEl.textContent = `${t('common.sourcePrefix') || 'Source: '}${lt.source}`;
 
   if (lastActionId) {
+    // Demo note. This is the action feedback. After the user picks Throw, Save,
+    // Share or Compost, we show that target's specific guidance and colour the
+    // panel by outcome. Red means Throw, the wasteful choice. Green means the
+    // choice matches the recommended action. Neutral covers the rest. This is the
+    // "action, not guilt" moment.
     const guidance = lt.actionGuidance[lastActionId];
     feedbackPanelEl.textContent = `${actionLabel(lastActionId)}: ${guidance}`;
     feedbackPanelEl.className = 'feedback-panel';

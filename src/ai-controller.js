@@ -17,8 +17,8 @@
  * or when the camera is unavailable. Everything is optional: if the API has no
  * keys or fails, the page points the user back to the curated AR Scan / Demo.
  *
- * Privacy: the captured frame lives only in memory for the preview and result.
- * Nothing is written to localStorage and the camera is stopped when we leave.
+ * Privacy. The captured frame lives only in memory for the preview and result.
+ * Nothing is written to localStorage, and the camera is stopped when we leave.
  */
 
 import { t, getLocale, initI18n, mountLanguageSwitcher } from './i18n.js';
@@ -301,6 +301,12 @@ function captureFrame() {
   try { return canvas.toDataURL('image/jpeg', JPEG_QUALITY); } catch { return null; }
 }
 
+// Demo note. AI Scan uses one snapshot, not a stream. captureFrame() draws a
+// single video frame onto the canvas, scales it down with MAX_DIM and exports a
+// compressed JPEG data URL. That one image is all we send to the API, so there
+// is no per-frame analysis and no API spam. The data URL lives only in memory as
+// currentDataUrl and nothing is saved.
+
 /** Begin a fresh scan cycle from the live feed (first attempt is automatic). */
 function beginScanCycle() {
   if (resultShown || scanning) return;
@@ -336,6 +342,11 @@ async function runScan(isAuto) {
   handleCameraOutcome(res, isAuto);
 }
 
+// Demo note. handleCameraOutcome decides what happens after the API answers. If
+// the call failed it shows "not set up" when there are no keys, or "unavailable"
+// when the provider is down. If it succeeded but the frame was unclear,
+// shouldShowResult() can send us back for one automatic retry before asking the
+// user to scan again. Only a confident food-waste result reaches showResult().
 function handleCameraOutcome(res, isAuto) {
   if (!res.ok) {
     stopCamera(); // not going to auto-rescan — release the camera
@@ -380,6 +391,10 @@ function shouldShowResult(r) {
   return r.confidence === 'medium' || r.confidence === 'high';
 }
 
+// This is the only network call the browser makes for analysis. We POST the
+// image and locale to our own serverless route, never to OpenRouter or Groq
+// directly, and that is what keeps the API keys server-side. The result codes
+// 'not_configured' and 'unavailable' drive the friendly fallback screens.
 async function postAnalyze(dataUrl, source) {
   let resp;
   try {
@@ -545,6 +560,10 @@ async function compressImage(file) {
   try { return c.toDataURL('image/jpeg', JPEG_QUALITY); } catch { return dataUrl; }
 }
 
+// "Choose image instead" is the upload path. It reuses the same analysis through
+// postAnalyze as the camera, so desktop users or anyone without a working camera
+// can still try AI Scan. We check the file type and size first, then compress it
+// before sending.
 async function handleFile(file) {
   if (!file) return;
   if (!file.type || !file.type.startsWith('image/')) { showImageError('errType'); return; }

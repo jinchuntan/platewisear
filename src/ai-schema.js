@@ -4,11 +4,11 @@
  * imported by both the frontend (ai-controller / renderer) and the serverless
  * functions in /api.
  *
- * Honesty model: the model is asked to choose a `factKey` (never to invent
+ * Honesty model. The model is asked to choose a `factKey` (never to invent
  * statistics), and `normalizeResult()` enforces the allow-lists, scrubs any
  * disallowed claims (food-safety confirmation, exact weight/carbon), and always
  * substitutes our own canonical safety note. The UI also shows a fixed
- * disclaimer. Net effect: output is safe even if a model misbehaves.
+ * disclaimer, so the output is safe even if a model misbehaves.
  */
 
 export const ALLOWED_ACTIONS = ['throwAway', 'saveLeftovers', 'share', 'compost'];
@@ -173,6 +173,11 @@ export function extractJson(content) {
  * @param {('en'|'ms'|'zh-CN')} locale
  * @returns {object}
  */
+// This normalizer is the trust boundary for AI output. It never assumes the
+// model behaved. It forces every enum onto an allow-list, scrubs any disallowed
+// claim (food-safety confirmation, exact weight/carbon) via clean(), keeps facts
+// to our TRUSTED_FACTS by factKey, and always substitutes our own canonical
+// safety note. So even a misbehaving model produces safe output.
 export function normalizeResult(raw, locale = 'en') {
   if (!raw || typeof raw !== 'object') throw new Error('result is not an object');
 

@@ -2,6 +2,17 @@
    PlateNudge — Design System  (Tenun-inspired)
    Warm cream + subtle grain · charcoal ink · gold accent · green sustainability.
    Editorial, spacious, museum-like. Mobile-first.
+
+   Demo note. One stylesheet drives every page. It is organised as a numbered
+   index (search "1. Tokens", "12. Bottom sheet", etc.). The sections worth
+   pointing at in the video are flagged inline below:
+     · §1  design tokens (colours / spacing as CSS variables — themeable)
+     · §4 + §25  mobile-first layout & small-screen / notch hardening
+     · §10–11  AR status screen + scan overlay (drawn OVER the live camera)
+     · §12–13  the contextual bottom sheet, action buttons & feedback colours
+     · §15  the shared Ask-More drawer
+     · §26–27  the AI Scan result screen, overlays & retry card
+     · accessibility lives throughout: §2 focus-visible + reduced-motion
    ========================================================================= */
 
 /* -------------------------------------------------------------------------
@@ -320,6 +331,10 @@ body.reduced-motion .scan-overlay__step::before { animation: none; }
 
 /* -------------------------------------------------------------------------
    12. Bottom sheet (AR — contextual, appears on detection)
+   Demo note. The signature mobile pattern. Pinned to the bottom, compact by
+   default (so the AR exhibit stays visible), slides up via translateY and
+   expands when the user taps the handle. §13 styles the action buttons and the
+   colour-coded feedback panel inside it.
    ------------------------------------------------------------------------- */
 .sheet {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 950;
@@ -393,6 +408,9 @@ body.reduced-motion .scan-overlay__step::before { animation: none; }
 
 /* -------------------------------------------------------------------------
    15. Ask-More drawer
+   Demo note. Full-screen modal drawer (backdrop + sliding panel) reused on AR,
+   Demo and AI pages for the deeper explanation and safety note. .drawer__safety
+   gives the safety section its distinct styling.
    ------------------------------------------------------------------------- */
 .drawer { position: fixed; inset: 0; z-index: 1100; }
 .drawer[hidden] { display: none; }
@@ -678,6 +696,10 @@ html { overflow-x: hidden; }
 
 /* -------------------------------------------------------------------------
    26. AI Scan — shared result + upload fallback styles (ai.html)
+   Demo note. The AI result screen reuses the curated exhibit look (§13/§14) and
+   adds AI-only pieces: the confidence pill (.ai-conf--low/medium/high), the
+   prominent safety box (.ai-safety), and the always-on disclaimer (.ai-disclaimer).
+   §27 covers the camera feed, analysing overlay and retry card.
    ------------------------------------------------------------------------- */
 .ai-disclaimer {
   background: var(--accent-soft); color: var(--accent-ink);

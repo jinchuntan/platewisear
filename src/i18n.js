@@ -1146,8 +1146,14 @@ export function getLocale() {
 }
 
 /**
- * Switch language: persist, update <html lang>, then broadcast the change so
- * every page/controller re-renders.
+ * Demo note. This is how the whole UI changes language instantly. setLocale()
+ * saves the choice, sets <html lang>, then dispatches one custom event,
+ * `platewise:localechange`. Two kinds of listener react to it:
+ *   1. This module re-runs applyTranslations() to refill every [data-i18n]
+ *      element in the static markup.
+ *   2. Each page controller (AR, Demo, AI, Quiz) has its own listener that
+ *      re-renders its JS-generated content (the sheet, the exhibit, the quiz).
+ * That one event is the switch behind EN / BM / 中文 updating everywhere.
  * @param {string} locale
  */
 export function setLocale(locale) {

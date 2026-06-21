@@ -13,6 +13,17 @@
 </head>
 <body>
 
+  <!--
+    Demo note. This home page is the navigation hub for the whole app. Every mode
+    starts from one of the links below, so it is a good first file to open in the
+    video:
+      • "Start scan" → ar.html   (curated AR image targets, the main feature)
+      • "AI Scan"    → ai.html   (camera/photo AI guidance)
+      • "Try demo"   → demo.html (no-camera walkthrough of the same content)
+      • "View scan images" → marker.html   • "About" → about.html
+    All visible copy uses data-i18n="..." keys so src/i18n.js can swap the page
+    into English / Bahasa Melayu / 中文 without touching this markup.
+  -->
   <main class="page">
     <section class="hero">
       <span class="chip" data-i18n="hero.chip">AR and AI for SDG 12</span>
@@ -23,6 +34,8 @@
       </h1>
       <p class="hero__sub" data-i18n="hero.sub">An AR and AI food waste learning app for SDG&nbsp;12.</p>
 
+      <!-- The three primary entry points. The order on screen
+           (Start scan / AI Scan / Try demo) is the order to demo the app in. -->
       <div class="hero__cta">
         <div class="hero__choice">
           <a href="ar.html" class="btn" data-i18n="hero.startScan">Start scan</a>
